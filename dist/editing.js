@@ -51,7 +51,15 @@ function pasteText(e){if(composing)return;e.preventDefault();let records;try{con
 }
 // Repair only redundant empty lines; cut boundaries remain explicit and retain IDs.
 const originalCheck=showCheck;
-showCheck=function(){originalCheck();const c=chapter(),fixed=ScriptModel.repair(c);if(fixed.text!==c.text){const b=document.createElement('button');b.className='primary';b.textContent='増殖した空行を整理';b.onclick=()=>{Object.assign(c,fixed);recordHistory();save();renderText();stats();$('#dialog').close()};$('#dialogBody').prepend(b)}};$('#check').onclick=()=>showCheck();
+showCheck=function(){
+  originalCheck();const c=chapter();
+  for(const [label,fix] of [['増殖した空行を整理',ScriptModel.repair],['空行を削除',ScriptModel.removeBlankLines]]){
+    const fixed=fix(c);if(fixed.text===c.text)continue;
+    const b=document.createElement('button');b.className='primary';b.textContent=label;
+    b.onclick=()=>{if(composing||loadBlocked)return;Object.assign(c,fixed);ScriptModel.renumber(state);recordHistory();save();renderText();stats();$('#dialog').close()};
+    $('#dialogBody').prepend(b);
+  }
+};$('#check').onclick=()=>showCheck();
 // Text in non-editor controls also participates in the same project history.
 $('#chapterTitle').addEventListener('input',recordHistory);$('#status').addEventListener('change',recordHistory);
 // First outside tap closes the drawer without changing the selection/caret.

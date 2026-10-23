@@ -2,10 +2,11 @@
   "name": "ohanashi-meijin",
   "private": true,
   "scripts": {
-    "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js",
+    "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js",
     "deploy": "wrangler deploy",
-    "test": "npm run check && node check.cjs && node tests/model.cjs",
-    "test:browser": "python tests/browser.py"
+    "test": "npm run check && node check.cjs && node tests/model.cjs && node tests/pwa.cjs",
+    "test:browser": "python tests/browser.py",
+    "test:release": "python tests/release.py"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

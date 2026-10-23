@@ -23,5 +23,17 @@
     return renumber(result);
   }
   function repair(c){const lines=c.text.split('\n'),out=[],cuts=[],formats=[];let blank=false;const byLine=new Map(c.cuts.map(x=>[x.line,x]));for(let i=0;i<lines.length;i++){if(byLine.has(i)){cuts.push({...byLine.get(i),line:out.length});out.push(lines[i]);formats.push(c.formats?.[i]||null);blank=false}else if(!lines[i].trim()){if(!blank){out.push('');formats.push(c.formats?.[i]||null);}blank=true}else{out.push(lines[i]);formats.push(c.formats?.[i]||null);blank=false}}return {...c,text:out.join('\n'),cuts,formats}}
-  root.ScriptModel={marker,newline,migrateChapter,renumber,validate,repair,checkCuts};
+  // Explicit cleanup only: never strip intentional line breaks during typing/save.
+  const blankLine=s=>/^[\s\u200B\u2060]*$/u.test(s);
+  function removeBlankLines(c){
+    const out=[],cuts=[],formats=[],byLine=new Map(c.cuts.map(x=>[x.line,x]));
+    c.text.split('\n').forEach((line,i)=>{
+      const cut=byLine.get(i);
+      if(!cut&&blankLine(line))return;
+      if(cut)cuts.push({...cut,line:out.length});
+      out.push(line);formats.push(c.formats?.[i]||null);
+    });
+    return {...c,text:out.join('\n'),cuts,formats};
+  }
+  root.ScriptModel={marker,newline,migrateChapter,renumber,validate,repair,removeBlankLines,blankLine,checkCuts};
 })(typeof window==='undefined'?globalThis:window);
