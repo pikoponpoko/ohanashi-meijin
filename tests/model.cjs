@@ -1,0 +1,13 @@
+const {strict:assert}=require('assert');
+require('../dist/model.js');const M=globalThis.ScriptModel;
+const defaults={font:'Noto Serif JP'};
+const old={version:1,title:'既存作品',chapters:[{id:'old-chapter',title:'第一章',text:'○駅\r\n　　　動作\r\n\r\n\r\n澪「こんにちは」\n#C9\n末尾\n#C9\n'}]};
+const migrated=M.validate(old,defaults);assert.equal(migrated.chapters[0].id,'old-chapter');assert.equal(migrated.chapters[0].cuts.length,3);
+assert.match(migrated.chapters[0].text,/#C1\n○駅/);assert.match(migrated.chapters[0].text,/#C3\n$/);
+const ids=migrated.chapters[0].cuts.map(x=>x.id);assert.equal(new Set(ids).size,3);
+assert.deepEqual(M.validate(JSON.parse(JSON.stringify(migrated)),defaults).chapters[0].cuts.map(x=>x.id),ids);
+const repaired=M.repair(migrated.chapters[0]);assert.ok(!repaired.text.includes('\n\n\n'));assert.deepEqual(repaired.cuts.map(x=>x.id),ids);M.checkCuts([repaired]);
+assert.equal(repaired.text.replace(/^#C\d+$/gm,'').replace(/\s/g,''),migrated.chapters[0].text.replace(/^#C\d+$/gm,'').replace(/\s/g,''));
+for(const invalid of [{},{chapters:[]},{chapters:[{title:'壊れたJSON'}]},{version:8,chapters:old.chapters},{...migrated,chapters:[{...migrated.chapters[0],cuts:[{id:'x',line:99}]}]}])assert.throws(()=>M.validate(invalid,defaults));
+const insertion=M.migrateChapter({id:'inserted',title:'挿入',text:'本文'});migrated.chapters.unshift(insertion);M.renumber(migrated);assert.deepEqual(migrated.chapters[1].cuts.map(x=>x.id),ids);assert.match(migrated.chapters[1].text,/^#C2/);
+console.log('Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering');

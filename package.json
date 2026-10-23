@@ -1,1 +1,13 @@
-{"name":"ohanashi-meijin","private":true,"scripts":{"check":"node --check dist/app.js","deploy":"wrangler deploy"},"devDependencies":{"wrangler":"^4.0.0"}}
+{
+  "name": "ohanashi-meijin",
+  "private": true,
+  "scripts": {
+    "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js",
+    "deploy": "wrangler deploy",
+    "test": "npm run check && node check.cjs && node tests/model.cjs",
+    "test:browser": "python tests/browser.py"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
