@@ -90,7 +90,14 @@ with sync_playwright() as p:
     check('corrupt archive downloads original bytes',(OUT/'corrupt-recovery.json').read_bytes()==b'{broken')
 
     # PWA real registration, browser manifest parser, offline shell, data preservation.
-    page.wait_for_function("navigator.serviceWorker.getRegistration().then(r=>r&&r.active)")
+    page.evaluate("""async()=>{
+      let timer;
+      try { window.pwaRegistration=await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('SW ready timeout')),10000)})
+      ]); } finally { clearTimeout(timer); }
+    }""")
+    page.wait_for_function('window.pwaRegistration.active?.state === "activated"',timeout=10000)
     page.reload();page.wait_for_function('navigator.serviceWorker.controller!==null')
     manifest=page.context.new_cdp_session(page).send('Page.getAppManifest')
     check('browser parses manifest without errors',manifest['url'].endswith('manifest.webmanifest') and not manifest['errors'] and json.loads(manifest['data'])['display']=='standalone')

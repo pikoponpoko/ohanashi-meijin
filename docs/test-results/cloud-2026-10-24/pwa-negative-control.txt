@@ -1,0 +1,12 @@
+PASS dirty manuscript saved on pagehide
+PASS dirty manuscript saved on visibilitychange
+PASS new SW waits while editor remains open
+PASS editing continues while update waits
+PASS editing preserves original chapter and cut IDs
+Traceback (most recent call last):
+  File "/tmp/ohanashi-negative-control/tests/pwa-update.py", line 92, in <module>
+    check('clean stale hidden window does not overwrite saved edits',peer.evaluate('localStorage.getItem(KEY)')==edited_raw)
+  File "/tmp/ohanashi-negative-control/tests/pwa-update.py", line 21, in check
+    assert ok,name
+           ^^
+AssertionError: clean stale hidden window does not overwrite saved edits

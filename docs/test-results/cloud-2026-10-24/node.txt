@@ -1,0 +1,12 @@
+
+> test
+> npm run check && node check.cjs && node tests/model.cjs && node tests/pwa.cjs
+
+
+> check
+> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js
+
+7 checks passed: line types, duration, TXT / Markdown, correction suggestions
+Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
+Explicit blank removal checks passed: whitespace, zero-width-only lines, cut IDs, formats, empty cuts, idempotence
+PWA checks passed: manifest, PNG dimensions, complete shell, own-cache cleanup, scoped fetch
