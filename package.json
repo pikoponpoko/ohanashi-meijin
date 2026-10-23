@@ -1,0 +1,1 @@
+{"name":"ohanashi-meijin","private":true,"scripts":{"check":"node --check dist/app.js","deploy":"wrangler deploy"},"devDependencies":{"wrangler":"^4.0.0"}}
