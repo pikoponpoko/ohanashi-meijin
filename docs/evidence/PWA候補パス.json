@@ -1,0 +1,32 @@
+[
+  {
+    "path": "manifest.webmanifest",
+    "status": 404,
+    "error": "not found"
+  },
+  {
+    "path": "manifest.json",
+    "status": 404,
+    "error": "not found"
+  },
+  {
+    "path": "sw.js",
+    "status": 404,
+    "error": "not found"
+  },
+  {
+    "path": "service-worker.js",
+    "status": 404,
+    "error": "not found"
+  },
+  {
+    "path": "icons/icon-192.png",
+    "status": 404,
+    "error": "not found"
+  },
+  {
+    "path": "icons/icon-512.png",
+    "status": 404,
+    "error": "not found"
+  }
+]

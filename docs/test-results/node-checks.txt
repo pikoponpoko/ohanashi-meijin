@@ -1,0 +1,23 @@
+CHECK app.js 0
+
+CHECK editing.js 0
+
+CHECK model.js 0
+
+CHECK pdf.js 0
+
+CHECK projects.js 0
+
+CHECK pwa.js 0
+
+CHECK sw.js 0
+
+RUN check.cjs
+7 checks passed: line types, duration, TXT / Markdown, correction suggestions
+
+RUN tests/model.cjs
+Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
+Explicit blank removal checks passed: whitespace, zero-width-only lines, cut IDs, formats, empty cuts, idempotence
+
+RUN tests/pwa.cjs
+PWA checks passed: manifest, PNG dimensions, complete shell, own-cache cleanup, scoped fetch

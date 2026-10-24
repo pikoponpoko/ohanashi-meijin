@@ -1,0 +1,17 @@
+[
+  "dirty manuscript saved on pagehide",
+  "dirty manuscript saved on visibilitychange",
+  "new SW waits while editor remains open",
+  "editing continues while update waits",
+  "editing preserves original chapter and cut IDs",
+  "clean stale hidden window does not overwrite saved edits",
+  "update still waits while another app window remains",
+  "closing all editors activates update without losing IDs/body",
+  "activation retains archived manuscripts and unrelated storage",
+  "activation retains unrelated cache contents",
+  "updated shell opens offline with exact manuscript and IDs",
+  "offline edits survive reload under updated shell",
+  "failed precache does not replace active shell",
+  "previous shell works offline after failed update",
+  "failed update retains archive and unrelated data"
+]
