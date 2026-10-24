@@ -1,0 +1,6 @@
+PRIVATE SOURCE PDF pages 28
+PASS original PDF has exactly 139 sequential real cut numbers
+PASS all original non-marker body text survives PDF pagination
+PASS all chapter footers geometrically centered
+PASS no empty extra pages
+4 PDF checks passed

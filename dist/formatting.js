@@ -4,7 +4,7 @@ function formatPosition(container,offset){
   if(container===ed)return {root:offset};
   const block=topBlock(container);if(!block)return null;
   const range=document.createRange();range.selectNodeContents(block);range.setEnd(container,offset);
-  return {block:[...ed.children].indexOf(block),displayOffset:range.toString().length,offset:range.toString().length+(block.dataset.kind==='action'?(block.dataset.leading||'').length:0)};
+  return {block:[...ed.children].indexOf(block),displayOffset:range.toString().length,offset:range.toString().length+(block.dataset.kind==='action'&&block.textContent.trim()?(block.dataset.leading||'').length:0)};
 }
 function formatRestore(saved){
   if(!saved)return;
@@ -12,7 +12,7 @@ function formatRestore(saved){
   function locate(pos){
     if(pos.root!==undefined)return [ed,Math.min(pos.root,ed.childNodes.length)];
     const block=ed.children[pos.block];if(!block)return [ed,ed.childNodes.length];
-    let offset=Math.max(0,pos.offset-(block.dataset.kind==='action'?(block.dataset.leading||'').length:0));
+    let offset=Math.max(0,pos.offset-(block.dataset.kind==='action'&&block.textContent.trim()?(block.dataset.leading||'').length:0));
     const walker=document.createTreeWalker(block,NodeFilter.SHOW_TEXT);let node;
     while(node=walker.nextNode()){if(offset<=node.length)return [node,offset];offset-=node.length}
     return [block,block.childNodes.length];
@@ -36,9 +36,16 @@ function formatParagraphs(kind){
   targets=targets.filter(p=>p&&!p.dataset.cutId);
   if(!targets.length)return;
   const c=chapter(),lines=c.text.split('\n');
+  const origins=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formatOrigins?.[i]||(c.formats?.[i]?'legacy':'auto'));
   const formats=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formats?.[i]||ScriptFormatting.inferred(s));
-  for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder)c.placeholderFormat=kind;else if(i<formats.length)formats[i]=kind}
-  c.formats=formats;recordHistory();save();renderText();stats();formatRestore(saved);
+  for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=kind;if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
+    const raw=lines[i],trimmed=raw.trimStart();
+    if(kind==='scene'&&!/^[○◯〇]/.test(trimmed)){lines[i]='◯'+trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(1,pos.offset-(raw.length-trimmed.length)+1)}
+    if(kind==='dialogue'&&!/「/.test(trimmed)){lines[i]='「'+raw+'」';for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset++}
+    formats[i]=kind;origins[i]='manual';
+  }}
+  c.text=lines.join('\n');c.formatOrigins=origins;
+  c.formats=formats;ScriptModel.renumber(state);recordHistory();save();renderText();stats();formatRestore(saved);if(kind==='dialogue'&&targets.length===1&&(!targets[0].textContent.trim()||targets[0].dataset.placeholder)){const block=[...ed.children].find((p,i)=>i===(saved.start.block??ed.children.length-1));if(block?.firstChild){const r=document.createRange();r.setStart(block.firstChild,1);r.collapse(true);getSelection().removeAllRanges();getSelection().addRange(r);ed.focus()}}
 }
 $('#autoFormat').onclick=()=>{
   if(composing||loadBlocked)return;

@@ -1,0 +1,23 @@
+PASS cover and body really render selected font Noto Serif JP .cover h1
+PASS cover and body really render selected font Noto Serif JP .cover p
+PASS cover and body really render selected font Noto Serif JP .printbody p
+PASS long cover fits page Noto Serif JP
+PASS PDF footer chapter center stable with long metadata Noto Serif JP
+PASS PDF keeps white paper Noto Serif JP
+PASS PDF rendering leaves manuscript unchanged Noto Serif JP
+PASS cover and body really render selected font Noto Sans JP .cover h1
+PASS cover and body really render selected font Noto Sans JP .cover p
+PASS cover and body really render selected font Noto Sans JP .printbody p
+PASS long cover fits page Noto Sans JP
+PASS PDF footer chapter center stable with long metadata Noto Sans JP
+PASS PDF keeps white paper Noto Sans JP
+PASS PDF rendering leaves manuscript unchanged Noto Sans JP
+PASS cover and body really render selected font Zen Old Mincho .cover h1
+PASS cover and body really render selected font Zen Old Mincho .cover p
+PASS cover and body really render selected font Zen Old Mincho .printbody p
+PASS long cover fits page Zen Old Mincho
+PASS PDF footer chapter center stable with long metadata Zen Old Mincho
+PASS PDF keeps white paper Zen Old Mincho
+PASS PDF rendering leaves manuscript unchanged Zen Old Mincho
+PASS exported cover pixels actually differ across three selected fonts
+22 PDF checks passed

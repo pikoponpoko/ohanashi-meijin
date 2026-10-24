@@ -1,6 +1,7 @@
 """Compact-shell, timing UI, keyboard/touch and before/after layout checks with recordings."""
 import functools,http.server,json,os,pathlib,shutil,threading
 from playwright.sync_api import sync_playwright
+from font_support import fonts
 ROOT=pathlib.Path(__file__).resolve().parents[1];OUT=pathlib.Path(os.environ.get('TEST_OUTPUT_DIR','/tmp/ohanashi-layout-tests'));OUT.mkdir(parents=True,exist_ok=True)
 BEFORE=pathlib.Path(os.environ.get('BEFORE_LAYOUT_DIST','/tmp/ohanashi-before-layout/dist'))
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -29,9 +30,9 @@ try:
   for name,width,height in [('desktop',1365,900),('phone',390,844),('landscape',844,390),('keyboard',390,300)]:
    opts=dict(viewport={'width':width,'height':height},has_touch=name!='desktop')
    if ffmpeg and name in ['desktop','phone']:opts.update(record_video_dir=str(OUT/'raw-video'),record_video_size={'width':width,'height':height})
-   ctx=browser.new_context(**opts);ctx.route('https://fonts.googleapis.com/**',lambda r:r.abort());page=ctx.new_page();page.goto(base);seed(page);raw=data(page);pause(page)
+   ctx=browser.new_context(**opts);fonts(ctx);page=ctx.new_page();page.goto(base);seed(page);page.evaluate("document.fonts.ready");raw=data(page);pause(page)
    if before_base:
-    old=browser.new_page(viewport={'width':width,'height':height});old.route('https://fonts.googleapis.com/**',lambda r:r.abort());old.goto(before_base);seed(old)
+    old=browser.new_page(viewport={'width':width,'height':height});fonts(old);old.goto(before_base);seed(old);old.evaluate("document.fonts.ready")
     for direction in ['vertical','horizontal']:
      for target in [old,page]:target.evaluate("direction=>{state.direction=direction;apply()}",direction)
      check('body typography unchanged '+name+' '+direction,styles(page)==styles(old))
@@ -58,7 +59,7 @@ try:
    page.locator('#editor').press('Control+z');check('timing settings apply is one Undo '+name,data(page)==raw)
    page.locator('#focus').click();page.wait_for_timeout(150);pause(page)
    previous=page.locator('#previousChapter').bounding_box();next_=page.locator('#nextChapter').bounding_box()
-   check('focus chapter buttons occupy bottom left and right '+name,previous['x']<width/3 and next_['x']>width/2 and previous['y']>height*.7 and next_['y']>height*.7)
+   check('focus previous is bottom right and next bottom left '+name,previous['x']>width/2 and next_['x']<width/3 and previous['y']>height*.7 and next_['y']>height*.7)
    check('first chapter previous button disabled '+name,page.locator('#previousChapter').is_disabled())
    if name=='phone':
     page.evaluate("()=>{caretEnd($('#editor').lastElementChild);window.keyboardRange=getSelection().getRangeAt(0).cloneRange();Object.defineProperty(visualViewport,'height',{configurable:true,value:300});visualViewport.dispatchEvent(new Event('resize'))}");page.wait_for_timeout(100)
