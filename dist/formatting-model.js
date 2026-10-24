@@ -1,17 +1,18 @@
 // Deterministic proposals only. Raw text, cut boundaries and IDs never change here.
 (function(root){
-  const kinds=['scene','action','dialogue'];
+  const kinds=['scene','action','dialogue','music','se'];
   const scene=s=>{const t=s.trim();return /^[○◯〇]/.test(t)||/^(?:いろいろな場所・時間|[0-9０-９]+年前・[^「」。！？!?]+(?:時代|頃|回想))$/.test(t)||/^場面「[^\n]+」$/.test(t)||/^【[^\n]+】$/.test(t)||(!/[「」]/.test(t)&&/^[^（()）]+[（(][^（）()]+[）)]$/.test(t)&&/[・\s](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)|[（(](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)/.test(t))};
-  const inferred=s=>scene(s)?'scene':/^(?:[^「\n]+)?「/.test(s.trimStart())?'dialogue':'action';
+  const inferred=s=>root.ScriptModel?.soundKind(s)||(scene(s)?'scene':/^(?:[^「\n]+)?「/.test(s.trimStart())?'dialogue':'action');
   const quoteDelta=s=>[...s].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
   function analyze(chapter){
     const cuts=new Set(chapter.cuts.map(c=>c.line));let depth=0,speechStart=null;
     return chapter.text.split('\n').map((raw,line)=>{
-      const current=chapter.formats?.[line]||inferred(raw);
+      const current=root.ScriptModel?.paragraphKind(chapter,line)||chapter.formats?.[line]||inferred(raw);
       if(cuts.has(line)){depth=0;speechStart=null;return {line,raw,cut:true}}
       let kind=current,certainty='uncertain',reason='文脈の確認が必要です',unit='unresolved',group=null;
       if(depth>0){kind='dialogue';certainty='certain';reason='開いたカギ括弧内の折り返し';unit='speech';group=speechStart;depth=Math.max(0,depth+quoteDelta(raw))}
       else if(!raw.trim()){certainty='unchanged';reason='空行を保持';unit='blank'}
+      else if(root.ScriptModel?.soundKind(raw)){kind=root.ScriptModel.soundKind(raw);certainty='certain';reason='明示的な音響指示';unit='sound'}
       else if(scene(raw)){kind='scene';certainty='certain';reason='明示的な柱';unit='scene'}
       else if(/^[^「\n]+「/.test(raw.trimStart())){kind='dialogue';certainty='certain';reason='話者とカギ括弧のある発話';unit='speech';group=line;speechStart=line;depth=Math.max(0,quoteDelta(raw))}
       else if(/^[ \t\u3000]+\S/.test(raw)||/^(?:動作|ト書き|SE|効果音)[：:]/.test(raw.trimStart())){kind='action';certainty='certain';reason='明示的な動作説明';unit='action'}
@@ -30,7 +31,8 @@
       return p.certainty==='uncertain'?(choice||p.current):p.kind;
     });
     const formatOrigins=plan.map(p=>p.cut?null:(choices[p.line]?'manual':p.certainty==='uncertain'?p.origin:p.origin==='manual'?'manual':'auto'));
-    return {...chapter,formats,formatOrigins};
+    const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
+    return root.ScriptModel.syncSoundCues({...chapter,text,formats:formats.map(k=>['music','se'].includes(k)?'action':k),formatOrigins});
   }
   root.ScriptFormatting={kinds,scene,inferred,analyze,apply};
 })(typeof window==='undefined'?globalThis:window);

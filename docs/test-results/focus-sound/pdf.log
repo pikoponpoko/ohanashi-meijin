@@ -1,0 +1,5 @@
+PASS real selected-font sound PDF downloaded
+PASS sound types retained in paginated print
+PASS PDF sound text keeps body ink color
+PASS PDF leaves text IDs and sound metadata unchanged
+4 sound PDF checks passed

@@ -1,0 +1,29 @@
+PASS gesture is off by default
+PASS focus has reachable onscreen exit
+PASS test starts with pending autosave
+PASS chapter shortcut flushes unsaved changes and retains IDs
+PASS previous shortcut returns to first chapter
+PASS first chapter does not wrap
+PASS last chapter does not wrap
+PASS footer keyboard focus also allows chapter navigation
+PASS composition flag blocks chapter movement
+PASS IME keyboard event blocks movement
+PASS Shift arrow remains text selection
+PASS dialog input does not move chapter
+PASS exit button leaves focus mode
+PASS normal editor does not intercept chapter shortcut
+PASS save failure aborts navigation and retains pending text
+PASS explicit preference enables dedicated gesture handle
+PASS gesture preference persists separately from manuscript
+PASS dedicated pinch out enters focus
+PASS dedicated pinch in exits focus
+PASS cancel IME and tiny pinch do not toggle
+PASS pinch leaves manuscript and history unchanged
+PASS editor keeps ordinary browser pinch zoom
+PASS browser fullscreen is distinct from app focus
+PASS chapter navigation works in actual fullscreen
+PASS onscreen exit leaves actual fullscreen too
+PASS fullscreen denial preserves usable focus exit
+PASS mobile exit button is inside viewport
+PASS no runtime errors
+28 focus checks passed

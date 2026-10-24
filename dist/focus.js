@@ -1,4 +1,4 @@
-// App focus mode and browser fullscreen are intentionally separate states.
+// Enter browser fullscreen directly from the user gesture; fall back to app focus.
 (()=>{
   const controls=$('#focusControls'),exit=$('#exitFocus'),previous=$('#previousChapter'),next=$('#nextChapter');
   const preferenceKey=KEY+'-view-options-v1';
@@ -12,14 +12,15 @@
     $('#focusGesture').hidden=!pinchEnabled;
     const i=state.chapters.findIndex(c=>c.id===active);
     previous.disabled=i<=0;next.disabled=i>=state.chapters.length-1;
-    $('#focusChapter').textContent=(i+1)+' / '+state.chapters.length+'　'+chapter().title;
+    $('#focusChapter').textContent=chapter().title;
   }
-  function setFocus(on){document.body.classList.toggle('focus',on);document.body.classList.remove('mobilemenu');sync();if(on)$('#editor').focus()}
-  function toggle(){if(!composing&&!$('#dialog').open)setFocus(!document.body.classList.contains('focus'))}
+  function setFocus(on){document.body.classList.toggle('focus',on);document.body.classList.remove('mobilemenu');sync();if(on)$('#editor').focus({preventScroll:true})}
+  async function enter(){setFocus(true);if(!document.fullscreenElement&&document.documentElement.requestFullscreen)try{await document.documentElement.requestFullscreen()}catch(_){toast('このブラウザでは画面内の集中モードで表示します。')}if(!document.body.classList.contains('focus')&&document.fullscreenElement)try{await document.exitFullscreen()}catch(_){}sync()}
+  function toggle(){if(!composing&&!$('#dialog').open){if(document.body.classList.contains('focus'))leave();else enter()}}
   async function leave(){
     setFocus(false);
     if(document.fullscreenElement)try{await document.exitFullscreen()}catch(_){toast('全画面を解除できませんでした。ブラウザの全画面解除をお試しください。')}
-    sync();$('#editor').focus();
+    sync();$('#editor').focus({preventScroll:true});
   }
   function move(step){
     if(composing||loadBlocked||$('#dialog').open||!focused())return false;
@@ -27,23 +28,16 @@
     if(!target)return false;
     // A failed save keeps the current editor and its unsaved text intact.
     if(dirty){save();if(dirty){toast('保存できないため章の移動を中止しました。');return false}}
-    active=target.id;render();sync();$('#editor').focus();return true;
+    active=target.id;render();sync();$('#editor').focus({preventScroll:true});return true;
   }
   previous.onclick=()=>move(-1);next.onclick=()=>move(1);exit.onclick=leave;
-  $('#browserFullscreen').onclick=async()=>{
-    if(composing||$('#dialog').open)return;
-    setFocus(true);
-    if(!document.documentElement.requestFullscreen){toast('このブラウザでは集中モードを利用できます。');return}
-    try{await document.documentElement.requestFullscreen()}catch(_){toast('全画面が許可されないため集中モードを利用します。')}
-    sync();
-  };
   document.addEventListener('fullscreenchange',()=>{
     if(wasFullscreen&&!document.fullscreenElement)setFocus(false);
     wasFullscreen=!!document.fullscreenElement;sync();
   });
   document.addEventListener('keydown',e=>{
     if(composing||e.isComposing||e.keyCode===229||$('#dialog').open)return;
-    if(e.key==='Escape'){sync();return}
+    if(e.key==='Escape'){if(!document.fullscreenElement)setFocus(false);sync();return}
     const target=e.target;
     if(target!==document.body&&target!==$('#editor')&&!target.closest?.('#editor,#focusControls,#focusFooter'))return;
     if(focused()&&e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&['PageUp','PageDown'].includes(e.key)){
@@ -79,7 +73,7 @@
   handle.addEventListener('touchend',e=>{
     if(!gesture)return;const g=gesture;gesture=null;
     if(e.touches.length>1||composing||$('#dialog').open||performance.now()-g.time>1500||Math.abs(g.last-g.start)<24)return;
-    if(g.last/g.start>=1.35)setFocus(true);
+    if(g.last/g.start>=1.35)enter();
     else if(g.last/g.start<=.7){if(document.fullscreenElement)leave();else setFocus(false)}
   },{passive:true});
   // Only this explicit, opt-in handle owns touch gestures; the editor keeps browser zoom.

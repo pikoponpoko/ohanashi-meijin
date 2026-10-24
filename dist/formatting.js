@@ -38,22 +38,23 @@ function formatParagraphs(kind){
   const c=chapter(),lines=c.text.split('\n');
   const origins=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formatOrigins?.[i]||(c.formats?.[i]?'legacy':'auto'));
   const formats=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formats?.[i]||ScriptFormatting.inferred(s));
-  for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=kind;if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
-    const raw=lines[i],trimmed=raw.trimStart();
+  for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=['music','se'].includes(kind)?'action':kind;if(['music','se'].includes(kind)){lines.push(ScriptModel.soundText('',kind));formats.push('action');origins.push('manual');delete c.placeholderFormat}if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
+    let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i);if(['music','se'].includes(kind))raw=ScriptModel.soundText(raw,kind);else if(['music','se'].includes(oldKind))raw=ScriptModel.stripSound(raw);lines[i]=raw;const trimmed=raw.trimStart();
     if(kind==='scene'&&!/^[○◯〇]/.test(trimmed)){lines[i]='◯'+trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(1,pos.offset-(raw.length-trimmed.length)+1)}
     if(kind==='dialogue'&&!/「/.test(trimmed)){lines[i]='「'+raw+'」';for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset++}
-    formats[i]=kind;origins[i]='manual';
+    formats[i]=['music','se'].includes(kind)?'action':kind;origins[i]='manual';
   }}
   c.text=lines.join('\n');c.formatOrigins=origins;
-  c.formats=formats;ScriptModel.renumber(state);recordHistory();save();renderText();stats();formatRestore(saved);if(kind==='dialogue'&&targets.length===1&&(!targets[0].textContent.trim()||targets[0].dataset.placeholder)){const block=[...ed.children].find((p,i)=>i===(saved.start.block??ed.children.length-1));if(block?.firstChild){const r=document.createRange();r.setStart(block.firstChild,1);r.collapse(true);getSelection().removeAllRanges();getSelection().addRange(r);ed.focus()}}
+  c.formats=formats;ScriptModel.renumber(state);recordHistory();save();renderText();stats();formatRestore(saved);if(['music','se'].includes(kind)&&targets.length===1){caretEnd(ed.children[saved.start.block??ed.children.length-1])}
+  if(kind==='dialogue'&&targets.length===1&&(!targets[0].textContent.trim()||targets[0].dataset.placeholder)){const block=[...ed.children].find((p,i)=>i===(saved.start.block??ed.children.length-1));if(block?.firstChild){const r=document.createRange();r.setStart(block.firstChild,1);r.collapse(true);getSelection().removeAllRanges();getSelection().addRange(r);ed.focus()}}
 }
 $('#autoFormat').onclick=()=>{
   if(composing||loadBlocked)return;
   const source=chapter(),baseline=JSON.stringify(source),plan=ScriptFormatting.analyze(source),choices={};
-  modal('自動整形の確認','<p>本文・改行・カットは変えず、段落の書式だけを提案します。柱は場面情報、ト書きの各行は動作単位です。セリフの折り返しからカットや絵を作りません。</p>');
+  modal('自動整形の確認','<p>段落の書式を提案します。音楽・SEを指定すると互換用の接頭辞を付けます。改行・カットは保持します。柱は場面情報、ト書きの各行は動作単位です。セリフの折り返しからカットや絵を作りません。</p>');
   const table=document.createElement('table');table.className='formatPreview';
   const head=table.createTHead().insertRow();for(const title of ['原文','現在 → 提案','確認']){const th=document.createElement('th');th.textContent=title;head.append(th)}
-  const labels={scene:'柱',action:'ト書き',dialogue:'セリフ'};
+  const labels={scene:'柱',action:'ト書き',dialogue:'セリフ',music:'音楽',se:'SE'};
   for(const row of plan){
     const tr=table.insertRow(),text=tr.insertCell(),after=tr.insertCell(),review=tr.insertCell();
     text.textContent=row.raw||'（空行）';
@@ -78,3 +79,6 @@ $('#autoFormat').onclick=()=>{
   };
   $('#dialogBody').append(apply,cancel);
 };
+
+$('#cueType').addEventListener('pointerdown',()=>{const r=editorRange();if(r)selectedRange=r.cloneRange()});
+$('#cueType').onchange=e=>{const kind=e.target.value;if(kind)formatParagraphs(kind);e.target.value=''};
