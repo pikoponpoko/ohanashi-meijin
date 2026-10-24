@@ -1,5 +1,7 @@
 # おはなし名人：クラウド再開用引継ぎ
 
+> 2026-10-24 公開済み：利用者の承認を受け、[PR #5](https://github.com/pikoponpoko/ohanashi-meijin/pull/5)をmainへマージし、検証済み版を[本番URL](https://ohanashi-meijin.pikoponpoko.workers.dev/)へ配信した。APIで配信比率100%を確認。[公開記録・確認制限・戻し先](PRODUCTION_RELEASE.md)が現在の状態。以下の「承認待ち」「main／本番は変更していない」は公開前の記録。プリプロ名人・原本JSON・利用者の端末保存データは変更していない。
+
 > 2026-10-24 追加作業の現在地：`feat/paragraph-formatting`、[PR #5](https://github.com/pikoponpoko/ohanashi-meijin/pull/5)、[レビュー資料・原本検証・画像・録画](FORMATTING_LAYOUT_REVIEW.md)、[プレビュー](https://writing-review-ohanashi-meijin.pikoponpoko.workers.dev/)。PWA/TXT等の統合ブランチ `preview/txt-pwa` を継承し、一括書式・自動整形・執筆領域の拡大・尺計算を追加。原本45項目・PWA更新15項目を含む検証は合格。原本はリポジトリに同梱しない。実機とプレビューURL上の表示確認は未完了。main・本番・プリプロ名人は変更していない。以下の古いサイドバーや作業ブランチの記述は当初の引継ぎ時点の記録。
 
 > 2026-10-24 クラウド再開後の最新結果：[PWA修正・レビュー資料](PWA_REVIEW.md)。PWA更新15項目、既存54項目、追加82項目、Nodeチェックが合格。以下は引継ぎ時点の記録で、PWA未合格・修正案未適用の記述は過去の状態。元9項目の原本も追加添付後に全文確認し、[原文照合資料](ORIGINAL_REQUIREMENTS_REVIEW.md)を追加済み。実機確認と本番公開は未実施。
