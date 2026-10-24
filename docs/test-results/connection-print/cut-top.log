@@ -1,0 +1,19 @@
+PASS cut label has dedicated type and zero indent Noto Serif JP
+PASS body action indentation retained Noto Serif JP
+PASS cut glyph begins above action glyph Noto Serif JP
+PASS browser print retains zero cut indent Noto Serif JP
+PASS direct PDF retains structural label type Noto Serif JP
+PASS print and PDF do not mutate manuscript Noto Serif JP
+PASS cut label has dedicated type and zero indent Noto Sans JP
+PASS body action indentation retained Noto Sans JP
+PASS cut glyph begins above action glyph Noto Sans JP
+PASS browser print retains zero cut indent Noto Sans JP
+PASS direct PDF retains structural label type Noto Sans JP
+PASS print and PDF do not mutate manuscript Noto Sans JP
+PASS cut label has dedicated type and zero indent Zen Old Mincho
+PASS body action indentation retained Zen Old Mincho
+PASS cut glyph begins above action glyph Zen Old Mincho
+PASS browser print retains zero cut indent Zen Old Mincho
+PASS direct PDF retains structural label type Zen Old Mincho
+PASS print and PDF do not mutate manuscript Zen Old Mincho
+18 print cut alignment checks passed

@@ -1,0 +1,8 @@
+PASS legacy cache exception reproduces Chrome ERR_FAILED
+PASS recovery page bypasses broken legacy navigation cache
+PASS repair waits for explicit save confirmation
+PASS recovery exports exact original raw JSON
+PASS repair restores editor without altering manuscript or IDs
+PASS repair preserves archives and unrelated storage
+PASS concurrent update prevents stale repair
+7 recovery checks passed; actual user-profile cause remains unconfirmed
