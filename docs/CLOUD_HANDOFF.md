@@ -1,5 +1,9 @@
 # おはなし名人：クラウド再開用引継ぎ
 
+> 2026-10-24 入力緊急修正：[削除・IMEの再現と検証](INPUT_IME_FIX.md)。[PR #8](https://github.com/pikoponpoko/ohanashi-meijin/pull/8)に接続復旧とPDF／印刷の上揃え・薄いグレーを統合。専用110項目、既存54／82、書式36、公開後受入59、章移動28、TXT38、PWA15、復旧7、印刷21とNodeが合格。利用者の「終わったらマージして公開してください」で公開承認済み。配信結果はPR説明を確認。実OSのIME・スマホ実機は未確認。
+
+> 最新追加：通常ブラウザの `ERR_FAILED`（シークレットでは開く）と、PDF／印刷のカット番号上揃えに対応。[復旧手順・確定事項・未確認事項](CONNECTION_PRINT_FIX.md)を参照。復旧ページは原稿の生JSONを保存してからService Workerだけを解除する。サイトデータの全削除を指示しない。利用者端末での回復は本人の確認が必要。最新PRの公開結果を確認すること。
+
 > 2026-10-24 公開後の追加修正01〜15：[最新レビュー・件数・試験・比較画像](POST_RELEASE_FIXES.md)。`fix/post-release-manuscript` で旧番号の構造化、空カット除去、保存／開く、書式ボタン、PDF等を修正。提供JSONは実カット139件へ正規化し、原本と比較用成果物は公開リポジトリ外で保持。今回受入69項目・既存54／82・PWA15等が合格。実機キーボード・Safari・実IMEは未確認。最新のPR説明の公開結果とmainのコミットを確認して再開すること。下記は前回公開時点の履歴。
 
 > 2026-10-24 公開済み：利用者の承認を受け、[PR #5](https://github.com/pikoponpoko/ohanashi-meijin/pull/5)をmainへマージし、検証済み版を[本番URL](https://ohanashi-meijin.pikoponpoko.workers.dev/)へ配信した。APIで配信比率100%を確認。[公開記録・確認制限・戻し先](PRODUCTION_RELEASE.md)が現在の状態。以下の「承認待ち」「main／本番は変更していない」は公開前の記録。プリプロ名人・原本JSON・利用者の端末保存データは変更していない。
