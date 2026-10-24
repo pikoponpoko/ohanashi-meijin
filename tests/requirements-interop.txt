@@ -1,0 +1,2 @@
+# Proposal-document validation only; not a browser/runtime dependency.
+jsonschema>=4.18,<5
