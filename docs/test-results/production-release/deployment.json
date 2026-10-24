@@ -1,0 +1,42 @@
+{
+  "url": "https://ohanashi-meijin.pikoponpoko.workers.dev/",
+  "approvedBy": "User explicitly approved publication in chat",
+  "mergePullRequest": 5,
+  "mainImplementationCommit": "f9827bee0ae1355ee844b4fdc4f1ee80d343a06d",
+  "reviewedSourceCommit": "92f590c70c05641459273a1f5fb3f60c609fe730",
+  "mainDistMatchesReviewedSource": true,
+  "before": {
+    "id": "1fcd447a-c240-4d0c-ae53-e3f653cebfde",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "annotations": {
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "22cc14aa-531b-4f8d-965e-afdfbd0c4932",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-23T14:54:58.993951Z"
+  },
+  "after": {
+    "id": "a72cf59f-ecb2-49e4-b977-12031f7bdcab",
+    "source": "wrangler",
+    "strategy": "percentage",
+    "annotations": {
+      "workers/message": "User approved publication: tested writing layout, formatting, PWA and TXT fixes; main f9827be",
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "ec2e9357-58e7-4d40-be95-ca9a88b9e2d4",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-24T07:04:43.581082Z"
+  },
+  "workersDevEnabled": true,
+  "publicBrowserCheck": "Not completed: Cloudflare HTTP 403/error 1010 and browser proxy certificate trust failure; adding the CA was rejected by automatic approval review",
+  "physicalDeviceCheck": "Not completed"
+}

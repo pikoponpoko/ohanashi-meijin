@@ -1,5 +1,7 @@
 # 追加書式・執筆領域・推定尺のレビュー
 
+> 2026-10-24、利用者の承認後にmainへマージ・本番公開済み。[本番公開記録](PRODUCTION_RELEASE.md)を参照。以下は公開前レビュー時点の検証・制限・比較資料である。
+
 2026-10-24。`feat/paragraph-formatting` は `preview/txt-pwa` を基点とした追加差分。取得し直した最新mainは `e0359687ff29f16a86be8746d49f3d6b9b14af18`。引継ぎコミット `9e7ad0bdf91c6acf60ebc87df28367ddecfb8c81`、PWA・TXT修正・画面対応・集中モードの既存実装を継承している。元の作業ブランチと保存キー `scenario-meijin-v1`、v2形式は維持した。
 
 [試用プレビュー](https://writing-review-ohanashi-meijin.pikoponpoko.workers.dev/)・[レビューPR #5](https://github.com/pikoponpoko/ohanashi-meijin/pull/5)。アップロード元は `92f590c70c05641459273a1f5fb3f60c609fe730`、Cloudflare版は `ec2e9357-58e7-4d40-be95-ca9a88b9e2d4`。後続コミットは資料更新のみ。管理環境のCONNECTプロキシがプレビュー用サブドメインへのアクセスを403で遮断するため、このURL上の表示・外部到達は未確認。アップロード自体は成功している。
@@ -79,4 +81,4 @@ Linux Chromium 154／Playwright 1.62。ブラウザ保存領域は試験ごと�
 
 実Android／iPhone、Safari、実日本語IME、実ソフトウェアキーボード、OSジェスチャー競合、PWAインストール、Dropbox実プロバイダーは未確認。画面寸法変更・IMEイベント・タッチ入力の自動試験を実機確認とは扱わない。
 
-JSON連携は[仕様案PR #3](https://github.com/pikoponpoko/ohanashi-meijin/pull/3)で別レビュー。共通スキーマは未確定で送受信実装を進めていない。プリプロ名人は未変更。正式ロゴ・アイコンは素材待ちで仮画像を維持。mainへのpush・マージ、本番デプロイは実施しない。
+JSON連携は[仕様案PR #3](https://github.com/pikoponpoko/ohanashi-meijin/pull/3)で別レビュー。共通スキーマは未確定で送受信実装を進めていない。プリプロ名人は未変更。正式ロゴ・アイコンは素材待ちで仮画像を維持。このレビュー時点ではmainへのマージ・本番デプロイは未実施だった。承認後の公開状態は[本番公開記録](PRODUCTION_RELEASE.md)を参照。
