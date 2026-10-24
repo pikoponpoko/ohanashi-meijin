@@ -35,3 +35,8 @@ body{height:var(--app-height,100dvh)}
 body.focus #editor{padding-top:70px;padding-bottom:70px}
 @media(max-width:420px){#focusChapter{display:none}#focusControls{left:8px;justify-content:space-between}}
 @media print{#focusControls,#focusGesture{display:none!important}}
+
+.formatPreviewWrap{max-height:45dvh;overflow:auto}.formatPreview{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}.formatPreview th,.formatPreview td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:8px;white-space:pre-wrap;overflow-wrap:anywhere}.formatPreview select{max-width:100%;font-size:11px}.formatPreview th:first-child{width:40%}
+
+/* Preserve full-em vertical metrics only for the glyphs affected by palt. */
+#editor:not(.horizontal) .verticalGlyph,.printbody .verticalGlyph{font-feature-settings:'palt' 0,'vpal' 0}

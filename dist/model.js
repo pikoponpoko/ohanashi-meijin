@@ -28,7 +28,7 @@
     if(!v||typeof v!=='object'||![1,2,undefined].includes(v.version)||!Array.isArray(v.chapters)||!v.chapters.length||v.chapters.some(c=>!c||typeof c.text!=='string'||typeof c.title!=='string'))throw Error('原稿形式が違います');
     for(const k of ['title','author','date'])if(v[k]!==undefined&&typeof v[k]!=='string')throw Error('作品情報が不正です');
     const ids=new Set();let chapters=v.chapters.map(c=>{const next=v.version===2?{...c}:migrateChapter(c);if(typeof next.id!=='string'||!next.id||ids.has(next.id))throw Error('章IDが不正です');ids.add(next.id);return {...next,status:['完了','見直し','未着手'].includes(c.status)?c.status:'未着手'}});
-    checkCuts(chapters);for(const c of chapters)if(c.formats!==undefined&&(!Array.isArray(c.formats)||c.formats.length!==c.text.split('\n').length||c.formats.some(k=>![null,'scene','action','dialogue'].includes(k))))throw Error('段落情報が不正です');
+    checkCuts(chapters);for(const c of chapters)if(c.placeholderFormat!==undefined&&!['scene','action','dialogue'].includes(c.placeholderFormat))throw Error('編集中の段落書式が不正です');for(const c of chapters)if(c.formats!==undefined&&(!Array.isArray(c.formats)||c.formats.length!==c.text.split('\n').length||c.formats.some(k=>![null,'scene','action','dialogue'].includes(k))))throw Error('段落情報が不正です');
     const result={...defaults,...v,version:2,chapters};
     result.font=['Noto Serif JP','Noto Sans JP','Zen Old Mincho'].includes(v.font)?v.font:defaults.font;
     for(const [k,min,max,fallback] of [['size',14,32,14],['printSize',9,18,12],['rate',60,1000,300],['actionSeconds',1,120,5],['draft',1,9999,1]])result[k]=Math.min(max,Math.max(min,Number(v[k])||fallback));
