@@ -1,0 +1,14 @@
+
+> test
+> npm run check && node check.cjs && node tests/model.cjs && node tests/txt-import.cjs
+
+
+> check
+> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js
+
+7 checks passed: line types, duration, TXT / Markdown, correction suggestions
+Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
+PASS TXT: spaced headings, repeated/gapped/branched numbers, BOM/CRLF, exact ordered body, independent IDs
+PASS TXT: conservative whole-line headings, unknown preface and explicit empty cuts retained
+PASS TXT: known legacy export/copy headers only, normalization idempotent
+PASS TXT: existing saved JSON is not reinterpreted; repair/reload cycles retain cut IDs

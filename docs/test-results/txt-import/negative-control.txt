@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/ohanashi-txt-negative/tests/txt-import.py", line 30, in <module>
+    check('TXT replaces only untouched starter; real first cut is C1',len(imported['chapters'])==1 and len(c['cuts'])==4 and c['cuts'][0]['line']==0 and c['text'].startswith('#C1\n【駅・朝】'))
+  File "/tmp/ohanashi-txt-negative/tests/txt-import.py", line 11, in check
+    assert ok,name
+           ^^
+AssertionError: TXT replaces only untouched starter; real first cut is C1

@@ -3,6 +3,19 @@
   const marker=/^#C\d+[A-Za-z]?\s*$/;
   const id=()=>crypto.randomUUID();
   const newline=s=>s.replace(/\r\n?/g,'\n');
+  // External TXT syntax is broader than the canonical saved v2 boundary syntax.
+  // Never reinterpret already-saved JSON or ordinary prose as external metadata.
+  const externalMarker=/^[ \t\u3000]*#[ \t\u3000]*C[ \t]*\d+(?:[A-Za-z]+|[-.]\d+)?[ \t\u3000]*$/i;
+  const preproHeader=/^#プリプロ名人 (?:脚本管理|台詞一覧)(?:（このまま書き換えて(?:保存すると、プリプロ名人に反映できます|、コピーしてからプリプロ名人に戻ると反映できます)）)?$/;
+  function importText(text){
+    let lines=newline(text.replace(/^\uFEFF/,'')).split('\n');
+    const first=lines.findIndex(line=>externalMarker.test(line));
+    // Strip only known export metadata and blank padding before a real cut.
+    // Unknown forewords and intentional explicit empty cuts remain intact.
+    if(first>=0&&lines.slice(0,first).every(line=>!line.trim()||preproHeader.test(line.trim())))lines=lines.slice(first);
+    return lines.map(line=>externalMarker.test(line)?'#C1':line).join('\n');
+  }
+  function importChapter(c){return migrateChapter({...c,text:importText(c.text)})}
   function migrateChapter(c){
     let text=newline(c.text), lines=text.split('\n');
     if(!marker.test(lines[0]))lines.unshift('#C1');
@@ -35,5 +48,5 @@
     });
     return {...c,text:out.join('\n'),cuts,formats};
   }
-  root.ScriptModel={marker,newline,migrateChapter,renumber,validate,repair,removeBlankLines,blankLine,checkCuts};
+  root.ScriptModel={marker,newline,migrateChapter,importText,importChapter,renumber,validate,repair,removeBlankLines,blankLine,checkCuts};
 })(typeof window==='undefined'?globalThis:window);
