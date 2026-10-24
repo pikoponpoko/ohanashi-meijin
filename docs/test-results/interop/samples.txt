@@ -1,0 +1,6 @@
+PASS schema and both samples; unique IDs and consecutive display numbers
+PASS unknown version, wrong format, empty chapter list rejected
+PASS dialogue requires explicit speaker field (which may be empty if unresolved)
+PASS expected fixture: addition, deletion candidate, chapter move, body and number changes
+PASS two action units, one scene heading, one wrapped dialogue preserved
+Proposal samples valid; no application integration implemented or tested
