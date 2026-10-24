@@ -4,7 +4,7 @@
   "scripts": {
     "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js",
     "deploy": "wrangler deploy",
-    "test": "npm run check && node check.cjs && node tests/model.cjs",
+    "test": "npm run check && node check.cjs && node tests/model.cjs && node tests/txt-import.cjs",
     "test:browser": "python tests/browser.py"
   },
   "devDependencies": {

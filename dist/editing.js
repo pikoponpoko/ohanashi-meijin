@@ -22,7 +22,18 @@ function deleteRange(r){
   }
   return r;
 }
-function replaceSelection(records){
+function replaceSelection(records,externalCuts=false){
+  const selection=editorRange();
+  if(externalCuts&&records[0]?.id&&selection){
+    const whole=document.createRange();whole.selectNodeContents($('#editor'));
+    const coversAll=selection.compareBoundaryPoints(Range.START_TO_START,whole)<=0&&selection.compareBoundaryPoints(Range.END_TO_END,whole)>=0;
+    const emptyChapter=chapter().cuts.length===1&&!chapter().text.split('\n').filter((_,i)=>i!==chapter().cuts[0].line).join('').trim();
+    if(coversAll||emptyChapter){
+      // Reuse a truly empty editing slot; do not leave its synthetic first cut behind.
+      if(emptyChapter)records[0].id=chapter().cuts[0].id;
+      assignLines(chapter(),records);ScriptModel.renumber(state);recordHistory();changed();renderText();stats();caretEnd($('#editor').lastElementChild);return;
+    }
+  }
   let r=editorRange();if(!r)return;r=deleteRange(r);let top=topBlock(r.startContainer);
   if(!top||top.dataset.cutId){top=paragraph('');r.insertNode(top);r.selectNodeContents(top);r.collapse(false)}
   const tail=document.createRange();tail.selectNodeContents(top);tail.setStart(r.startContainer,r.startOffset);const fragment=tail.extractContents();
@@ -47,7 +58,8 @@ function rangeRecords(r,remove=false){
 function clipboardRecords(r){return rangeRecords(r)}
 for(const action of ['copy','cut'])$('#editor').addEventListener(action,e=>{const r=editorRange();if(!r||r.collapsed||composing)return;const records=clipboardRecords(r);e.preventDefault();e.clipboardData.setData('text/plain',records.map(x=>x.text).join('\n'));const token=uid();e.clipboardData.setData('application/x-ohanashi',JSON.stringify({token,records}));if(action==='cut'){cutClipboard={token,ids:records.filter(x=>x.id).map(x=>x.id)};const caret=deleteRange(r),sel=getSelection();sel.removeAllRanges();sel.addRange(caret);capture()}});
 function pasteText(e){if(composing)return;e.preventDefault();let records;try{const data=JSON.parse(e.clipboardData.getData('application/x-ohanashi'));const used=new Set(state.chapters.flatMap(c=>c.cuts.map(x=>x.id)));if(Array.isArray(data.records)&&data.records.every(x=>x&&typeof x.text==='string'&&!/[\r\n]/.test(x.text)&&[undefined,null,'scene','action','dialogue'].includes(x.kind)&&(x.id===undefined||(typeof x.id==='string'&&x.id&&ScriptModel.marker.test(x.text)))))records=data.records.map(x=>({...x,id:x.id?(data.token===cutClipboard?.token&&!used.has(x.id)?x.id:uid()):undefined}))}catch(_){}
-  if(!records)records=ScriptModel.newline(e.clipboardData.getData('text/plain')).split('\n').map(text=>({text,...(ScriptModel.marker.test(text)?{id:uid()}:{} )}));replaceSelection(records);cutClipboard=null;
+  const external=!records;
+  if(external)records=ScriptModel.importText(e.clipboardData.getData('text/plain')).split('\n').map(text=>({text,...(ScriptModel.marker.test(text)?{id:uid()}:{} )}));replaceSelection(records,external);cutClipboard=null;
 }
 // Repair only redundant empty lines; cut boundaries remain explicit and retain IDs.
 const originalCheck=showCheck;

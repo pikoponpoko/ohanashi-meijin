@@ -1,0 +1,55 @@
+PASS fresh launch has blank manuscript
+PASS reload preserves existing manuscript and IDs
+PASS 10 serialization cycles preserve text
+PASS repair removes multiplied blanks and preserves words/IDs
+PASS TXT through five chapters has equal structure
+PASS Enter twice inserts consecutive cut with stable old IDs
+PASS keyboard Undo/Redo restores exact cut state
+PASS cut IDs survive save/reload
+PASS chapter split preserves dialogue/action and cut ID
+PASS chapter split Undo restores original chapter
+PASS chapter split Redo retains IDs
+PASS partial paragraph split keeps scene type
+PASS partial paragraph type survives reload
+PASS delete cancellation unchanged
+PASS delete without backup only removes chosen chapter
+PASS chapter deletion is undoable
+PASS optional backup downloaded when selected
+PASS file picker unrestricted
+PASS invalid JSON leaves manuscript unchanged
+PASS restore cancellation unchanged
+PASS uppercase JSON with generic MIME restores IDs
+PASS cross-paragraph paste joins surviving words
+PASS paste caret stays before surviving suffix
+PASS range replacement Undo restores all paragraphs
+PASS copy creates new cut ID and keeps paragraph type
+PASS cut to another chapter retains ID
+PASS repeated cut-paste creates unique IDs
+PASS paste Undo restores moved cut state
+PASS cut and chapter creation Undo restore source IDs
+PASS deleted first cut replacement ID stays stable
+PASS display settings participate in project history
+PASS duplicate DOM IDs are repaired once and remain stable
+PASS invalid custom clipboard falls back to plain text
+PASS IME Enter does not create cut
+PASS direct PDF cover=False
+PASS direct PDF cover=True
+PASS Print uses browser print dialog
+PASS PDF body opens as landscape A4 with expected pages
+PASS PDF cover opens as landscape A4 with expected pages
+PASS long paragraph pagination keeps all text and types
+PASS print layout remains inside page for Noto Serif JP
+PASS print layout remains inside page for Noto Sans JP
+PASS print layout remains inside page for Zen Old Mincho
+PASS invalid in-memory structure does not overwrite saved manuscript
+PASS last valid manuscript recovers after failed save
+PASS quota failure preserves stored JSON and reports unsaved changes
+PASS backup storage failure aborts restore without changing manuscript
+PASS corrupt saved data is protected from autosave
+PASS recovery keeps corrupt source and resumes saving
+PASS mobile outside tap closes drawer without editing
+PASS two-finger tap Undo
+PASS three-finger tap Redo
+PASS moving fingers does not Undo
+PASS no JavaScript runtime errors
+54 browser checks passed
