@@ -74,3 +74,15 @@ body.focus #focusGesture{background:transparent;opacity:.4}body.focus #focusGest
 body.focus #focusControls button{background:transparent}
 /* Printed cut labels align with the top of the writing column, as in the editor. */
 .printbody .cut{padding:0;text-indent:0;color:#999}
+
+/* Usage feedback: keep body metrics; space only structural cut columns. */
+#editor:not(.horizontal) .verticalEllipsis,.printbody .verticalEllipsis{font-feature-settings:'vert' 0,'vrt2' 0,'palt' 0;text-orientation:sideways;letter-spacing:0}
+#editor:not(.horizontal) p.cut{margin-left:1.5em}#editor.horizontal p.cut{margin-bottom:1.2em}
+.chapterChevron{flex-shrink:0}.chapterRow{display:flex;align-items:center;gap:3px}.chapterRow .chapterSelect{flex:1;min-width:0}.chapterRow .chapterHandle{width:30px;padding:10px 3px;flex-shrink:0;touch-action:none;cursor:grab;color:var(--muted);justify-content:center}
+.chapterRow.dragTarget{outline:1px solid var(--muted)}.chapterHandle[aria-pressed=true]{background:var(--line);cursor:grabbing}
+#fileStatus{font-size:9px;color:var(--muted)}
+
+#editor:not(.horizontal) .verticalEllipsis{color:transparent;text-shadow:0 calc(0px - var(--ellipsis-offset,0px)) var(--ink)}
+.printbody .verticalEllipsis{color:transparent;text-shadow:0 calc(0px - var(--ellipsis-offset,0px)) #111}
+
+@media(forced-colors:active){#editor:not(.horizontal) .verticalEllipsis{color:CanvasText;text-shadow:none}}

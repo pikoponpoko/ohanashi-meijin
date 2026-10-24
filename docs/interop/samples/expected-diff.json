@@ -1,0 +1,30 @@
+{
+  "added": [
+    "cut-new"
+  ],
+  "deletionCandidates": [
+    "cut-d"
+  ],
+  "chapterMoves": [
+    {
+      "cutId": "cut-b",
+      "from": "chapter-a",
+      "to": "chapter-b"
+    }
+  ],
+  "bodyChanged": [
+    "cut-c"
+  ],
+  "displayNumberChanged": [
+    "cut-b"
+  ],
+  "relativeReordered": [],
+  "unchanged": [
+    "cut-a"
+  ],
+  "notes": [
+    "displayNumberChanged is a display-only renumbering; it may coexist with a chapter move.",
+    "Deletion is a preview candidate, never automatic deletion.",
+    "Action lines stay separate; scene heading and wrapped dialogue never imply a new picture."
+  ]
+}

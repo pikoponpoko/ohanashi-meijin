@@ -77,5 +77,17 @@
     });
     return {...c,text:out.join('\n'),cuts,formats,...(c.formatOrigins?{formatOrigins:origins}:{})};
   }
-  root.ScriptModel={marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,blankLine,checkCuts};
+  function tidyBlankLines(c){
+    const lines=c.text.split('\n'),out=[],cuts=[],formats=[],origins=[],byLine=new Map(c.cuts.map(x=>[x.line,x]));
+    for(let i=0;i<lines.length;i++){
+      const cut=byLine.get(i);
+      if(!cut&&blankLine(lines[i])){
+        let next=i+1;while(next<lines.length&&!byLine.has(next)&&blankLine(lines[next]))next++;
+        if(!out.length||byLine.has(i-1)||!out.at(-1).trim()||next===lines.length||byLine.has(next))continue;
+      }
+      if(cut)cuts.push({...cut,line:out.length});out.push(blankLine(lines[i])?'':lines[i]);formats.push(c.formats?.[i]||null);origins.push(c.formatOrigins?.[i]||null);
+    }
+    return {...c,text:out.join('\n'),cuts,formats,...(c.formatOrigins?{formatOrigins:origins}:{})};
+  }
+  root.ScriptModel={marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,tidyBlankLines,blankLine,checkCuts};
 })(typeof window==='undefined'?globalThis:window);

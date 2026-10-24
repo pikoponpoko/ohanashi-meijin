@@ -108,12 +108,31 @@ function replaceSelection(records,externalCuts=false){
   if(top.textContent===''){top.replaceChildren();top.dataset.leading=(records[0]?.text.match(/^[ \u3000]*/)||[''])[0];if(records[0]?.kind){top.dataset.kind=records[0].kind;top.dataset.formatOrigin=records[0].origin||'legacy';delete top.dataset.auto;top.className=records[0].kind}}let current=top;
   records.forEach((record,i)=>{if(i||record.id){const p=paragraph(record.text,record.kind,record.origin);if(record.id){p.className='cut';p.dataset.cutId=record.id;p.contentEditable='false'}current.after(p);current=p}else current.append(document.createTextNode(record.text))});
   if(current.dataset.cutId){const p=paragraph('');current.after(p);current=p}
+  if(!current.textContent&&current.lastChild?.nodeName==='BR'&&fragment.childNodes.length)current.replaceChildren();
   const caret=editableEndRange(current);
   current.append(fragment);if(!current.childNodes.length)current.append(document.createElement('br'));
   // Canonicalize indentation using the original paragraph type, preserving words.
   $('#editor').focus({preventScroll:true});const sel=getSelection();sel.removeAllRanges();sel.addRange(caret);capture();
 }
-function enterParagraph(allowCut){const r=editorRange();if(!r)return;const p=topBlock(r.startContainer);if(r.collapsed&&p&&!p.textContent.trim()){const before=[...$('#editor').children].slice(0,[...$('#editor').children].indexOf(p));let hasBody=false;for(const b of before.reverse()){if(b.dataset.cutId)break;if(b.textContent.trim())hasBody=true}if(!hasBody)return;}if(allowCut&&r.collapsed&&p&&!p.dataset.cutId&&!p.textContent.trim()&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';const next=paragraph('');p.after(next);caretEnd(next);capture()}else replaceSelection([{text:''},{text:''}])}
+function enterParagraph(allowCut){
+  const r=editorRange();if(!r)return;const p=topBlock(r.startContainer);
+  if(allowCut&&r.collapsed&&p&&!p.dataset.cutId){
+    const before=document.createRange();before.selectNodeContents(p);before.setEnd(r.startContainer,r.startOffset);
+    const previous=p.previousElementSibling;
+    // At the start of existing text the first Enter leaves the separator behind
+    // the caret. Turn that separator into the cut, keeping the following text.
+    if(!before.toString()&&previous&&!previous.dataset.cutId&&!previous.textContent.trim()&&previous.previousElementSibling&&!previous.previousElementSibling.dataset.cutId){
+      previous.replaceChildren(document.createTextNode('#C1'));previous.className='cut';previous.dataset.cutId=uid();previous.contentEditable='false';capture();return;
+    }
+  }
+  if(r.collapsed&&p&&!p.textContent.trim()){
+    const before=[...$('#editor').children].slice(0,[...$('#editor').children].indexOf(p));let hasBody=false;
+    for(const b of before.reverse()){if(b.dataset.cutId)break;if(b.textContent.trim())hasBody=true}if(!hasBody)return;
+  }
+  if(allowCut&&r.collapsed&&p&&!p.dataset.cutId&&!p.textContent.trim()&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){
+    p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';const next=paragraph('');p.after(next);caretEnd(next);capture();
+  }else replaceSelection([{text:''},{text:''}]);
+}
 let cutClipboard=null;
 function rangeRecords(r,remove=false){
   const start=topBlock(r.startContainer),end=topBlock(r.endContainer);
@@ -132,7 +151,7 @@ function pasteText(e){if(composing)return;e.preventDefault();let records;try{con
 const originalCheck=showCheck;
 showCheck=function(){
   originalCheck();const c=chapter();
-  for(const [label,fix] of [['増殖した空行を整理',ScriptModel.repair],['空行を削除',ScriptModel.removeBlankLines]]){
+  for(const [label,fix] of [['空行を整理',ScriptModel.tidyBlankLines]]){
     const fixed=fix(c);if(fixed.text===c.text)continue;
     const b=document.createElement('button');b.className='primary';b.textContent=label;
     b.onclick=()=>{if(composing||loadBlocked)return;Object.assign(c,fixed);ScriptModel.renumber(state);recordHistory();save();renderText();stats();$('#dialog').close()};
@@ -150,3 +169,21 @@ editor.addEventListener('touchmove',e=>{if(!gesture)return;for(const t of e.chan
 editor.addEventListener('touchcancel',()=>gesture=null,{passive:true});
 editor.addEventListener('touchend',e=>{if(!gesture)return;for(const t of e.changedTouches){const p=gesture.points.get(t.identifier);if(!p||Math.hypot(t.clientX-p.x,t.clientY-p.y)>10)gesture.bad=true}if(e.touches.length)return;const g=gesture;gesture=null;if(!g.bad&&performance.now()-g.time<300&&[2,3].includes(g.max)&&!composing&&!$('#dialog').open){if(e.cancelable)e.preventDefault();travelHistory(g.max===2?-1:1)}},{passive:false});
 resetHistory();render();
+// Apply only the punctuation span after native input/composition has settled.
+// Text, block order and logical selection offsets remain unchanged.
+let ellipsisFrame;
+function scheduleEllipsis(){
+  cancelAnimationFrame(ellipsisFrame);ellipsisFrame=requestAnimationFrame(()=>{
+    if(composing)return;
+    const ed=$('#editor'),invalid=[...ed.querySelectorAll('.verticalEllipsis')].filter(span=>/[^…⋯]/.test(span.textContent));
+    const saved=historySelection();for(const span of invalid)span.replaceWith(document.createTextNode(span.textContent));
+    const walker=document.createTreeWalker(ed,NodeFilter.SHOW_TEXT),nodes=[];let node;
+    while(node=walker.nextNode())if(/[…⋯]/.test(node.data)&&!node.parentElement.closest('.verticalEllipsis,[data-cut-id]'))nodes.push(node);
+    if(!nodes.length&&!invalid.length)return;
+    for(const text of nodes){const fragment=document.createDocumentFragment();for(const part of text.data.split(/([…⋯]+)/)){if(!part)continue;if(/^[…⋯]+$/.test(part)){const span=document.createElement('span');span.className='verticalEllipsis';span.textContent=part;fragment.append(span)}else fragment.append(document.createTextNode(part))}text.replaceWith(fragment)}
+    if(!saved)return;
+    function locate(pos){if(pos.root!==undefined)return [ed,Math.min(pos.root,ed.childNodes.length)];const block=ed.children[pos.block];let offset=pos.offset,w=document.createTreeWalker(block,NodeFilter.SHOW_TEXT),n;while(n=w.nextNode()){if(offset<=n.length)return [n,offset];offset-=n.length}return [block,block.childNodes.length]}
+    const r=document.createRange();r.setStart(...locate(saved.start));r.setEnd(...locate(saved.end));getSelection().removeAllRanges();getSelection().addRange(r);
+  });
+}
+$('#editor').addEventListener('input',scheduleEllipsis);$('#editor').addEventListener('compositionend',scheduleEllipsis);

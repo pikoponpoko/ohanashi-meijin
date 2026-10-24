@@ -1,0 +1,80 @@
+PASS actual font loaded Noto Serif JP 14 12
+PASS centering improves or remains unchanged Noto Serif JP 14 12
+PASS actual font loaded Noto Serif JP 14 １２
+PASS centering improves or remains unchanged Noto Serif JP 14 １２
+PASS actual font loaded Noto Serif JP 14 ！
+PASS centering improves or remains unchanged Noto Serif JP 14 ！
+PASS actual font loaded Noto Serif JP 14 ？
+PASS centering improves or remains unchanged Noto Serif JP 14 ？
+PASS actual font loaded Noto Serif JP 19 12
+PASS centering improves or remains unchanged Noto Serif JP 19 12
+PASS actual font loaded Noto Serif JP 19 １２
+PASS centering improves or remains unchanged Noto Serif JP 19 １２
+PASS actual font loaded Noto Serif JP 19 ！
+PASS centering improves or remains unchanged Noto Serif JP 19 ！
+PASS actual font loaded Noto Serif JP 19 ？
+PASS centering improves or remains unchanged Noto Serif JP 19 ？
+PASS actual font loaded Noto Serif JP 28 12
+PASS centering improves or remains unchanged Noto Serif JP 28 12
+PASS actual font loaded Noto Serif JP 28 １２
+PASS centering improves or remains unchanged Noto Serif JP 28 １２
+PASS actual font loaded Noto Serif JP 28 ！
+PASS centering improves or remains unchanged Noto Serif JP 28 ！
+PASS actual font loaded Noto Serif JP 28 ？
+PASS centering improves or remains unchanged Noto Serif JP 28 ？
+PASS actual font loaded Noto Sans JP 14 12
+PASS centering improves or remains unchanged Noto Sans JP 14 12
+PASS actual font loaded Noto Sans JP 14 １２
+PASS centering improves or remains unchanged Noto Sans JP 14 １２
+PASS actual font loaded Noto Sans JP 14 ！
+PASS centering improves or remains unchanged Noto Sans JP 14 ！
+PASS actual font loaded Noto Sans JP 14 ？
+PASS centering improves or remains unchanged Noto Sans JP 14 ？
+PASS actual font loaded Noto Sans JP 19 12
+PASS centering improves or remains unchanged Noto Sans JP 19 12
+PASS actual font loaded Noto Sans JP 19 １２
+PASS centering improves or remains unchanged Noto Sans JP 19 １２
+PASS actual font loaded Noto Sans JP 19 ！
+PASS centering improves or remains unchanged Noto Sans JP 19 ！
+PASS actual font loaded Noto Sans JP 19 ？
+PASS centering improves or remains unchanged Noto Sans JP 19 ？
+PASS actual font loaded Noto Sans JP 28 12
+PASS centering improves or remains unchanged Noto Sans JP 28 12
+PASS actual font loaded Noto Sans JP 28 １２
+PASS centering improves or remains unchanged Noto Sans JP 28 １２
+PASS actual font loaded Noto Sans JP 28 ！
+PASS centering improves or remains unchanged Noto Sans JP 28 ！
+PASS actual font loaded Noto Sans JP 28 ？
+PASS centering improves or remains unchanged Noto Sans JP 28 ？
+PASS actual font loaded Zen Old Mincho 14 12
+PASS centering improves or remains unchanged Zen Old Mincho 14 12
+PASS actual font loaded Zen Old Mincho 14 １２
+PASS centering improves or remains unchanged Zen Old Mincho 14 １２
+PASS actual font loaded Zen Old Mincho 14 ！
+PASS centering improves or remains unchanged Zen Old Mincho 14 ！
+PASS actual font loaded Zen Old Mincho 14 ？
+PASS centering improves or remains unchanged Zen Old Mincho 14 ？
+PASS actual font loaded Zen Old Mincho 19 12
+PASS centering improves or remains unchanged Zen Old Mincho 19 12
+PASS actual font loaded Zen Old Mincho 19 １２
+PASS centering improves or remains unchanged Zen Old Mincho 19 １２
+PASS actual font loaded Zen Old Mincho 19 ！
+PASS centering improves or remains unchanged Zen Old Mincho 19 ！
+PASS actual font loaded Zen Old Mincho 19 ？
+PASS centering improves or remains unchanged Zen Old Mincho 19 ？
+PASS actual font loaded Zen Old Mincho 28 12
+PASS centering improves or remains unchanged Zen Old Mincho 28 12
+PASS actual font loaded Zen Old Mincho 28 １２
+PASS centering improves or remains unchanged Zen Old Mincho 28 １２
+PASS actual font loaded Zen Old Mincho 28 ！
+PASS centering improves or remains unchanged Zen Old Mincho 28 ！
+PASS actual font loaded Zen Old Mincho 28 ？
+PASS centering improves or remains unchanged Zen Old Mincho 28 ？
+PASS horizontal glyph features remain unchanged
+PASS actual font PDF has a rendered page and source unchanged Noto Serif JP
+PASS print uses scoped fullwidth glyph correction Noto Serif JP
+PASS actual font PDF has a rendered page and source unchanged Noto Sans JP
+PASS print uses scoped fullwidth glyph correction Noto Sans JP
+PASS actual font PDF has a rendered page and source unchanged Zen Old Mincho
+PASS print uses scoped fullwidth glyph correction Zen Old Mincho
+79 optical checks passed (Chromium only; Safari not tested)

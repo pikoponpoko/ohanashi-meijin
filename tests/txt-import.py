@@ -41,7 +41,7 @@ try:
   page.evaluate(r"()=>{const c=chapter(),ls=c.text.split('\n');ls.splice(2,0,'','','');for(const cut of c.cuts)if(cut.line>=2)cut.line+=3;c.text=ls.join('\n');if(c.formats)c.formats.splice(2,0,null,null,null);if(c.formatOrigins)c.formatOrigins.splice(2,0,null,null,null);recordHistory();save();render()}")
   imported=data(page);c=imported['chapters'][0]
   page.locator('#check').click()
-  compress=page.get_by_text('増殖した空行を整理',exact=True)
+  compress=page.get_by_text('空行を整理',exact=True)
   check('fixture exercises actual blank compression',compress.count()==1)
   compress.click();repaired=data(page)
   check('automatic correction keeps all imported cut IDs',[x['id'] for x in repaired['chapters'][0]['cuts']]==[x['id'] for x in c['cuts']])
@@ -50,7 +50,7 @@ try:
   page.evaluate('()=>{for(let i=0;i<10;i++){renderText();capture()}save()}');stable=data(page);page.reload()
   check('ten render/capture/save cycles preserve cut count IDs and body',data(page)==stable and [x['id'] for x in data(page)['chapters'][0]['cuts']]==[x['id'] for x in c['cuts']] and body(data(page)['chapters'][0])==body(repaired['chapters'][0]))
   # The PWA branch additionally offers explicit removal of all blank paragraphs.
-  page.locator('#check').click();remove=page.get_by_text('空行を削除',exact=True)
+  page.locator('#check').click();remove=page.get_by_text('空行を整理',exact=True)
   if remove.count():
    old=data(page);remove.click();clean=data(page)
    check('explicit blank removal retains all imported cut IDs',[x['id'] for x in clean['chapters'][0]['cuts']]==[x['id'] for x in c['cuts']])

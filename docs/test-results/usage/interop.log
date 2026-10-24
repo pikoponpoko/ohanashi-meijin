@@ -1,0 +1,2 @@
+PASS receiver main: unchanged v2 IDs and chapter order, repaired structural headings, music/SE prefixes, wrapped dialogue, action lines; source immutable
+PASS existing draft.1: normal import rejects unapproved draft; explicit trial accepts unchanged sample

@@ -20,7 +20,7 @@ function openDocument(next){
     localStorage.setItem(KEY,JSON.stringify(next));
   }catch(_){syncArchives();toast('現在の原稿を残せないため、切り替えを中止しました。');return false}
   clearTimeout(timer);state=next;active=state.chapters[0].id;loadBlocked=false;dirty=false;
-  resetHistory();render();syncArchives();$('#saved').textContent='保存済み';$('#dialog').close();document.body.classList.remove('mobilemenu');return true;
+  window.FileControls?.documentOpened();resetHistory();render();syncArchives();$('#saved').textContent='ブラウザに保存済み';$('#dialog').close();document.body.classList.remove('mobilemenu');return true;
 }
 $('#newDocument').onclick=()=>{
   modal('新しい作品','<p>現在の原稿はこのブラウザに残します。</p><button id="confirmNewDocument" class="primary">空白から始める</button>');

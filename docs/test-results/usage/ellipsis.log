@@ -1,0 +1,7 @@
+PASS centered vertical ellipsis ink Noto Serif JP
+PASS print vertical ellipsis and immutable source Noto Serif JP
+PASS centered vertical ellipsis ink Noto Sans JP
+PASS print vertical ellipsis and immutable source Noto Sans JP
+PASS centered vertical ellipsis ink Zen Old Mincho
+PASS print vertical ellipsis and immutable source Zen Old Mincho
+6 ellipsis checks passed

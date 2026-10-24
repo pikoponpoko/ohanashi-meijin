@@ -4,7 +4,7 @@
   function closeChapters(restore=false){panel.hidden=true;document.body.classList.remove('mobilemenu');picker.setAttribute('aria-expanded','false');if(restore)returnFocus?.focus()}
   function toggleChapters(){
     if(!panel.hidden)return closeChapters(true);
-    returnFocus=document.activeElement;panel.hidden=false;document.body.classList.add('mobilemenu');picker.setAttribute('aria-expanded','true');
+    returnFocus=document.activeElement;panel.hidden=false;placePanel();document.body.classList.add('mobilemenu');picker.setAttribute('aria-expanded','true');
   }
   $('#closeChapters').onclick=()=>closeChapters(true);
   // Keep the backdrop through pointerup so a touch cannot click the footer underneath.
@@ -33,13 +33,46 @@
   }
   addEventListener('resize',syncFocusPlacement);
   window.visualViewport?.addEventListener('resize',syncFocusPlacement);
-  function syncChapterOrder(){const i=state.chapters.findIndex(c=>c.id===active);$('#moveChapterEarlier').disabled=i<=0;$('#moveChapterLater').disabled=i>=state.chapters.length-1;$('#chapterNumber').textContent='CHAPTER '+String(i+1).padStart(2,'0')}
-  function moveChapter(step){
-    if(composing||loadBlocked||$('#dialog').open)return;
-    const i=state.chapters.findIndex(c=>c.id===active);if(i+step<0||i+step>=state.chapters.length)return;
-    if(dirty){save();if(dirty)return}
-    const [c]=state.chapters.splice(i,1);state.chapters.splice(i+step,0,c);ScriptModel.renumber(state);recordHistory();save();renderNav();syncCutLabels();stats();window.FocusNavigation?.sync();
+  function placePanel(){
+    if(panel.hidden)return;const a=picker.getBoundingClientRect(),v=window.visualViewport;
+    const left=v?.offsetLeft||0,top=v?.offsetTop||0,width=v?.width||innerWidth,height=v?.height||innerHeight;
+    panel.style.right='auto';panel.style.left=Math.max(left+8,Math.min(a.left,left+width-panel.offsetWidth-8))+'px';
+    const y=Math.max(top+8,Math.min(a.bottom+6,top+height-100));panel.style.top=y+'px';panel.style.maxHeight=Math.max(80,top+height-y-8)+'px';
   }
-  $('#moveChapterEarlier').onclick=()=>moveChapter(-1);$('#moveChapterLater').onclick=()=>moveChapter(1);
-  window.LayoutControls={closeChapters,toggleChapters,syncFocusPlacement,syncChapterOrder};syncChapterOrder();
+  addEventListener('resize',placePanel);window.visualViewport?.addEventListener('resize',placePanel);window.visualViewport?.addEventListener('scroll',placePanel);
+  function syncChapterOrder(){const i=state.chapters.findIndex(c=>c.id===active);$('#chapterNumber').textContent='CHAPTER '+String(i+1).padStart(2,'0')}
+  function reorderChapter(id,target){
+    if(composing||loadBlocked||$('#dialog').open)return false;
+    const i=state.chapters.findIndex(c=>c.id===id),j=state.chapters.findIndex(c=>c.id===target);if(i<0||j<0||i===j)return false;
+    if(dirty){save();if(dirty)return false}
+    const [c]=state.chapters.splice(i,1);state.chapters.splice(j,0,c);ScriptModel.renumber(state);recordHistory();save();renderNav();syncCutLabels();stats();window.FocusNavigation?.sync();return true;
+  }
+  let drag=null,keyboardId=null;
+  const nav=$('#chapters');
+  function clearDrag(){nav.querySelectorAll('.dragTarget').forEach(e=>e.classList.remove('dragTarget'));nav.querySelectorAll('.chapterHandle').forEach(e=>e.setAttribute('aria-pressed','false'));drag=null}
+  nav.addEventListener('pointerdown',e=>{
+    const handle=e.target.closest('.chapterHandle');if(!handle||composing||loadBlocked)return;
+    e.preventDefault();handle.focus();keyboardId=null;drag={id:handle.parentElement.dataset.chapterId,target:null,x:e.clientX,y:e.clientY,baseline:JSON.stringify(state),pointer:e.pointerId};handle.setPointerCapture(e.pointerId);
+  });
+  nav.addEventListener('pointermove',e=>{
+    if(!drag||drag.pointer!==e.pointerId)return;
+    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;
+    const row=document.elementFromPoint(e.clientX,e.clientY)?.closest('.chapterRow');
+    if(row&&nav.contains(row)){drag.target=row.dataset.chapterId;nav.querySelectorAll('.dragTarget').forEach(el=>el.classList.remove('dragTarget'));row.classList.add('dragTarget')}
+    const box=panel.getBoundingClientRect();if(e.clientY>box.bottom-35)panel.scrollBy(0,18);if(e.clientY<box.top+35)panel.scrollBy(0,-18);
+  });
+  nav.addEventListener('pointerup',e=>{if(!drag||drag.pointer!==e.pointerId)return;const d=drag;clearDrag();if(d.target&&d.baseline===JSON.stringify(state))reorderChapter(d.id,d.target)});
+  nav.addEventListener('pointercancel',clearDrag);nav.addEventListener('lostpointercapture',clearDrag);
+  nav.addEventListener('click',e=>{if(e.target.closest('.chapterHandle')){e.preventDefault();e.stopPropagation()}});
+  nav.addEventListener('keydown',e=>{
+    const handle=e.target.closest('.chapterHandle');if(!handle||composing||e.isComposing)return;
+    const id=handle.parentElement.dataset.chapterId;
+    if(e.key===' '){e.preventDefault();keyboardId=keyboardId===id?null:id;handle.setAttribute('aria-pressed',String(keyboardId===id))}
+    else if(e.key==='Escape'){keyboardId=null;clearDrag()}
+    else if(keyboardId===id&&['ArrowUp','ArrowDown'].includes(e.key)){
+      e.preventDefault();const i=state.chapters.findIndex(c=>c.id===id),target=state.chapters[i+(e.key==='ArrowUp'?-1:1)];
+      if(target&&reorderChapter(id,target.id)){const next=[...nav.querySelectorAll('.chapterRow')].find(r=>r.dataset.chapterId===id)?.querySelector('.chapterHandle');next?.focus();next?.setAttribute('aria-pressed','true')}
+    }
+  });
+  window.LayoutControls={closeChapters,toggleChapters,syncFocusPlacement,syncChapterOrder,reorderChapter};syncChapterOrder();
 })();

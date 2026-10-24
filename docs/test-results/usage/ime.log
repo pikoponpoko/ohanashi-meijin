@@ -1,0 +1,111 @@
+PASS desktop vertical native Backspace
+PASS desktop vertical native Delete
+PASS desktop vertical selected deletion
+PASS desktop vertical selected forward deletion
+PASS desktop vertical all cuts selected Backspace
+PASS desktop vertical Undo all deletion Backspace
+PASS desktop vertical Redo all deletion Backspace
+PASS desktop vertical composition after clear Backspace
+PASS desktop vertical all cuts selected Delete
+PASS desktop vertical Undo all deletion Delete
+PASS desktop vertical Redo all deletion Delete
+PASS desktop vertical composition after clear Delete
+PASS desktop vertical first romaji composition
+PASS desktop vertical one start/end per composition
+PASS desktop vertical continuous Japanese after Enter
+PASS desktop vertical kanji candidate update and commit
+PASS desktop vertical native composition not prevented
+PASS desktop vertical committed IME Undo
+PASS desktop vertical committed IME Redo
+PASS desktop vertical insertion and deletion in middle
+PASS desktop vertical TCY deletion
+PASS desktop vertical Backspace across atomic cut keeps body
+PASS desktop vertical Undo restores cut ID
+PASS desktop vertical Delete across atomic cut keeps body
+PASS desktop vertical beforeinput-only range deletion
+PASS desktop vertical reload preserves input and cut ID
+PASS desktop vertical direct editor focus starts IME correctly
+PASS desktop horizontal native Backspace
+PASS desktop horizontal native Delete
+PASS desktop horizontal selected deletion
+PASS desktop horizontal selected forward deletion
+PASS desktop horizontal all cuts selected Backspace
+PASS desktop horizontal Undo all deletion Backspace
+PASS desktop horizontal Redo all deletion Backspace
+PASS desktop horizontal composition after clear Backspace
+PASS desktop horizontal all cuts selected Delete
+PASS desktop horizontal Undo all deletion Delete
+PASS desktop horizontal Redo all deletion Delete
+PASS desktop horizontal composition after clear Delete
+PASS desktop horizontal first romaji composition
+PASS desktop horizontal one start/end per composition
+PASS desktop horizontal continuous Japanese after Enter
+PASS desktop horizontal kanji candidate update and commit
+PASS desktop horizontal native composition not prevented
+PASS desktop horizontal committed IME Undo
+PASS desktop horizontal committed IME Redo
+PASS desktop horizontal insertion and deletion in middle
+PASS desktop horizontal TCY deletion
+PASS desktop horizontal Backspace across atomic cut keeps body
+PASS desktop horizontal Undo restores cut ID
+PASS desktop horizontal Delete across atomic cut keeps body
+PASS desktop horizontal beforeinput-only range deletion
+PASS desktop horizontal reload preserves input and cut ID
+PASS desktop horizontal direct editor focus starts IME correctly
+PASS desktop no script exceptions
+PASS mobile viewport vertical native Backspace
+PASS mobile viewport vertical native Delete
+PASS mobile viewport vertical selected deletion
+PASS mobile viewport vertical selected forward deletion
+PASS mobile viewport vertical all cuts selected Backspace
+PASS mobile viewport vertical Undo all deletion Backspace
+PASS mobile viewport vertical Redo all deletion Backspace
+PASS mobile viewport vertical composition after clear Backspace
+PASS mobile viewport vertical all cuts selected Delete
+PASS mobile viewport vertical Undo all deletion Delete
+PASS mobile viewport vertical Redo all deletion Delete
+PASS mobile viewport vertical composition after clear Delete
+PASS mobile viewport vertical first romaji composition
+PASS mobile viewport vertical one start/end per composition
+PASS mobile viewport vertical continuous Japanese after Enter
+PASS mobile viewport vertical kanji candidate update and commit
+PASS mobile viewport vertical native composition not prevented
+PASS mobile viewport vertical committed IME Undo
+PASS mobile viewport vertical committed IME Redo
+PASS mobile viewport vertical insertion and deletion in middle
+PASS mobile viewport vertical TCY deletion
+PASS mobile viewport vertical Backspace across atomic cut keeps body
+PASS mobile viewport vertical Undo restores cut ID
+PASS mobile viewport vertical Delete across atomic cut keeps body
+PASS mobile viewport vertical beforeinput-only range deletion
+PASS mobile viewport vertical reload preserves input and cut ID
+PASS mobile viewport vertical direct editor focus starts IME correctly
+PASS mobile viewport horizontal native Backspace
+PASS mobile viewport horizontal native Delete
+PASS mobile viewport horizontal selected deletion
+PASS mobile viewport horizontal selected forward deletion
+PASS mobile viewport horizontal all cuts selected Backspace
+PASS mobile viewport horizontal Undo all deletion Backspace
+PASS mobile viewport horizontal Redo all deletion Backspace
+PASS mobile viewport horizontal composition after clear Backspace
+PASS mobile viewport horizontal all cuts selected Delete
+PASS mobile viewport horizontal Undo all deletion Delete
+PASS mobile viewport horizontal Redo all deletion Delete
+PASS mobile viewport horizontal composition after clear Delete
+PASS mobile viewport horizontal first romaji composition
+PASS mobile viewport horizontal one start/end per composition
+PASS mobile viewport horizontal continuous Japanese after Enter
+PASS mobile viewport horizontal kanji candidate update and commit
+PASS mobile viewport horizontal native composition not prevented
+PASS mobile viewport horizontal committed IME Undo
+PASS mobile viewport horizontal committed IME Redo
+PASS mobile viewport horizontal insertion and deletion in middle
+PASS mobile viewport horizontal TCY deletion
+PASS mobile viewport horizontal Backspace across atomic cut keeps body
+PASS mobile viewport horizontal Undo restores cut ID
+PASS mobile viewport horizontal Delete across atomic cut keeps body
+PASS mobile viewport horizontal beforeinput-only range deletion
+PASS mobile viewport horizontal reload preserves input and cut ID
+PASS mobile viewport horizontal direct editor focus starts IME correctly
+PASS mobile no script exceptions
+110 input/composition checks passed

@@ -1,7 +1,7 @@
 // Deterministic proposals only. Raw text, cut boundaries and IDs never change here.
 (function(root){
   const kinds=['scene','action','dialogue'];
-  const scene=s=>{const t=s.trim();return /^[○◯〇]/.test(t)||/^場面「[^\n]+」$/.test(t)||/^【[^\n]+】$/.test(t)||(!/[「」]/.test(t)&&/^[^（()）]+[（(][^（）()]+[）)]$/.test(t)&&/[・\s](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)|[（(](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)/.test(t))};
+  const scene=s=>{const t=s.trim();return /^[○◯〇]/.test(t)||/^(?:いろいろな場所・時間|[0-9０-９]+年前・[^「」。！？!?]+(?:時代|頃|回想))$/.test(t)||/^場面「[^\n]+」$/.test(t)||/^【[^\n]+】$/.test(t)||(!/[「」]/.test(t)&&/^[^（()）]+[（(][^（）()]+[）)]$/.test(t)&&/[・\s](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)|[（(](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)/.test(t))};
   const inferred=s=>scene(s)?'scene':/^(?:[^「\n]+)?「/.test(s.trimStart())?'dialogue':'action';
   const quoteDelta=s=>[...s].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
   function analyze(chapter){

@@ -1,0 +1,94 @@
+{
+  "format": "meijin.script-exchange",
+  "schemaVersion": "0.1-draft.1",
+  "source": {
+    "app": "ohanashi-meijin",
+    "documentId": "document-example-001",
+    "revision": 2
+  },
+  "title": "連携仕様検討サンプル",
+  "chapters": [
+    {
+      "id": "chapter-a",
+      "title": "出発",
+      "cuts": [
+        {
+          "id": "cut-a",
+          "displayNumber": 1,
+          "blocks": [
+            {
+              "kind": "sceneHeading",
+              "raw": "○駅（朝）",
+              "scene": {
+                "heading": "○駅（朝）",
+                "location": "駅",
+                "time": "朝"
+              },
+              "interpretation": "explicit"
+            },
+            {
+              "kind": "action",
+              "raw": "　　　扉が開く。",
+              "interpretation": "explicit"
+            },
+            {
+              "kind": "action",
+              "raw": "　　　人が振り返る。",
+              "interpretation": "explicit"
+            },
+            {
+              "kind": "dialogue",
+              "raw": "澪（OFF）「おはよう。\n待っていたよ」",
+              "speaker": "澪",
+              "delivery": "off",
+              "text": "おはよう。\n待っていたよ",
+              "interpretation": "heuristic"
+            }
+          ]
+        },
+        {
+          "id": "cut-new",
+          "displayNumber": 2,
+          "blocks": [
+            {
+              "kind": "action",
+              "raw": "　　　切符を取り出す。",
+              "interpretation": "explicit"
+            }
+          ]
+        },
+        {
+          "id": "cut-c",
+          "displayNumber": 3,
+          "blocks": [
+            {
+              "kind": "action",
+              "raw": "　　　ゆっくり歩き出す。",
+              "interpretation": "explicit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chapter-b",
+      "title": "到着",
+      "cuts": [
+        {
+          "id": "cut-b",
+          "displayNumber": 4,
+          "blocks": [
+            {
+              "kind": "dialogue",
+              "raw": "声「ここから始まる」",
+              "speaker": "声",
+              "delivery": "unknown",
+              "text": "ここから始まる",
+              "interpretation": "unresolved"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -66,6 +66,9 @@ $('#autoFormat').onclick=()=>{
     }else review.textContent=row.reason;
   }
   const wrap=document.createElement('div');wrap.className='formatPreviewWrap';wrap.append(table);$('#dialogBody').append(wrap);
+  const scenes=document.createElement('button');scenes.id='acceptSceneCandidates';scenes.textContent='柱候補を採用';
+  scenes.onclick=()=>{for(const row of plan){if(row.kind==='scene'&&row.certainty==='uncertain'&&row.origin!=='manual'){choices[row.line]='scene';const select=table.querySelector(`[aria-label="${row.line+1}行目の書式"]`);if(select){select.value='scene';select.dispatchEvent(new Event('change'))}}}};
+  $('#dialogBody').append(scenes);
   const apply=document.createElement('button');apply.className='primary';apply.id='applyAutoFormat';apply.textContent='確認した書式を適用';
   const cancel=document.createElement('button');cancel.id='cancelAutoFormat';cancel.textContent='キャンセル';cancel.onclick=()=>$('#dialog').close();
   apply.onclick=()=>{

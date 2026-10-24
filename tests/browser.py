@@ -33,7 +33,7 @@ with sync_playwright() as p:
     expected=page.evaluate('chapter().text')
     page.evaluate('''()=>{for(let i=0;i<10;i++){renderText();capture()}}''')
     check('10 serialization cycles preserve text',page.evaluate('chapter().text')==expected)
-    page.locator('#check').click();page.get_by_text('増殖した空行を整理',exact=True).click()
+    page.locator('#check').click();page.get_by_text('空行を整理',exact=True).click()
     check('repair removes multiplied blanks and preserves words/IDs',not '\n\n\n' in page.evaluate('chapter().text') and data(page)['chapters'][0]['cuts']==before['chapters'][0]['cuts'])
     # TXT through chapters 1-5 using the real clipboard event handler.
     text='○場（夜）\n　　　動作。\n花「言葉」\n\n終わり'
