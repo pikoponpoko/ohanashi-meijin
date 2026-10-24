@@ -1,0 +1,24 @@
+
+> test
+> npm run check && node check.cjs && node tests/model.cjs && node tests/pwa.cjs && node tests/txt-import.cjs && node tests/formatting.cjs && node tests/timing.cjs && node tests/feedback.cjs
+
+
+> check
+> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js && node --check dist/focus.js && node --check dist/viewport.js && node --check dist/formatting-model.js && node --check dist/formatting.js && node --check dist/files.js && node --check dist/layout.js && node --check dist/timing-model.js && node --check dist/timing.js
+
+7 checks passed: line types, duration, TXT / Markdown, correction suggestions
+Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
+Explicit blank removal checks passed: whitespace, zero-width-only lines, cut IDs, formats, empty cuts, idempotence
+PWA checks passed: manifest, PNG dimensions, complete shell, own-cache cleanup, scoped fetch
+PASS TXT: spaced headings, repeated/gapped/branched numbers, BOM/CRLF, exact ordered body, independent IDs
+PASS TXT: conservative whole-line headings, unknown preface preserved and explicit empty cuts coalesced
+PASS TXT: known legacy export/copy headers only, normalization idempotent
+PASS TXT: saved standalone labels normalized once; repair/reload cycles retain cut IDs
+PASS format proposal: explicit scene, separate action lines, one wrapped speech, uncertainty and no cut/image splitting
+PASS format proposal: open quotes/blank continuation reset at cut; unresolved text unchanged; raw and IDs protected
+PASS timing: scene/labels excluded, wrapped speech counted once, action units preserved, overlap vs sequential and zero/configurable pauses
+PASS timing: Prepro voice/action prefixes, source unchanged, estimate varies per work and is never fixed to 12 minutes
+PASS standalone half/fullwidth mixed legacy markers normalize once in body order
+PASS blank separators split once, empty cuts coalesce, quoted markers/prose/headings survive
+PASS existing real cut IDs and paragraph kinds retained; empty predecessor removed without offset drift
+PASS scene positive/negative cases; manual/legacy kinds not forcibly reclassified

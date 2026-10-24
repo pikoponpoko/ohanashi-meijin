@@ -9,7 +9,7 @@ function restoreHistorySelection(saved){
   const ed=$('#editor');
   function locate(pos){if(!pos)return [ed,ed.childNodes.length];if(pos.root!==undefined)return [ed,Math.min(pos.root,ed.childNodes.length)];const block=ed.children[pos.block]||ed.lastElementChild;let remaining=pos.offset;const walker=document.createTreeWalker(block,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode()){if(remaining<=node.length)return [node,remaining];remaining-=node.length}return [block,block.childNodes.length]}
   if(!saved)return caretEnd(ed.lastElementChild);
-  const r=document.createRange();r.setStart(...locate(saved.start));r.setEnd(...locate(saved.end));getSelection().removeAllRanges();getSelection().addRange(r);ed.focus();
+  const r=document.createRange();r.setStart(...locate(saved.start));r.setEnd(...locate(saved.end));ed.focus({preventScroll:true});getSelection().removeAllRanges();getSelection().addRange(r);normalizeEmptyCaret();
 }
 function snapshot(){return {state:JSON.stringify(state),active,selection:historySelection()}}
 function resetHistory(){history=[snapshot()];historyIndex=0;syncHistory()}
@@ -22,7 +22,61 @@ for(const [id,step] of [['undo',-1],['redo',1]]){const button=$('#'+id);if(butto
 document.addEventListener('keydown',e=>{if(composing||e.isComposing||$('#dialog').open)return;const target=e.target;if(target!==$('#editor')&&target!==document.body&&!target.closest?.('#editor'))return;if((e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())){e.preventDefault();travelHistory(e.key.toLowerCase()==='y'||e.shiftKey?1:-1)}});
 $('#editor').addEventListener('beforeinput',e=>{if(composing||e.isComposing)return;if(e.inputType==='historyUndo'||e.inputType==='historyRedo'){e.preventDefault();travelHistory(e.inputType==='historyUndo'?-1:1)}else if(['insertParagraph','insertLineBreak'].includes(e.inputType)){e.preventDefault();enterParagraph(e.inputType==='insertParagraph')}});
 function editorRange(){const sel=getSelection();if(!sel.rangeCount)return null;const r=sel.getRangeAt(0);return $('#editor').contains(r.commonAncestorContainer)?r:null}
-function caretEnd(p){const r=document.createRange();r.selectNodeContents(p);r.collapse(false);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);$('#editor').focus()}
+function editableEndRange(p){const r=document.createRange();r.selectNodeContents(p);if(p.lastChild?.nodeName==='BR')r.setEndBefore(p.lastChild);r.collapse(false);return r}
+function caretEnd(p){$('#editor').focus({preventScroll:true});const r=editableEndRange(p),sel=getSelection();sel.removeAllRanges();sel.addRange(r)}
+function normalizeEmptyCaret(){
+  if(composing)return;
+  const r=editorRange();if(!r?.collapsed)return;const p=topBlock(r.startContainer);
+  // A caret after an empty paragraph's BR can make Chromium restart the IME
+  // composition after its first letter. Keep the equivalent point before BR.
+  if(p&&!p.textContent&&p.lastChild?.nodeName==='BR'&&r.startContainer===p&&r.startOffset===p.childNodes.length){
+    const safe=editableEndRange(p),sel=getSelection();sel.removeAllRanges();sel.addRange(safe);
+  }
+}
+$('#editor').addEventListener('pointerup',normalizeEmptyCaret);
+$('#editor').addEventListener('keydown',e=>{if(!e.isComposing&&!composing)normalizeEmptyCaret()});
+$('#editor').addEventListener('focus',()=>{
+  if(composing)return;
+  const ed=$('#editor'),r=editorRange();
+  if(!r||(r.collapsed&&r.startContainer===ed)){
+    const nodes=[...ed.children],p=nodes.slice(r?.startOffset??0).find(p=>!p.dataset.cutId)||nodes.findLast(p=>!p.dataset.cutId);
+    if(p){const safe=document.createRange();safe.setStart(p,0);safe.collapse(true);getSelection().removeAllRanges();getSelection().addRange(safe)}
+  }
+  normalizeEmptyCaret();
+});
+function finishRangeDeletion(r){
+  const ed=$('#editor'),headId=chapter().cuts[0]?.id;
+  // Cut labels are atomic metadata, not partially editable text.
+  const a=topBlock(r.startContainer),b=topBlock(r.endContainer);
+  if(a?.dataset.cutId)r.setStartBefore(a);if(b?.dataset.cutId)r.setEndAfter(b);
+  r=deleteRange(r);
+  if(!ed.firstElementChild?.dataset.cutId){const cut=paragraph('#C1');cut.className='cut';cut.dataset.cutId=headId&&!ed.querySelector(`[data-cut-id="${CSS.escape(headId)}"]`)?headId:uid();cut.contentEditable='false';ed.prepend(cut)}
+  if(ed.lastElementChild?.dataset.cutId){const p=paragraph('');p.dataset.placeholder='true';ed.append(p)}
+  const sel=getSelection();
+  if(r.startContainer===ed||!ed.contains(r.startContainer)||topBlock(r.startContainer)?.dataset.cutId)r=editableEndRange(ed.lastElementChild);
+  $('#editor').focus({preventScroll:true});sel.removeAllRanges();sel.addRange(r);normalizeEmptyCaret();capture();
+}
+function deleteAtCutBoundary(forward){
+  const r=editorRange();if(!r?.collapsed)return false;const p=topBlock(r.startContainer);if(!p||p.dataset.cutId)return false;
+  const extent=document.createRange();extent.selectNodeContents(p);forward?extent.setStart(r.startContainer,r.startOffset):extent.setEnd(r.startContainer,r.startOffset);
+  if(extent.toString())return false;
+  const cut=forward?p.nextElementSibling:p.previousElementSibling;
+  if(!cut?.dataset.cutId||cut=== $('#editor').firstElementChild)return false;
+  cut.remove();capture();return true;
+}
+$('#editor').addEventListener('keydown',e=>{
+  if(composing||e.isComposing||e.keyCode===229||$('#dialog').open)return;
+  if((e.ctrlKey||e.metaKey)&&!e.altKey&&e.key.toLowerCase()==='a'){
+    e.preventDefault();const r=document.createRange();r.selectNodeContents($('#editor'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);return;
+  }
+  if(!['Backspace','Delete'].includes(e.key))return;
+  const r=editorRange();if(!r)return;
+  if(!r.collapsed){e.preventDefault();finishRangeDeletion(r)}else if(!e.altKey&&!e.ctrlKey&&!e.metaKey&&deleteAtCutBoundary(e.key==='Delete'))e.preventDefault();
+});
+$('#editor').addEventListener('beforeinput',e=>{
+  if(composing||e.isComposing||!e.cancelable||!e.inputType.startsWith('delete'))return;
+  const r=editorRange();if(r&&!r.collapsed){e.preventDefault();finishRangeDeletion(r)}else if(['deleteContentBackward','deleteContentForward'].includes(e.inputType)&&deleteAtCutBoundary(e.inputType==='deleteContentForward'))e.preventDefault();
+});
 function topBlock(node){while(node&&node.parentNode!==$('#editor'))node=node.parentNode;return node?.nodeType===1?node:null}
 // Keep the insertion point inside the surviving start paragraph. Range.deleteContents
 // otherwise collapses between blocks and creates extra paragraphs on paste.
@@ -54,10 +108,10 @@ function replaceSelection(records,externalCuts=false){
   if(top.textContent===''){top.replaceChildren();top.dataset.leading=(records[0]?.text.match(/^[ \u3000]*/)||[''])[0];if(records[0]?.kind){top.dataset.kind=records[0].kind;top.dataset.formatOrigin=records[0].origin||'legacy';delete top.dataset.auto;top.className=records[0].kind}}let current=top;
   records.forEach((record,i)=>{if(i||record.id){const p=paragraph(record.text,record.kind,record.origin);if(record.id){p.className='cut';p.dataset.cutId=record.id;p.contentEditable='false'}current.after(p);current=p}else current.append(document.createTextNode(record.text))});
   if(current.dataset.cutId){const p=paragraph('');current.after(p);current=p}
-  const caret=document.createRange();caret.selectNodeContents(current);caret.collapse(false);
+  const caret=editableEndRange(current);
   current.append(fragment);if(!current.childNodes.length)current.append(document.createElement('br'));
   // Canonicalize indentation using the original paragraph type, preserving words.
-  const sel=getSelection();sel.removeAllRanges();sel.addRange(caret);$('#editor').focus();capture();
+  $('#editor').focus({preventScroll:true});const sel=getSelection();sel.removeAllRanges();sel.addRange(caret);capture();
 }
 function enterParagraph(allowCut){const r=editorRange();if(!r)return;const p=topBlock(r.startContainer);if(r.collapsed&&p&&!p.textContent.trim()){const before=[...$('#editor').children].slice(0,[...$('#editor').children].indexOf(p));let hasBody=false;for(const b of before.reverse()){if(b.dataset.cutId)break;if(b.textContent.trim())hasBody=true}if(!hasBody)return;}if(allowCut&&r.collapsed&&p&&!p.dataset.cutId&&!p.textContent.trim()&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';const next=paragraph('');p.after(next);caretEnd(next);capture()}else replaceSelection([{text:''},{text:''}])}
 let cutClipboard=null;
