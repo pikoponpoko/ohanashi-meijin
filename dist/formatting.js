@@ -18,7 +18,7 @@ function formatRestore(saved){
     return [block,block.childNodes.length];
   }
   const range=document.createRange();range.setStart(...locate(saved.start));range.setEnd(...locate(saved.end));
-  const selection=getSelection();selection.removeAllRanges();selection.addRange(range);$('#editor').focus();
+  $('#editor').focus({preventScroll:true});const selection=getSelection();selection.removeAllRanges();selection.addRange(range);normalizeEmptyCaret();
 }
 function formatParagraphs(kind){
   if(!ScriptFormatting.kinds.includes(kind)||composing||loadBlocked||$('#dialog').open)return;

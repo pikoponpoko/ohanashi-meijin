@@ -1,5 +1,5 @@
 // Bump the shell version whenever a precached application file changes.
-const CACHE='ohanashi-shell-v5';
+const CACHE='ohanashi-shell-v7';
 const SHELL=['./','./index.html','./style.css','./model.js','./app.js','./editing.js','./pdf.js','./projects.js','./pwa.js','./focus.js','./viewport.js','./formatting-model.js','./formatting.js','./files.js','./layout.js','./timing-model.js','./timing.js','./vendor/jspdf.umd.min.js','./vendor/html-to-image.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
 const shellUrls=new Set(SHELL.map(path=>new URL(path,self.registration.scope).href));
 self.addEventListener('install',event=>{
