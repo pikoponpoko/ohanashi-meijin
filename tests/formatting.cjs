@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');require('../dist/model.js');require('../dist/formatting-model.js');
+const M=globalThis.ScriptModel,F=globalThis.ScriptFormatting;
+const c=M.importChapter({id:'chapter',title:'原稿',text:'# C1\n○駅\n　　　扉が開く。\n　　　振り返る。\n澪「途中で\n折り返す」\n曖昧な文\n# C2\nナレーション「声」'});M.renumber({chapters:[c]});
+const original=JSON.stringify(c),plan=F.analyze(c);
+assert.equal(plan.filter(p=>p.cut).length,2);assert.equal(plan.filter(p=>p.unit==='scene').length,1);assert.equal(plan.filter(p=>p.unit==='action').length,2);
+assert.equal(plan[4].group,plan[5].group);assert.equal(plan[5].kind,'dialogue');assert.equal(plan[6].certainty,'uncertain');
+assert.equal(JSON.stringify(c),original);const next=F.apply(c,plan,{6:'scene'});assert.equal(next.text,c.text);assert.deepEqual(next.cuts,c.cuts);assert.equal(next.formats[5],'dialogue');assert.equal(next.formats[6],'scene');
+assert.equal(JSON.stringify(c),original);assert.throws(()=>F.apply({...c,text:c.text+'変化'},plan));assert.throws(()=>F.apply(c,plan,{6:'invalid'}));
+console.log('PASS format proposal: explicit scene, separate action lines, one wrapped speech, uncertainty and no cut/image splitting');
+const multiline=M.importChapter({text:'#C1\n人「未完\n\n続く」\n#C2\n別の文'});const rows=F.analyze(multiline);assert.equal(rows[2].unit,'speech');assert.equal(rows[3].unit,'speech');assert.equal(rows[5].certainty,'uncertain');
+const unchosen=F.apply(c,plan);assert.equal(unchosen.formats[6],F.inferred(plan[6].raw));assert.equal(unchosen.text,c.text);
+console.log('PASS format proposal: open quotes/blank continuation reset at cut; unresolved text unchanged; raw and IDs protected');

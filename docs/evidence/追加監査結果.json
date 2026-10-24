@@ -1,0 +1,889 @@
+{
+  "fresh": {
+    "title": "",
+    "text": "#C1\n",
+    "chapters": 1,
+    "count": "3 字 / 全体 3 字"
+  },
+  "manifest": {
+    "url": "",
+    "errors": [],
+    "data": "",
+    "parsed": {
+      "scope": "https://ohanashi-meijin.pikoponpoko.workers.dev/"
+    },
+    "manifest": {
+      "display": "kUndefined",
+      "id": "https://ohanashi-meijin.pikoponpoko.workers.dev/",
+      "orientation": "DEFAULT",
+      "preferRelatedApplications": false,
+      "scope": "https://ohanashi-meijin.pikoponpoko.workers.dev/",
+      "startUrl": "https://ohanashi-meijin.pikoponpoko.workers.dev/"
+    }
+  },
+  "installability": {
+    "installabilityErrors": []
+  },
+  "pwa": {
+    "secure": true,
+    "manifestLinks": [],
+    "icons": [],
+    "serviceWorkerRegistrations": []
+  },
+  "legacySample": {
+    "title": "余白の向こう",
+    "chapterTitles": [
+      "帰り道",
+      "届かなかった手紙",
+      "朝の光"
+    ],
+    "firstText": "#C1\n○海沿いのバス停（夕）\n　　　海からの風が、時刻表の端を揺らす。\n　　　澪（28）、古い封筒を手に立っている。\n\n澪「ここ、まだあったんだ」\n\n　　　ベンチに座る修司（32）。顔を上げる。\n修司「バス停？」\n澪「ううん。待つ場所」\n\n　　　遠くで、踏切の音。\n　　　澪、封筒を鞄にしまう。\n修司「乗るの？」\n澪「……もう一本、待つ」\n\n　　　二人の間を、風が通り抜ける。",
+    "backup": true,
+    "newProjectButton": false
+  },
+  "blankCases": {
+    "単独の空行": {
+      "offered": false,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "3fdc73e5-6cce-4068-8d0e-a8220cf9a849",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "3fdc73e5-6cce-4068-8d0e-a8220cf9a849",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "連続空行": {
+      "offered": true,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n\n\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "f0198b0e-0489-41b8-bc4a-1639c49a883b",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "f0198b0e-0489-41b8-bc4a-1639c49a883b",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "先頭末尾空行": {
+      "offered": true,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n\n\n○場\n\n",
+        "cuts": [
+          {
+            "id": "3f0f6fad-e0b7-46d6-9caa-96355bb6aed5",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n\n○場\n",
+        "cuts": [
+          {
+            "id": "3f0f6fad-e0b7-46d6-9caa-96355bb6aed5",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "全角空白行": {
+      "offered": true,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n　　\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "25a38678-aeaa-4c64-9675-a8c59eb5f4fc",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "",
+            "width": 14,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "25a38678-aeaa-4c64-9675-a8c59eb5f4fc",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "タブ空白行": {
+      "offered": true,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n\t \n人物「言葉」",
+        "cuts": [
+          {
+            "id": "617648aa-3197-4fc2-bba2-bb3aac8362e4",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "\t ",
+            "cut": false,
+            "html": "\t ",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "617648aa-3197-4fc2-bba2-bb3aac8362e4",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "NBSP行": {
+      "offered": true,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n \n人物「言葉」",
+        "cuts": [
+          {
+            "id": "7d10f507-e8fe-46c4-9387-fbe424db9056",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": " ",
+            "cut": false,
+            "html": "&nbsp;",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "7d10f507-e8fe-46c4-9387-fbe424db9056",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "ゼロ幅文字行": {
+      "offered": false,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n​\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "2dff0dc1-4c23-4864-9911-901d60b0e793",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "​",
+            "cut": false,
+            "html": "​",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n​\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "2dff0dc1-4c23-4864-9911-901d60b0e793",
+            "line": 0
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "​",
+            "cut": false,
+            "html": "​",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    },
+    "カット周辺空行": {
+      "offered": false,
+      "offeredAgain": false,
+      "before": {
+        "text": "#C1\n○場\n\n#C2\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "db84b56b-35bf-471e-b455-357b2173dbde",
+            "line": 0
+          },
+          {
+            "id": "92ab0c5a-a105-4801-88c4-15f80dd4ea7a",
+            "line": 3
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "#C2",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C2</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      },
+      "after": {
+        "text": "#C1\n○場\n\n#C2\n\n人物「言葉」",
+        "cuts": [
+          {
+            "id": "db84b56b-35bf-471e-b455-357b2173dbde",
+            "line": 0
+          },
+          {
+            "id": "92ab0c5a-a105-4801-88c4-15f80dd4ea7a",
+            "line": 3
+          }
+        ],
+        "paragraphs": [
+          {
+            "text": "#C1",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C1</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "○場",
+            "cut": false,
+            "html": "○場",
+            "width": 23.09375,
+            "kind": "scene"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "#C2",
+            "cut": true,
+            "html": "#<span class=\"tcy\">C2</span>",
+            "width": 19.640625,
+            "kind": "action"
+          },
+          {
+            "text": "",
+            "cut": false,
+            "html": "<br>",
+            "width": 23.09375,
+            "kind": "action"
+          },
+          {
+            "text": "人物「言葉」",
+            "cut": false,
+            "html": "人物「言葉」",
+            "width": 23.09375,
+            "kind": "dialogue"
+          }
+        ],
+        "font": "\"Noto Serif JP\", serif",
+        "lineHeight": "23.1px"
+      }
+    }
+  },
+  "domBreaks": {
+    "text": "#C1\n○場\n\n人物「言葉」\n",
+    "cuts": [
+      {
+        "id": "8d3016e1-1df9-4f5a-bb06-25e26db13e92",
+        "line": 0
+      }
+    ],
+    "paragraphs": [
+      {
+        "text": "#C1",
+        "cut": true,
+        "html": "#C1",
+        "width": 19.640625,
+        "kind": "action"
+      },
+      {
+        "text": "○場人物「言葉」",
+        "cut": false,
+        "html": "○場<br><br>人物「言葉」<br>",
+        "width": 69.28125,
+        "kind": null
+      },
+      {
+        "text": "",
+        "cut": false,
+        "html": "<br>",
+        "width": 23.09375,
+        "kind": null
+      }
+    ],
+    "font": "\"Noto Serif JP\", serif",
+    "lineHeight": "23.1px"
+  },
+  "domBreaksAfterCycle": {
+    "text": "#C1\n○場\n\n人物「言葉」\n",
+    "cuts": [
+      {
+        "id": "8d3016e1-1df9-4f5a-bb06-25e26db13e92",
+        "line": 0
+      }
+    ],
+    "paragraphs": [
+      {
+        "text": "#C1",
+        "cut": true,
+        "html": "#C1",
+        "width": 19.640625,
+        "kind": "action"
+      },
+      {
+        "text": "○場",
+        "cut": false,
+        "html": "○場",
+        "width": 23.09375,
+        "kind": "scene"
+      },
+      {
+        "text": "",
+        "cut": false,
+        "html": "<br>",
+        "width": 23.09375,
+        "kind": "action"
+      },
+      {
+        "text": "人物「言葉」",
+        "cut": false,
+        "html": "人物「言葉」",
+        "width": 23.09375,
+        "kind": "dialogue"
+      },
+      {
+        "text": "",
+        "cut": false,
+        "html": "<br>",
+        "width": 23.09375,
+        "kind": "action"
+      }
+    ],
+    "font": "\"Noto Serif JP\", serif",
+    "lineHeight": "23.1px"
+  },
+  "phonePortrait": {
+    "drawerClosed": true
+  },
+  "phoneLandscape": {
+    "menuVisible": false,
+    "sidebarVisible": true,
+    "backdropVisible": false,
+    "width": 844
+  }
+}

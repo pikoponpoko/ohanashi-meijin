@@ -2,6 +2,9 @@
 import json, pathlib, os, shutil
 import fitz
 from playwright.sync_api import sync_playwright
+
+def open_chapters(page):
+    if page.locator('#chapterPanel').is_hidden():page.locator('#menu').click()
 BASE=os.environ.get('TEST_BASE_URL','http://127.0.0.1:8766')
 OUT=pathlib.Path(os.environ.get('TEST_OUTPUT_DIR','/tmp/ohanashi-tests'));OUT.mkdir(parents=True,exist_ok=True)
 checks=[]
@@ -35,7 +38,7 @@ with sync_playwright() as p:
     setup(page,'');end(page);paste(page,text)
     original=page.evaluate('chapter().text')
     for i in range(4):
-        page.locator('#add').click();page.locator('#newTitle').fill('章'+str(i+2));page.locator('#createChapter').click();end(page);paste(page,text)
+        open_chapters(page);page.locator('#add').click();page.locator('#newTitle').fill('章'+str(i+2));page.locator('#createChapter').click();end(page);paste(page,text)
     check('TXT through five chapters has equal structure',len({c['text'].split('\n',1)[1] for c in data(page)['chapters']})==1)
     # Insert a cut between existing cuts; old IDs must survive.
     setup(page,'一\n#C7\n二\n#C19\n三');ids=[c['id'] for c in data(page)['chapters'][0]['cuts']]
@@ -47,21 +50,21 @@ with sync_playwright() as p:
     setup(page,'○場\n　　　動作。\n花「言葉」\n#C9\n　　　次の動作。')
     movedid=data(page)['chapters'][0]['cuts'][1]['id']
     page.evaluate('''()=>{const ps=document.querySelector('#editor').children,r=document.createRange();r.setStartBefore(ps[2]);r.setEndAfter(ps[5]);getSelection().removeAllRanges();getSelection().addRange(r);document.dispatchEvent(new Event('selectionchange'))}''')
-    page.locator('#splitChapter').click();page.locator('#confirmSplit').click()
+    open_chapters(page);page.locator('#splitChapter').click();page.locator('#confirmSplit').click()
     current=data(page);check('chapter split preserves dialogue/action and cut ID',len(current['chapters'])==2 and current['chapters'][1]['cuts'][1]['id']==movedid and '　　　動作。' in current['chapters'][1]['text'] and '花「言葉」' in current['chapters'][1]['text'])
-    page.locator('#undo').click();check('chapter split Undo restores original chapter',len(data(page)['chapters'])==1)
-    page.locator('#redo').click();check('chapter split Redo retains IDs',data(page)==current)
+    page.locator('#editor').press('Control+z');check('chapter split Undo restores original chapter',len(data(page)['chapters'])==1)
+    page.locator('#editor').press('Control+Shift+z');check('chapter split Redo retains IDs',data(page)==current)
     # Partial scene paragraph selection preserves type, text order and surviving words.
     setup(page,'○長い場所（朝）\n　　　動作。')
     page.evaluate('''()=>{const p=document.querySelector('#editor').children[1],r=document.createRange();r.setStart(p.firstChild,2);r.setEnd(p.firstChild,5);getSelection().removeAllRanges();getSelection().addRange(r);document.dispatchEvent(new Event('selectionchange'))}''')
-    page.locator('#splitChapter').click();page.locator('#confirmSplit').click();part=data(page)
+    open_chapters(page);page.locator('#splitChapter').click();page.locator('#confirmSplit').click();part=data(page)
     check('partial paragraph split keeps scene type',part['chapters'][1]['formats'][1]=='scene' and 'い場所' in part['chapters'][1]['text'])
     page.reload();check('partial paragraph type survives reload',page.evaluate('state.chapters[1].formats[1]')=='scene')
     # Delete has optional backup and can be undone; cancellation does nothing.
-    previous=data(page);page.locator('#deleteChapter').click();page.locator('#close').click();check('delete cancellation unchanged',data(page)==previous)
-    downloads=[];page.on('download',lambda d:downloads.append(d.suggested_filename));page.locator('#deleteChapter').click();page.locator('#confirmDelete').click();check('delete without backup only removes chosen chapter',len(data(page)['chapters'])==1 and not downloads)
-    page.locator('#undo').click();check('chapter deletion is undoable',data(page)==previous)
-    page.locator('#deleteChapter').click();page.locator('#deleteBackup').check()
+    previous=data(page);open_chapters(page);page.locator('#deleteChapter').click();page.locator('#close').click();check('delete cancellation unchanged',data(page)==previous)
+    downloads=[];page.on('download',lambda d:downloads.append(d.suggested_filename));open_chapters(page);page.locator('#deleteChapter').click();page.locator('#confirmDelete').click();check('delete without backup only removes chosen chapter',len(data(page)['chapters'])==1 and not downloads)
+    page.locator('#editor').press('Control+z');check('chapter deletion is undoable',data(page)==previous)
+    open_chapters(page);page.locator('#deleteChapter').click();page.locator('#deleteBackup').check()
     with page.expect_download():page.locator('#confirmDelete').click()
     check('optional backup downloaded when selected',len(downloads)==1)
     # File picker no MIME restriction; contents are validated before restore.
@@ -80,7 +83,7 @@ with sync_playwright() as p:
     check('cross-paragraph paste joins surviving words',page.evaluate('chapter().text')=='#C1\n○置換「言葉」')
     page.keyboard.insert_text('続き')
     check('paste caret stays before surviving suffix',page.evaluate('chapter().text')=='#C1\n○置換続き「言葉」')
-    page.locator('#undo').click();page.locator('#undo').click()
+    page.locator('#editor').press('Control+z');page.locator('#editor').press('Control+z')
     check('range replacement Undo restores all paragraphs',page.evaluate('chapter().text')=='#C1\n○場所\n　　　動作。\n花「言葉」')
     # Use the actual custom clipboard payload for copy, cut, repeated paste, and history.
     setup(page,'○場\n#C2\n　　　動作。')
@@ -92,19 +95,19 @@ with sync_playwright() as p:
     transfer('copy');end(page);paste_custom();copied=data(page)
     check('copy creates new cut ID and keeps paragraph type',len(copied['chapters'][0]['cuts'])==3 and copied['chapters'][0]['cuts'][2]['id']!=moved_id and copied['chapters'][0]['formats'][-1]=='action')
     setup(page,'○場\n#C2\n　　　動作。');saved=data(page);moved_id=saved['chapters'][0]['cuts'][1]['id'];transfer('cut')
-    page.locator('#add').click();page.locator('#createChapter').click();end(page);paste_custom();moved=data(page)
+    open_chapters(page);page.locator('#add').click();page.locator('#createChapter').click();end(page);paste_custom();moved=data(page)
     check('cut to another chapter retains ID',moved['chapters'][1]['cuts'][1]['id']==moved_id and len(moved['chapters'][0]['cuts'])==1)
     end(page);paste_custom();repeated=data(page)
     check('repeated cut-paste creates unique IDs',len({x['id'] for c in repeated['chapters'] for x in c['cuts']})==sum(len(c['cuts']) for c in repeated['chapters']))
-    page.locator('#undo').click();check('paste Undo restores moved cut state',data(page)==moved)
-    page.locator('#undo').click();page.locator('#undo').click();page.locator('#undo').click()
+    page.locator('#editor').press('Control+z');check('paste Undo restores moved cut state',data(page)==moved)
+    page.locator('#editor').press('Control+z');page.locator('#editor').press('Control+z');page.locator('#editor').press('Control+z')
     check('cut and chapter creation Undo restore source IDs',data(page)==saved)
     # Removing the first boundary creates one stable replacement, including later captures.
     setup(page,'本文')
     page.evaluate("""()=>{$('#editor').firstChild.remove();capture()}""");stable=page.evaluate('chapter().cuts[0].id')
     page.evaluate('()=>{capture();capture()}')
     check('deleted first cut replacement ID stays stable',page.evaluate('chapter().cuts[0].id')==stable)
-    page.locator('#theme').click();themed=data(page);page.locator('#undo').click();page.locator('#redo').click()
+    page.locator('#theme').click();themed=data(page);page.locator('#editor').press('Control+z');page.locator('#editor').press('Control+Shift+z')
     check('display settings participate in project history',data(page)==themed)
     setup(page,'本文\n#C2\n続き')
     page.evaluate("""()=>{$('#editor').children[2].dataset.cutId=$('#editor').firstChild.dataset.cutId;capture()}""");deduped=data(page)

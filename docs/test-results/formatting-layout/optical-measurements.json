@@ -1,0 +1,261 @@
+{
+  "fontPackages": {
+    "noto-serif-jp": "5.3.1",
+    "noto-sans-jp": "5.3.1",
+    "zen-old-mincho": "5.3.1"
+  },
+  "measurements": [
+    {
+      "font": "Noto Serif JP",
+      "size": 14,
+      "glyph": "12",
+      "before": 0.5188335793192896,
+      "after": 0.5188335793192896
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 14,
+      "glyph": "１２",
+      "before": -2.405532627549494,
+      "after": 0.17522156056920815
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 14,
+      "glyph": "！",
+      "before": -3.433992335518069,
+      "after": -0.019081773894910725
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 14,
+      "glyph": "？",
+      "before": -2.081782489202984,
+      "after": 0.33750504642713014
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 19,
+      "glyph": "12",
+      "before": 3.7379877297620347,
+      "after": 3.7379877297620347
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 19,
+      "glyph": "１２",
+      "before": -3.1972504997428666,
+      "after": 0.3013178054364853
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 19,
+      "glyph": "！",
+      "before": -4.692798734860758,
+      "after": -0.026132068194092046
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 19,
+      "glyph": "？",
+      "before": -2.937702709887811,
+      "after": 0.3956306234455222
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 28,
+      "glyph": "12",
+      "before": 5.578006532399617,
+      "after": 5.578006532399617
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 28,
+      "glyph": "１２",
+      "before": -4.789605164910289,
+      "after": 0.3807794310985386
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 28,
+      "glyph": "！",
+      "before": -6.976138356652117,
+      "after": -0.058158234689303846
+    },
+    {
+      "font": "Noto Serif JP",
+      "size": 28,
+      "glyph": "？",
+      "before": -4.205621484006078,
+      "after": 0.628359426096047
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 14,
+      "glyph": "12",
+      "before": 2.6335617738301047,
+      "after": 2.6335617738301047
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 14,
+      "glyph": "１２",
+      "before": -1.5448218128188387,
+      "after": 0.12184485384782799
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 14,
+      "glyph": "！",
+      "before": -3.5265639030230473,
+      "after": -0.026852337101644252
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 14,
+      "glyph": "？",
+      "before": -1.4309214196815592,
+      "after": 0.4850542427912489
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 19,
+      "glyph": "12",
+      "before": 3.5815097424974547,
+      "after": 3.5815097424974547
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 19,
+      "glyph": "１２",
+      "before": -2.0303384696688695,
+      "after": 0.21629416476215133
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 19,
+      "glyph": "！",
+      "before": -4.750349305498479,
+      "after": -0.0004725509533211418
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 19,
+      "glyph": "？",
+      "before": -1.8816385948939711,
+      "after": 0.7026859161273507
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 28,
+      "glyph": "12",
+      "before": 5.369363971166213,
+      "after": 5.369363971166213
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 28,
+      "glyph": "１２",
+      "before": -3.021692539670068,
+      "after": 0.272522274777252
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 28,
+      "glyph": "！",
+      "before": -6.951640507268945,
+      "after": 0.04835949273105437
+    },
+    {
+      "font": "Noto Sans JP",
+      "size": 28,
+      "glyph": "？",
+      "before": -2.7603510052778994,
+      "after": 0.9885012894633363
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 14,
+      "glyph": "12",
+      "before": 2.8273229387569736,
+      "after": 2.8273229387569736
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 14,
+      "glyph": "１２",
+      "before": 0.16233697081032852,
+      "after": 0.16233697081032852
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 14,
+      "glyph": "！",
+      "before": 0.0006110538963272442,
+      "after": 0.0006110538963272442
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 14,
+      "glyph": "？",
+      "before": 0.15395591851071325,
+      "after": 0.15395591851071325
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 19,
+      "glyph": "12",
+      "before": 3.719907322200546,
+      "after": 3.719907322200546
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 19,
+      "glyph": "１２",
+      "before": 0.22022427629693433,
+      "after": 0.22022427629693433
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 19,
+      "glyph": "！",
+      "before": 0.027501870245686177,
+      "after": 0.027501870245686177
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 19,
+      "glyph": "？",
+      "before": 0.2108289949835059,
+      "after": 0.2108289949835059
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 28,
+      "glyph": "12",
+      "before": 5.553181333704065,
+      "after": 5.553181333704065
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 28,
+      "glyph": "１２",
+      "before": 0.3047303815024118,
+      "after": 0.3047303815024118
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 28,
+      "glyph": "！",
+      "before": -0.04325178149696759,
+      "after": -0.04325178149696759
+    },
+    {
+      "font": "Zen Old Mincho",
+      "size": 28,
+      "glyph": "？",
+      "before": 0.26435070237810504,
+      "after": 0.26435070237810504
+    }
+  ]
+}

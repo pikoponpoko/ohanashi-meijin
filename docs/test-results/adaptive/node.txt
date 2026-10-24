@@ -1,0 +1,10 @@
+
+> test
+> npm run check && node check.cjs && node tests/model.cjs
+
+
+> check
+> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/viewport.js
+
+7 checks passed: line types, duration, TXT / Markdown, correction suggestions
+Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
