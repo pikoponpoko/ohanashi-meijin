@@ -1,0 +1,37 @@
+PASS multiple partial paragraphs change kind without altering text or IDs
+PASS style buttons never insert templates
+PASS selection remains in editor after format click
+PASS batch format is exactly one Undo
+PASS batch format Redo exact
+PASS manual formats persist through reload
+PASS ten cycles preserve manual styles and exact raw indentation
+PASS collapsed caret formats its whole paragraph
+PASS cut boundary cannot be restyled
+PASS selection ending at next paragraph start excludes that paragraph
+PASS IME flag blocks batch formatting
+PASS IME keyboard event blocks formatting
+PASS Alt1 changes kind without inserting text
+PASS chapter title input does not trigger format shortcut
+PASS copy records retain manually selected kind
+PASS paste keeps manual kind and original words
+PASS chapter split keeps manual kind without changing words
+PASS chapter split Undo retains formatted source exactly
+PASS empty slot stores style without adding text or cuts
+PASS typing retains explicitly chosen kind instead of reclassifying from prefix
+PASS automatic proposal preview does not mutate manuscript
+PASS only uncertain rows offer manual correction
+PASS proposal cancel leaves exact original
+PASS proposal apply changes formats only with exact text/cut IDs
+PASS scene is not a cut or picture and action lines remain separate
+PASS wrapped speech stays speech and manual uncertainty correction applies
+PASS proposal apply is one exact Undo
+PASS proposal Redo exact
+PASS proposal formatting persists on reload
+PASS stale proposal does not overwrite a changed manuscript
+PASS typographic markup preserves literal HTML characters and fullwidth source
+PASS glyph markup roundtrip preserves exact source
+PASS print layout retains manual paragraph kind
+PASS direct PDF still downloads without changing manuscript
+PASS saved indented labels and whitespace are not silently reinterpreted as cuts
+PASS no runtime errors
+36 formatting checks passed

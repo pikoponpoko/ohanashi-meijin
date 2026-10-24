@@ -27,6 +27,7 @@ try:
     page.keyboard.press('Alt+PageUp');check('previous shortcut returns to first chapter',page.evaluate("active==='one'"))
     page.keyboard.press('Alt+PageUp');check('first chapter does not wrap',page.evaluate("active==='one'"))
     page.keyboard.press('Alt+PageDown');page.keyboard.press('Alt+PageDown');page.keyboard.press('Alt+PageDown');check('last chapter does not wrap',page.evaluate("active==='three'"))
+    page.locator('#previousChapter').focus();page.keyboard.press('Alt+PageUp');check('footer keyboard focus also allows chapter navigation',page.evaluate("active==='two'"));page.keyboard.press('Alt+PageDown')
     page.evaluate("()=>{composing=true}");page.keyboard.press('Alt+PageUp');check('composition flag blocks chapter movement',page.evaluate("active==='three'"));page.evaluate('composing=false')
     page.evaluate("()=>$('#editor').dispatchEvent(new KeyboardEvent('keydown',{key:'PageUp',altKey:true,isComposing:true,bubbles:true}))");check('IME keyboard event blocks movement',page.evaluate("active==='three'"))
     page.evaluate("()=>{caretEnd($('#editor').lastElementChild)}");page.keyboard.press('Shift+ArrowUp')

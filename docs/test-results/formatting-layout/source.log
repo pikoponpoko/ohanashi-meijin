@@ -1,0 +1,46 @@
+PASS import backs up previous project before replacing it
+PASS source imports with exact body, chapter IDs and cut IDs
+PASS source survives save and reload exactly
+PASS render/capture cycles preserve original body and IDs chapter 1
+PASS batch style preserves original body and IDs chapter 1
+PASS batch style Undo exact chapter 1
+PASS autoformat preview cancel changes nothing chapter 1
+PASS reviewed autoformat preserves original body and IDs chapter 1
+PASS reviewed autoformat Undo or unchanged no-op exact chapter 1
+PASS render/capture cycles preserve original body and IDs chapter 2
+PASS batch style preserves original body and IDs chapter 2
+PASS batch style Undo exact chapter 2
+PASS autoformat preview cancel changes nothing chapter 2
+PASS reviewed autoformat preserves original body and IDs chapter 2
+PASS reviewed autoformat Undo or unchanged no-op exact chapter 2
+PASS render/capture cycles preserve original body and IDs chapter 3
+PASS batch style preserves original body and IDs chapter 3
+PASS batch style Undo exact chapter 3
+PASS autoformat preview cancel changes nothing chapter 3
+PASS reviewed autoformat preserves original body and IDs chapter 3
+PASS reviewed autoformat Undo or unchanged no-op exact chapter 3
+PASS blank compression preserves ordered body and IDs chapter 3
+PASS compression Undo exact chapter 3
+PASS compression Redo exact chapter 3
+PASS render/capture cycles preserve original body and IDs chapter 4
+PASS batch style preserves original body and IDs chapter 4
+PASS batch style Undo exact chapter 4
+PASS autoformat preview cancel changes nothing chapter 4
+PASS reviewed autoformat preserves original body and IDs chapter 4
+PASS reviewed autoformat Undo or unchanged no-op exact chapter 4
+PASS blank compression preserves ordered body and IDs chapter 4
+PASS compression Undo exact chapter 4
+PASS compression Redo exact chapter 4
+PASS render/capture cycles preserve original body and IDs chapter 5
+PASS batch style preserves original body and IDs chapter 5
+PASS batch style Undo exact chapter 5
+PASS autoformat preview cancel changes nothing chapter 5
+PASS reviewed autoformat preserves original body and IDs chapter 5
+PASS reviewed autoformat Undo or unchanged no-op exact chapter 5
+PASS blank compression preserves ordered body and IDs chapter 5
+PASS compression Undo exact chapter 5
+PASS compression Redo exact chapter 5
+PASS all original text and IDs retained after editing/reload
+PASS backup roundtrip retains original body and IDs
+PASS attachment remains byte-for-byte unchanged
+45 private source checks passed; source was not copied to repository

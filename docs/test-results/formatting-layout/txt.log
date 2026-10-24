@@ -1,0 +1,39 @@
+PASS TXT replaces only untouched starter; real first cut is C1
+PASS duplicates gaps and branches preserve original cut order and body
+PASS cut labels render once and never as ordinary paragraphs
+PASS generated IDs are unique and unrelated to labels
+PASS file import is one exact Undo
+PASS file import Redo retains exact imported IDs and body
+PASS saved TXT survives reload exactly
+PASS fixture exercises actual blank compression
+PASS automatic correction keeps all imported cut IDs
+PASS automatic correction Undo exact
+PASS automatic correction Redo exact
+PASS ten render/capture/save cycles preserve cut count IDs and body
+PASS explicit blank removal retains all imported cut IDs
+PASS blank removal Undo restores imported text exactly
+PASS blank removal Redo exact
+PASS blank removal reload retains IDs and body
+PASS paste imported boundaries without extra starter fresh
+PASS paste keeps ordered incoming words fresh
+PASS paste Undo exact fresh
+PASS paste Redo exact fresh
+PASS paste reload IDs stable fresh
+PASS paste imported boundaries without extra starter selected-all
+PASS paste keeps ordered incoming words selected-all
+PASS paste Undo exact selected-all
+PASS paste Redo exact selected-all
+PASS paste reload IDs stable selected-all
+PASS paste imported boundaries without extra starter existing
+PASS paste keeps ordered incoming words existing
+PASS paste Undo exact existing
+PASS paste Redo exact existing
+PASS paste reload IDs stable existing
+PASS existing project chapter/body/cut IDs untouched
+PASS import into existing project preserves global consecutive numbering
+PASS existing project import Undo exact
+PASS existing project import Redo exact
+PASS legacy header BOM/padding variation gives two real cuts
+PASS legacy header BOM/padding variation gives two real cuts
+PASS legacy header BOM/padding variation gives two real cuts
+38 TXT import checks passed

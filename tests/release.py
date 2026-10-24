@@ -2,6 +2,9 @@
 import json, os, pathlib, re, shutil
 from playwright.sync_api import sync_playwright
 
+def open_chapters(page):
+    if page.locator('#chapterPanel').is_hidden():page.locator('#menu').click()
+
 BASE=os.environ.get('TEST_BASE_URL','http://127.0.0.1:8766').rstrip('/')
 OUT=pathlib.Path(os.environ.get('TEST_OUTPUT_DIR','test-results/release'));OUT.mkdir(parents=True,exist_ok=True)
 checks=[]
@@ -32,8 +35,8 @@ with sync_playwright() as p:
         cleanup(page);clean=data(page)
         check('cleanup removes visual blanks '+repr(blank),clean['chapters'][0]['text']=='#C1\n○場\n#C2\n人「中\u200b身」' and [c['id'] for c in clean['chapters'][0]['cuts']]==ids)
         check('no rendered empty columns '+repr(blank),page.evaluate("[...$('#editor').children].every(p=>p.dataset.cutId||p.textContent.trim())"))
-        page.locator('#undo').click();check('cleanup is exactly one Undo '+repr(blank),data(page)==before)
-        page.locator('#redo').click();check('cleanup Redo exact '+repr(blank),data(page)==clean)
+        page.locator('#editor').press('Control+z');check('cleanup is exactly one Undo '+repr(blank),data(page)==before)
+        page.locator('#editor').press('Control+Shift+z');check('cleanup Redo exact '+repr(blank),data(page)==clean)
         page.evaluate('()=>{for(let i=0;i<10;i++){renderText();capture()}save()}');page.reload()
         after=data(page)['chapters'][0]
         check('cleanup stable through ten cycles and reload '+repr(blank),after['text']==clean['chapters'][0]['text'] and after['cuts']==clean['chapters'][0]['cuts'])
@@ -55,7 +58,7 @@ with sync_playwright() as p:
     for i in range(4):
         select_all_text();action='copy' if i%2==0 else 'cut'
         page.evaluate('''action=>{window.releaseClipboard=new DataTransfer();$('#editor').dispatchEvent(new ClipboardEvent(action,{clipboardData:releaseClipboard,bubbles:true,cancelable:true}))}''',action)
-        page.locator('#add').click();page.locator('#createChapter').click()
+        open_chapters(page);page.locator('#add').click();page.locator('#createChapter').click()
         page.evaluate('''()=>{caretEnd($('#editor').lastElementChild);$('#editor').dispatchEvent(new ClipboardEvent('paste',{clipboardData:releaseClipboard,bubbles:true,cancelable:true}))}''')
         check('chapter transfer keeps body and column styles '+str(i+2),page.evaluate("chapter().text.replace(/^#C\\d+$/gm,'').trim()==='○駅\\n　　　動作\\n人「言葉」' && [...$('#editor').querySelectorAll('p:not(.cut)')].filter(p=>p.textContent.trim()).map(p=>getComputedStyle(p).lineHeight).every(x=>x===getComputedStyle($('#editor')).lineHeight)"))
     check('all chapter/cut IDs remain unique',page.evaluate('''()=>new Set(state.chapters.flatMap(c=>c.cuts.map(x=>x.id))).size===state.chapters.flatMap(c=>c.cuts).length'''))

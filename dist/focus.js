@@ -6,7 +6,7 @@
   try{pinchEnabled=JSON.parse(localStorage.getItem(preferenceKey)||'{}').pinchFocus===true}catch(_){}
   const focused=()=>document.body.classList.contains('focus')||!!document.fullscreenElement;
   function sync(){
-    const on=focused();controls.hidden=!on;
+    const on=focused();controls.hidden=!on;$('#focusFooter').hidden=!on;if(on)window.LayoutControls?.syncFocusPlacement();
     document.body.classList.toggle('browser-fullscreen',!!document.fullscreenElement);
     $('#focus').setAttribute('aria-pressed',String(document.body.classList.contains('focus')));
     $('#focusGesture').hidden=!pinchEnabled;
@@ -45,7 +45,7 @@
     if(composing||e.isComposing||e.keyCode===229||$('#dialog').open)return;
     if(e.key==='Escape'){sync();return}
     const target=e.target;
-    if(target!==document.body&&target!==$('#editor')&&!target.closest?.('#editor,#focusControls'))return;
+    if(target!==document.body&&target!==$('#editor')&&!target.closest?.('#editor,#focusControls,#focusFooter'))return;
     if(focused()&&e.altKey&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&['PageUp','PageDown'].includes(e.key)){
       e.preventDefault();if(!e.repeat)move(e.key==='PageUp'?-1:1);
     }

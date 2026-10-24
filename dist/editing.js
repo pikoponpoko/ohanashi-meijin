@@ -3,9 +3,10 @@ let history=[], historyIndex=0;
 function snapshot(){return {state:JSON.stringify(state),active}}
 function resetHistory(){history=[snapshot()];historyIndex=0;syncHistory()}
 function recordHistory(){if(!history.length)return;if(history[historyIndex].state===JSON.stringify(state))return;history.splice(historyIndex+1);history.push(snapshot());if(history.length>150)history.shift();historyIndex=history.length-1;syncHistory()}
-function syncHistory(){$('#undo').disabled=historyIndex<=0;$('#redo').disabled=historyIndex>=history.length-1}
+function syncHistory(){const undo=$('#undo'),redo=$('#redo');if(undo)undo.disabled=historyIndex<=0;if(redo)redo.disabled=historyIndex>=history.length-1}
 function travelHistory(step){if(composing||loadBlocked)return;const next=historyIndex+step;if(next<0||next>=history.length)return;historyIndex=next;const entry=history[next];state=JSON.parse(entry.state);active=state.chapters.some(c=>c.id===entry.active)?entry.active:state.chapters[0].id;save();render();syncHistory()}
-$('#undo').onmousedown=$('#redo').onmousedown=e=>e.preventDefault();$('#undo').onclick=()=>travelHistory(-1);$('#redo').onclick=()=>travelHistory(1);
+// History remains available through keyboard and touch; screen buttons are optional.
+for(const [id,step] of [['undo',-1],['redo',1]]){const button=$('#'+id);if(button){button.onmousedown=e=>e.preventDefault();button.onclick=()=>travelHistory(step)}}
 document.addEventListener('keydown',e=>{if(composing||e.isComposing||$('#dialog').open)return;const target=e.target;if(target!==$('#editor')&&target!==document.body&&!target.closest?.('#editor'))return;if((e.ctrlKey||e.metaKey)&&['z','y'].includes(e.key.toLowerCase())){e.preventDefault();travelHistory(e.key.toLowerCase()==='y'||e.shiftKey?1:-1)}});
 $('#editor').addEventListener('beforeinput',e=>{if(composing||e.isComposing)return;if(e.inputType==='historyUndo'||e.inputType==='historyRedo'){e.preventDefault();travelHistory(e.inputType==='historyUndo'?-1:1)}else if(['insertParagraph','insertLineBreak'].includes(e.inputType)){e.preventDefault();enterParagraph(e.inputType==='insertParagraph')}});
 function editorRange(){const sel=getSelection();if(!sel.rangeCount)return null;const r=sel.getRangeAt(0);return $('#editor').contains(r.commonAncestorContainer)?r:null}
@@ -75,7 +76,7 @@ showCheck=function(){
 // Text in non-editor controls also participates in the same project history.
 $('#chapterTitle').addEventListener('input',recordHistory);$('#status').addEventListener('change',recordHistory);
 // First outside tap closes the drawer without changing the selection/caret.
-$('#sidebarBackdrop').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();document.body.classList.remove('mobilemenu')});
+$('#sidebarBackdrop').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation()});
 let gesture=null;
 const editor=$('#editor');
 editor.addEventListener('touchstart',e=>{if(composing||$('#dialog').open||document.body.classList.contains('mobilemenu'))return;const now=performance.now();if(!gesture){gesture={time:now,points:new Map(),max:0,bad:false}}if(now-gesture.time>120&&e.touches.length>gesture.max)gesture.bad=true;for(const t of e.changedTouches)gesture.points.set(t.identifier,{x:t.clientX,y:t.clientY});gesture.max=Math.max(gesture.max,e.touches.length);if(gesture.max>3)gesture.bad=true},{passive:true});

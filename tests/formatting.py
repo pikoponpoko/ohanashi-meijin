@@ -1,6 +1,9 @@
 """Paragraph style and deterministic proposal acceptance in isolated browser storage."""
 import functools,http.server,json,os,pathlib,shutil,threading
 from playwright.sync_api import sync_playwright
+
+def open_chapters(page):
+    if page.locator('#chapterPanel').is_hidden():page.locator('#menu').click()
 ROOT=pathlib.Path(__file__).resolve().parents[1];OUT=pathlib.Path(os.environ.get('TEST_OUTPUT_DIR','/tmp/ohanashi-format-tests'));OUT.mkdir(parents=True,exist_ok=True)
 class Handler(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
@@ -25,8 +28,8 @@ try:
   check('multiple partial paragraphs change kind without altering text or IDs',styled['chapters'][0]['text']==before['chapters'][0]['text'] and styled['chapters'][0]['cuts']==before['chapters'][0]['cuts'] and styled['chapters'][0]['formats'][1:4]==['dialogue']*3)
   check('style buttons never insert templates',page.locator('#editor').inner_text().count('人物名「セリフ」')==0 and len(styled['chapters'][0]['text'].split('\n'))==6)
   check('selection remains in editor after format click',page.evaluate("$('#editor').contains(getSelection().anchorNode)&&!getSelection().isCollapsed"))
-  page.locator('#undo').click();check('batch format is exactly one Undo',data(page)==before)
-  page.locator('#redo').click();check('batch format Redo exact',data(page)==styled)
+  page.locator('#editor').press('Control+z');check('batch format is exactly one Undo',data(page)==before)
+  page.locator('#editor').press('Control+Shift+z');check('batch format Redo exact',data(page)==styled)
   page.reload();check('manual formats persist through reload',data(page)==styled)
   page.evaluate('()=>{for(let i=0;i<10;i++){renderText();capture()}save()}');check('ten cycles preserve manual styles and exact raw indentation',data(page)==styled)
   select(page,3,3,1,1);page.locator('[data-insert=action]').click()
@@ -37,18 +40,18 @@ try:
   baseline=data(page);select(page,2,2);page.evaluate('composing=true');page.locator('[data-insert=scene]').click();page.evaluate('composing=false');check('IME flag blocks batch formatting',data(page)==baseline)
   page.evaluate("()=>$('#editor').dispatchEvent(new KeyboardEvent('keydown',{key:'1',altKey:true,isComposing:true,bubbles:true}))");check('IME keyboard event blocks formatting',data(page)==baseline)
   select(page,2,2);page.keyboard.press('Alt+1');check('Alt1 changes kind without inserting text',data(page)['chapters'][0]['formats'][2]=='scene' and data(page)['chapters'][0]['text']==source)
-  baseline=data(page);page.locator('#chapterTitle').focus();page.keyboard.press('Alt+2');check('chapter title input does not trigger format shortcut',data(page)==baseline)
+  open_chapters(page);page.locator('#chapterTitle').focus();baseline=data(page);page.keyboard.press('Alt+2');check('chapter title input does not trigger format shortcut',data(page)==baseline)
   # Custom clipboard carries chosen paragraph kinds, including text without a scene prefix.
   select(page,2,2)
   page.evaluate("()=>{window.clip=new DataTransfer();$('#editor').dispatchEvent(new ClipboardEvent('copy',{clipboardData:clip,bubbles:true,cancelable:true}))}")
   check('copy records retain manually selected kind',page.evaluate("JSON.parse(clip.getData('application/x-ohanashi')).records[0].kind==='scene'"))
-  page.locator('#add').click();page.locator('#createChapter').click();page.evaluate("()=>{caretEnd($('#editor').lastElementChild);$('#editor').dispatchEvent(new ClipboardEvent('paste',{clipboardData:clip,bubbles:true,cancelable:true}))}")
+  open_chapters(page);page.locator('#add').click();page.locator('#createChapter').click();page.evaluate("()=>{caretEnd($('#editor').lastElementChild);$('#editor').dispatchEvent(new ClipboardEvent('paste',{clipboardData:clip,bubbles:true,cancelable:true}))}")
   check('paste keeps manual kind and original words',page.evaluate("chapter().formats.includes('scene')&&chapter().text.includes('動作を書く')"))
   # Move the selected paragraph to a chapter with its stored format.
   setup(page,source);select(page,2,2);page.locator('[data-insert=scene]').click();select(page,2,2);moved_before=data(page)
-  page.locator('#splitChapter').click();page.locator('#confirmSplit').click()
+  open_chapters(page);page.locator('#splitChapter').click();page.locator('#confirmSplit').click()
   check('chapter split keeps manual kind without changing words',page.evaluate("chapter().formats.includes('scene')&&chapter().text.includes('動作を書く')"))
-  page.locator('#undo').click();check('chapter split Undo retains formatted source exactly',data(page)==moved_before)
+  page.locator('#editor').press('Control+z');check('chapter split Undo retains formatted source exactly',data(page)==moved_before)
   # Empty editing-only slot can hold a style without adding a saved blank line.
   setup(page,'#C1');raw=data(page)['chapters'][0]['text'];page.evaluate("()=>caretEnd($('#editor').lastElementChild)");page.locator('[data-insert=dialogue]').click()
   check('empty slot stores style without adding text or cuts',data(page)['chapters'][0]['text']==raw and data(page)['chapters'][0]['placeholderFormat']=='dialogue')
@@ -63,8 +66,8 @@ try:
   check('proposal apply changes formats only with exact text/cut IDs',after['chapters'][0]['text']==before['chapters'][0]['text'] and after['chapters'][0]['cuts']==before['chapters'][0]['cuts'])
   check('scene is not a cut or picture and action lines remain separate',len(after['chapters'][0]['cuts'])==2 and after['chapters'][0]['formats'][1:4]==['scene','action','action'])
   check('wrapped speech stays speech and manual uncertainty correction applies',after['chapters'][0]['formats'][4:7]==['dialogue','dialogue','scene'])
-  page.locator('#undo').click();check('proposal apply is one exact Undo',data(page)==before)
-  page.locator('#redo').click();check('proposal Redo exact',data(page)==after)
+  page.locator('#editor').press('Control+z');check('proposal apply is one exact Undo',data(page)==before)
+  page.locator('#editor').press('Control+Shift+z');check('proposal Redo exact',data(page)==after)
   page.reload();check('proposal formatting persists on reload',data(page)==after)
   page.locator('#autoFormat').click();page.evaluate("chapter().text+='変更'");page.locator('#applyAutoFormat').click();check('stale proposal does not overwrite a changed manuscript',page.locator('#dialog').is_visible() and page.evaluate("chapter().text.endsWith('変更')"));page.locator('#close').click()
   setup(page,'#C1\n漢12漢１２漢！漢？漢 <b>&<>')
@@ -75,6 +78,9 @@ try:
   check('print layout retains manual paragraph kind',page.evaluate("[...document.querySelectorAll('#printRoot .printbody p')].some(p=>p.classList.contains('dialogue'))"))
   with page.expect_download() as download:page.evaluate('()=>printProject(true)')
   download.value.save_as(OUT/'formatted.pdf');check('direct PDF still downloads without changing manuscript',(OUT/'formatted.pdf').read_bytes().startswith(b'%PDF') and data(page)==pdf_data)
+  setup(page,'#C1\n　　　#C2\n　　　\n　　　動作')
+  before=data(page);page.evaluate('()=>{for(let i=0;i<5;i++){renderText();capture()}save()}')
+  check('saved indented labels and whitespace are not silently reinterpreted as cuts',data(page)['chapters'][0]['text']==before['chapters'][0]['text'] and data(page)['chapters'][0]['cuts']==before['chapters'][0]['cuts'])
   check('no runtime errors',not errors);page.screenshot(path=str(OUT/'formatted.png'));browser.close()
 finally:server.shutdown();server.server_close()
 (OUT/'checks.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2))

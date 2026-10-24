@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');require('../dist/model.js');require('../dist/timing-model.js');
+const M=globalThis.ScriptModel,T=globalThis.ScriptTiming;
+const project=text=>({rate:300,actionSeconds:5,speechPause:0.6,cutPause:0.4,chapters:[M.importChapter({id:'c',title:'章',text})]});
+const p=project('#C1\n○駅\n　　　扉が開く。\n　　　振り返る。\n澪「一二三四五\n六七八九十」\n#C2\n【街】\n澪：あいうえお。');
+const exact=JSON.stringify(p),t=T.analyze(p);assert.equal(t.spokenCharacters,15);assert.equal(t.speechUnits,2);assert.equal(t.actions,2);assert.equal(t.uncertainSpeech,1);assert.equal(t.cuts.length,2);assert.equal(t.seconds,12.4);assert.equal(JSON.stringify(p),exact);
+const sequential=T.analyze({...p,timingMode:'sequential'});assert.equal(sequential.seconds,15);assert.ok(sequential.seconds>t.seconds);
+assert.ok(T.analyze({...p,rate:150}).speechSeconds>t.speechSeconds);assert.ok(T.analyze({...p,speechPause:2,cutPause:2}).seconds>t.seconds);
+assert.equal(T.analyze(project('#C1\n○駅\n#C2')).seconds,0);
+const legacy=project('#C1');legacy.chapters=[M.migrateChapter({id:'saved',title:'章',text:'#C1\n　　　#C2'})];const saved=JSON.stringify(legacy);assert.equal(T.analyze(legacy).embeddedLabels,1);assert.equal(T.analyze(legacy).seconds,0);assert.equal(JSON.stringify(legacy),saved);
+const noPause=T.analyze({...p,speechPause:0,cutPause:0});assert.ok(noPause.seconds<t.seconds);
+console.log('PASS timing: scene/labels excluded, wrapped speech counted once, action units preserved, overlap vs sequential and zero/configurable pauses');
+const a=project('#C1\n動作：歩く。\nSE：風\n説明：概要\n#C2\n語り（OFF）：一二三四五');const result=T.analyze(a);assert.equal(result.speechUnits,1);assert.equal(result.spokenCharacters,5);assert.equal(result.actions,3);
+assert.notEqual(T.analyze(project('#C1\n人「短い」')).seconds,T.analyze(project('#C1\n人「'+('長い文章'.repeat(500))+'」')).seconds);
+console.log('PASS timing: Prepro voice/action prefixes, source unchanged, estimate varies per work and is never fixed to 12 minutes');

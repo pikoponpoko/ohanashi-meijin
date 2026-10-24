@@ -1,0 +1,16 @@
+{
+  "seconds": 1687.6000000000006,
+  "spokenCharacters": 1311,
+  "speechUnits": 110,
+  "actions": 328,
+  "uncertainSpeech": 0,
+  "embeddedLabels": 83,
+  "speechSeconds": 262.20000000000005,
+  "actionTime": 1640,
+  "pauseTime": 89.6,
+  "rate": 300,
+  "actionSeconds": 5,
+  "speechPause": 0.6,
+  "cutPause": 0.4,
+  "mode": "parallel"
+}

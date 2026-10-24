@@ -7,7 +7,7 @@
     document.documentElement.style.setProperty('--app-height',Math.min(innerHeight,viewport?.height??innerHeight)+'px');
   }
   addEventListener('resize',fitViewport);viewport?.addEventListener('resize',fitViewport);fitViewport();
-  for(const el of [document.querySelector('#editor'),document.querySelector('#sidebar')]){
+  for(const el of [document.querySelector('#editor'),document.querySelector('#sidebar'),document.querySelector('#chapterPanel')].filter(Boolean)){
     let timer;
     function reveal(){
       el.classList.add('scroll-active');clearTimeout(timer);
