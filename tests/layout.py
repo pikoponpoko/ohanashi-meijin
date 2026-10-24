@@ -77,7 +77,7 @@ try:
    page.locator('#nextChapter').click();pause(page);page.locator('#nextChapter').click();pause(page);check('last chapter next button disabled '+name,page.locator('#nextChapter').is_disabled() and page.evaluate("active==='three'"))
    page.keyboard.press('Alt+PageUp');pause(page);check('focus keyboard chapter navigation remains available '+name,page.evaluate("active==='two'"))
    page.screenshot(path=str(OUT/(name+'-focus.png')));page.locator('#exitFocus').click();check('onscreen focus exit remains available '+name,not page.evaluate("document.body.classList.contains('focus')"))
-   page.locator('#menu').click();page.locator('#chapters button').first.click();check('normal chapter selection preserves manuscript edits '+name,page.evaluate("active==='one'&&chapter().text.endsWith('追記')"))
+   page.locator('#menu').click();page.locator('#chapters .chapterSelect').first.click();check('normal chapter selection preserves manuscript edits '+name,page.evaluate("active==='one'&&chapter().text.endsWith('追記')"))
    page.locator('#export').click();page.wait_for_timeout(300);pause(page);check('export remains directly accessible '+name,page.locator('#outTxt').is_visible());page.locator('#close').click()
    video=page.video;ctx.close()
    if video:shutil.copyfile(video.path(),OUT/(name+'-operations.webm'))

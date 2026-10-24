@@ -1,0 +1,67 @@
+PASS desktopvertical double Enter at end no blank
+PASS desktopvertical first cut ID retained
+PASS desktopvertical double Enter before existing body no blank
+PASS desktopvertical split Undo restores exact structure
+PASS desktopvertical split Redo restores IDs
+PASS desktophorizontal double Enter at end no blank
+PASS desktophorizontal first cut ID retained
+PASS desktophorizontal double Enter before existing body no blank
+PASS desktophorizontal split Undo restores exact structure
+PASS desktophorizontal split Redo restores IDs
+PASS desktop one blank cleanup control
+PASS desktop keeps intentional gap removes cut-adjacent blanks
+PASS desktop tidy is idempotent
+PASS desktop tidy Redo exact
+PASS desktop repair legacy scene proposals internally and visually
+PASS desktop scene repair Undo exact
+PASS desktop ellipsis markup
+PASS desktop glyph and cut spacing leave data unchanged
+PASS desktop newly typed ellipsis retains caret and native input
+PASS desktop typing continues after centered ellipsis
+PASS desktop panel anchored within viewport
+PASS desktop arrows removed and drag handles exist
+PASS desktop pointer/touch reorders without switching active chapter
+PASS desktop reorder Undo exact
+PASS desktop Open calls picker directly without intermediate dialog
+PASS desktop browser autosave differs from file save
+PASS desktop Save overwrites same native file handle
+PASS desktop Save As selects a separate file
+PASS desktop cancelled Save As preserves data
+PASS desktop denied overwrite keeps unsaved manuscript
+PASS desktop fallback Open directly invokes chooser and cancel keeps data
+PASS desktop reload recovers exact script and clears file association
+PASS desktop no runtime errors
+PASS mobilevertical double Enter at end no blank
+PASS mobilevertical first cut ID retained
+PASS mobilevertical double Enter before existing body no blank
+PASS mobilevertical split Undo restores exact structure
+PASS mobilevertical split Redo restores IDs
+PASS mobilehorizontal double Enter at end no blank
+PASS mobilehorizontal first cut ID retained
+PASS mobilehorizontal double Enter before existing body no blank
+PASS mobilehorizontal split Undo restores exact structure
+PASS mobilehorizontal split Redo restores IDs
+PASS mobile one blank cleanup control
+PASS mobile keeps intentional gap removes cut-adjacent blanks
+PASS mobile tidy is idempotent
+PASS mobile tidy Redo exact
+PASS mobile repair legacy scene proposals internally and visually
+PASS mobile scene repair Undo exact
+PASS mobile ellipsis markup
+PASS mobile glyph and cut spacing leave data unchanged
+PASS mobile newly typed ellipsis retains caret and native input
+PASS mobile typing continues after centered ellipsis
+PASS mobile panel anchored within viewport
+PASS mobile arrows removed and drag handles exist
+PASS mobile pointer/touch reorders without switching active chapter
+PASS mobile reorder Undo exact
+PASS mobile Open calls picker directly without intermediate dialog
+PASS mobile browser autosave differs from file save
+PASS mobile Save overwrites same native file handle
+PASS mobile Save As selects a separate file
+PASS mobile cancelled Save As preserves data
+PASS mobile denied overwrite keeps unsaved manuscript
+PASS mobile fallback Open directly invokes chooser and cancel keeps data
+PASS mobile reload recovers exact script and clears file association
+PASS mobile no runtime errors
+66 usage checks passed

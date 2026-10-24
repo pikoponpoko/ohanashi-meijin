@@ -1,0 +1,56 @@
+{
+  "font": "Noto Serif JP",
+  "version": 2,
+  "title": "音響の共通試験",
+  "chapters": [
+    {
+      "id": "chapter-sound",
+      "title": "章",
+      "text": "#C1\n○部屋（朝）\n音楽：静かな曲\nSE：足音\n人「音楽も\nSE：これは発話の続き」\n#C2\n　　　振り返る。",
+      "cuts": [
+        {
+          "id": "stable-a",
+          "line": 0
+        },
+        {
+          "id": "stable-b",
+          "line": 6
+        }
+      ],
+      "formats": [
+        null,
+        "scene",
+        "action",
+        "action",
+        "dialogue",
+        "dialogue",
+        null,
+        "action"
+      ],
+      "status": "未着手",
+      "soundCues": {
+        "version": 1,
+        "entries": [
+          {
+            "line": 2,
+            "kind": "music",
+            "raw": "音楽：静かな曲"
+          },
+          {
+            "line": 3,
+            "kind": "se",
+            "raw": "SE：足音"
+          }
+        ]
+      }
+    }
+  ],
+  "size": 14,
+  "printSize": 12,
+  "rate": 300,
+  "actionSeconds": 5,
+  "draft": 1,
+  "direction": "vertical",
+  "dark": false,
+  "cover": true
+}

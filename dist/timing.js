@@ -4,7 +4,7 @@
     originalSettings();
     const body=$('#dialogBody'),saveButton=$('#saveSettings');
     const section=document.createElement('div');
-    section.innerHTML='<label for="speechPauseField">発話ひとまとまりの間（秒）</label><input id="speechPauseField" type="number" min="0" max="20" step="0.1"><label for="cutPauseField">カットごとの演出上の間（秒）</label><input id="cutPauseField" type="number" min="0" max="30" step="0.1"><label for="timingModeField">台詞と動作の時間</label><select id="timingModeField"><option value="parallel">同時に進む（長い方を採用）</option><option value="sequential">順番に進む（合計する）</option></select><p>柱・カット番号は尺に数えません。絵や音声の実測尺ではなく、執筆中の目安です。</p>';
+    section.innerHTML='<label for="speechPauseField">発話ひとまとまりの間（秒）</label><input id="speechPauseField" type="number" min="0" max="20" step="0.1"><label for="cutPauseField">カットごとの演出上の間（秒）</label><input id="cutPauseField" type="number" min="0" max="30" step="0.1"><label for="timingModeField">台詞と動作の時間</label><select id="timingModeField"><option value="parallel">同時に進む（長い方を採用）</option><option value="sequential">順番に進む（合計する）</option></select><p>柱・カット番号・音楽・SEは台詞や動作の尺に数えません。絵や音声の実測尺ではなく、執筆中の目安です。</p>';
     body.insertBefore(section,saveButton);
     const timing=ScriptTiming.analyze(state);$('#speechPauseField').value=timing.speechPause;$('#cutPauseField').value=timing.cutPause;$('#timingModeField').value=timing.mode;
     const originalSave=saveButton.onclick;
@@ -19,6 +19,7 @@
     modal('推定尺の計算根拠','');
     const lines=[
       '台詞 '+t.spokenCharacters+'字 ÷ '+t.rate+'字/分 = '+seconds(t.speechSeconds)+'秒',
+      '音楽 '+t.musicCues+'件・SE '+t.seCues+'件は実際の音響尺が未指定のため、この推定には加算しません。',
       '動作説明 '+t.actions+'行 × '+t.actionSeconds+'秒 = '+seconds(t.actionTime)+'秒',
       '発話 '+t.speechUnits+'単位の間 '+t.speechPause+'秒、内容のある各カットの間 '+t.cutPause+'秒',
       t.mode==='parallel'?'カットごとに台詞＋発話の間と動作の長い方を採用し、カットの間を加えています。':'カットごとに台詞・発話の間・動作・カットの間を合計しています。',

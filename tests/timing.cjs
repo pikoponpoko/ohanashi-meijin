@@ -9,6 +9,6 @@ assert.equal(T.analyze(project('#C1\n○駅\n#C2')).seconds,0);
 const legacy=project('#C1');legacy.chapters=[M.migrateChapter({id:'saved',title:'章',text:'#C1\n　　　#C2'})];const saved=JSON.stringify(legacy);assert.equal(T.analyze(legacy).embeddedLabels,1);assert.equal(T.analyze(legacy).seconds,0);assert.equal(JSON.stringify(legacy),saved);
 const noPause=T.analyze({...p,speechPause:0,cutPause:0});assert.ok(noPause.seconds<t.seconds);
 console.log('PASS timing: scene/labels excluded, wrapped speech counted once, action units preserved, overlap vs sequential and zero/configurable pauses');
-const a=project('#C1\n動作：歩く。\nSE：風\n説明：概要\n#C2\n語り（OFF）：一二三四五');const result=T.analyze(a);assert.equal(result.speechUnits,1);assert.equal(result.spokenCharacters,5);assert.equal(result.actions,3);
+const a=project('#C1\n動作：歩く。\nSE：風\n説明：概要\n#C2\n語り（OFF）：一二三四五');const result=T.analyze(a);assert.equal(result.speechUnits,1);assert.equal(result.spokenCharacters,5);assert.equal(result.actions,2);assert.equal(result.seCues,1);
 assert.notEqual(T.analyze(project('#C1\n人「短い」')).seconds,T.analyze(project('#C1\n人「'+('長い文章'.repeat(500))+'」')).seconds);
 console.log('PASS timing: Prepro voice/action prefixes, source unchanged, estimate varies per work and is never fixed to 12 minutes');

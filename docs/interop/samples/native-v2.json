@@ -1,0 +1,69 @@
+{
+  "version": 2,
+  "title": "共通検証原稿",
+  "chapters": [
+    {
+      "id": "chapter-a",
+      "title": "一章",
+      "text": "#C1\n自宅・和室（冬・朝５時・３０歳）\n\n音楽：穏やかな曲\nSE：足音\n人「途中で\n続く台詞」\n#C2\n廊下（春・昼間）\n　　　振り返る。",
+      "cuts": [
+        {
+          "id": "cut-a",
+          "line": 0
+        },
+        {
+          "id": "cut-b",
+          "line": 7
+        }
+      ],
+      "formats": [
+        null,
+        "scene",
+        "action",
+        "action",
+        "action",
+        "dialogue",
+        "dialogue",
+        null,
+        "scene",
+        "action"
+      ],
+      "status": "未着手",
+      "soundCues": {
+        "version": 1,
+        "entries": [
+          {
+            "line": 3,
+            "kind": "music",
+            "raw": "音楽：穏やかな曲"
+          },
+          {
+            "line": 4,
+            "kind": "se",
+            "raw": "SE：足音"
+          }
+        ]
+      },
+      "formatOrigins": [
+        null,
+        "manual",
+        "auto",
+        "auto",
+        "auto",
+        "auto",
+        "auto",
+        null,
+        "manual",
+        "auto"
+      ]
+    }
+  ],
+  "size": 14,
+  "printSize": 12,
+  "rate": 300,
+  "actionSeconds": 5,
+  "draft": 1,
+  "direction": "vertical",
+  "dark": false,
+  "cover": true
+}

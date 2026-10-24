@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Meijin script exchange 0.1-draft.1 (proposal only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "source",
+    "title",
+    "chapters"
+  ],
+  "properties": {
+    "format": {
+      "const": "meijin.script-exchange"
+    },
+    "schemaVersion": {
+      "const": "0.1-draft.1"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "app",
+        "documentId",
+        "revision"
+      ],
+      "properties": {
+        "app": {
+          "const": "ohanashi-meijin"
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "title": {
+      "type": "string"
+    },
+    "chapters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/chapter"
+      }
+    }
+  },
+  "$defs": {
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "raw",
+        "interpretation"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "sceneHeading",
+            "action",
+            "dialogue",
+            "text",
+            "blank"
+          ]
+        },
+        "raw": {
+          "type": "string"
+        },
+        "interpretation": {
+          "enum": [
+            "explicit",
+            "heuristic",
+            "unresolved"
+          ]
+        },
+        "speaker": {
+          "type": "string"
+        },
+        "delivery": {
+          "enum": [
+            "normal",
+            "off",
+            "narration",
+            "unknown"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "scene": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "heading"
+          ],
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "time": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "dialogue"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "speaker",
+              "delivery",
+              "text"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "sceneHeading"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "scene"
+            ]
+          }
+        }
+      ]
+    },
+    "cut": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayNumber",
+        "blocks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "displayNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          }
+        }
+      }
+    },
+    "chapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "cuts"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "cuts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cut"
+          }
+        }
+      }
+    }
+  }
+}

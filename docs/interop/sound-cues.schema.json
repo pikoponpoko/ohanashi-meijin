@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"Ohanashi saved v2 chapter.soundCues version 1 (optional additive metadata)",
+  "type":"object",
+  "required":["version","entries"],
+  "properties":{
+    "version":{"const":1},
+    "entries":{"type":"array","items":{"type":"object","required":["line","kind","raw"],"properties":{"line":{"type":"integer","minimum":0},"kind":{"enum":["music","se"]},"raw":{"type":"string"}},"additionalProperties":false}}
+  },
+  "additionalProperties":false,
+  "$comment":"line uniqueness, bounds, exact raw equality, prefix agreement and quote context require semantic validation. This is not a new meijin.script-exchange version."
+}

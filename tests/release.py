@@ -15,7 +15,7 @@ def data(page):return page.evaluate('JSON.parse(JSON.stringify(state))')
 def setup(page,text):
     page.evaluate('''text=>{state=validate({version:1,title:'確認原稿',chapters:[{id:'release',title:'第一章',text}]});active=state.chapters[0].id;loadBlocked=false;resetHistory();render();save()}''',text)
 def cleanup(page):
-    page.locator('#check').click();page.get_by_text('空行を削除',exact=True).click()
+    page.locator('#check').click();page.get_by_text('空行を整理',exact=True).click()
 def new_document(page):
     page.locator('#newDocument').click();page.locator('#confirmNewDocument').click()
 def context(browser,**options):
@@ -49,7 +49,7 @@ with sync_playwright() as p:
     setup(page,'')
     page.evaluate('''()=>{$('#editor').innerHTML='<p class="cut" data-cut-id="dom" contenteditable="false">#C1</p><div>○場<br><br>人「言葉」<br></div><p><br></p>';capture()}''')
     cleanup(page)
-    check('DOM BR and empty paragraph cleanup',data(page)['chapters'][0]['text']=='#C1\n○場\n人「言葉」' and page.evaluate("[...$('#editor').children].every(p=>p.textContent.trim())"))
+    check('DOM BR and empty paragraph cleanup',data(page)['chapters'][0]['text']=='#C1\n○場\n\n人「言葉」' and page.evaluate("[...$('#editor').children].filter(p=>!p.textContent.trim()).length===1"))
     page.screenshot(path=str(OUT/'cleanup.png'))
 
     # Requirement 1: actual cut/copy clipboard records through five chapters.

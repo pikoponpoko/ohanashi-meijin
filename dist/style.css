@@ -74,3 +74,32 @@ body.focus #focusGesture{background:transparent;opacity:.4}body.focus #focusGest
 body.focus #focusControls button{background:transparent}
 /* Printed cut labels align with the top of the writing column, as in the editor. */
 .printbody .cut{padding:0;text-indent:0;color:#999}
+
+/* Usage feedback: keep body metrics; space only structural cut columns. */
+#editor:not(.horizontal) .verticalEllipsis,.printbody .verticalEllipsis{font-feature-settings:'vert' 0,'vrt2' 0,'palt' 0;text-orientation:sideways;letter-spacing:0}
+#editor:not(.horizontal) p.cut{margin-left:1em;margin-right:.5em}#editor.horizontal p.cut{margin-bottom:.8em;margin-top:.4em}
+.chapterChevron{flex-shrink:0}.chapterRow{display:flex;align-items:center;gap:3px}.chapterRow .chapterSelect{flex:1;min-width:0}.chapterRow .chapterHandle{width:30px;padding:10px 3px;flex-shrink:0;touch-action:none;cursor:grab;color:var(--muted);justify-content:center}
+.chapterRow.dragTarget{outline:1px solid var(--muted)}.chapterHandle[aria-pressed=true]{background:var(--line);cursor:grabbing}
+#fileStatus{font-size:9px;color:var(--muted)}
+
+#editor:not(.horizontal) .verticalEllipsis{color:transparent;text-shadow:0 calc(0px - var(--ellipsis-offset,0px)) var(--ink)}
+.printbody .verticalEllipsis{color:transparent;text-shadow:0 calc(0px - var(--ellipsis-offset,0px)) #111}
+
+@media(forced-colors:active){#editor:not(.horizontal) .verticalEllipsis{color:CanvasText;text-shadow:none}}
+
+/* Focus chrome shares the writing paper; body typography remains unchanged. */
+body.focus{background:var(--paper)}body.focus main,body.focus #writing,body.focus #focusFooter{background:var(--paper)}
+#focusFooter #focusChapter{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:45%;text-align:center;pointer-events:none;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#focusControls #exitFocus{font-size:23px;line-height:1;min-width:40px}body.focus #focusControls{left:auto}
+#cueType{font-size:11px;padding:3px 4px;max-width:62px;background:transparent;border-color:var(--line)}
+.music,.se{padding-inline-start:1em;color:var(--muted)}
+#editor,#chapterPanel{scrollbar-color:transparent transparent}#editor::-webkit-scrollbar,#chapterPanel::-webkit-scrollbar{width:6px;height:6px}
+:is(#editor,#chapterPanel).scroll-active,:is(#editor,#chapterPanel).scroll-dragging{scrollbar-color:color-mix(in srgb,var(--muted) 18%,transparent) transparent}
+:is(#editor,#chapterPanel).scroll-active::-webkit-scrollbar-thumb,:is(#editor,#chapterPanel).scroll-dragging::-webkit-scrollbar-thumb,#editor::-webkit-scrollbar-thumb:hover{background-color:color-mix(in srgb,var(--muted) 18%,transparent)}
+@media(forced-colors:active){#editor,#chapterPanel{scrollbar-color:auto}.music,.se{color:CanvasText}}
+
+:is(body,body.dark) #editor.scroll-dragging,:is(body,body.dark) #editor.scroll-active{scrollbar-color:color-mix(in srgb,var(--muted) 18%,transparent) transparent}
+:root:fullscreen,:root:fullscreen::backdrop{background:var(--paper)}
+@media(forced-colors:active){:is(body,body.dark) #editor.scroll-dragging,:is(body,body.dark) #editor.scroll-active{scrollbar-color:auto}}
+
+.printbody .music,.printbody .se{color:inherit}
