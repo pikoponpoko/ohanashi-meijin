@@ -12,3 +12,11 @@
 .printbody p{margin:0 0 0 .6em}.printfoot{position:absolute;bottom:8mm;left:20mm;right:20mm;display:flex;justify-content:space-between;font:8pt 'Noto Sans JP';color:#888}
 .printpage.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.cover h1{font:28pt 'Noto Serif JP';letter-spacing:.2em;margin-bottom:20mm}.cover p{font:12pt 'Noto Serif JP';line-height:2}
 #printRoot.pdf-render{display:block;position:fixed;left:-100000px;top:0;pointer-events:none}
+
+#focusControls{position:fixed;z-index:4;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));max-width:calc(100vw - 16px);display:flex;align-items:center;gap:3px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:3px}
+#focusControls[hidden],#focusGesture[hidden]{display:none!important}
+#focusControls button{min-height:40px}#focusChapter{max-width:28vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--muted)}
+#focusGesture{position:fixed;bottom:max(8px,env(safe-area-inset-bottom));right:8px;z-index:4;width:180px;min-height:44px;background:var(--side);border:1px solid var(--line);font-size:11px;touch-action:none;user-select:none}
+body.focus #editor{padding-top:70px;padding-bottom:70px}
+@media(max-width:420px){#focusChapter{display:none}#focusControls{left:8px;justify-content:space-between}}
+@media print{#focusControls,#focusGesture{display:none!important}}

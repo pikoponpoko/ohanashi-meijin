@@ -2,7 +2,7 @@
   "name": "ohanashi-meijin",
   "private": true,
   "scripts": {
-    "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js",
+    "check": "node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/focus.js",
     "deploy": "wrangler deploy",
     "test": "npm run check && node check.cjs && node tests/model.cjs",
     "test:browser": "python tests/browser.py"
