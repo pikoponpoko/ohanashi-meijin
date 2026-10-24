@@ -12,3 +12,16 @@
 .printbody p{margin:0 0 0 .6em}.printfoot{position:absolute;bottom:8mm;left:20mm;right:20mm;display:flex;justify-content:space-between;font:8pt 'Noto Sans JP';color:#888}
 .printpage.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.cover h1{font:28pt 'Noto Serif JP';letter-spacing:.2em;margin-bottom:20mm}.cover p{font:12pt 'Noto Serif JP';line-height:2}
 #printRoot.pdf-render{display:block;position:fixed;left:-100000px;top:0;pointer-events:none}
+
+/* Keep the scrollbar hit area stable; fade its color rather than disabling it. */
+body{height:var(--app-height,100dvh)}
+:is(body,body.dark) #editor,:is(body,body.dark) #sidebar{scrollbar-width:thin;scrollbar-color:transparent transparent}
+:is(body,body.dark) #editor.scroll-active,:is(body,body.dark) #editor.scroll-dragging,:is(body,body.dark) #sidebar.scroll-active,:is(body,body.dark) #sidebar.scroll-dragging{scrollbar-color:var(--muted) transparent}
+#editor::-webkit-scrollbar,#sidebar::-webkit-scrollbar{width:10px;height:10px}
+#editor::-webkit-scrollbar-thumb,#sidebar::-webkit-scrollbar-thumb{background:transparent;border:2px solid transparent;background-clip:padding-box;border-radius:8px}
+#editor.scroll-active::-webkit-scrollbar-thumb,#editor.scroll-dragging::-webkit-scrollbar-thumb,#sidebar.scroll-active::-webkit-scrollbar-thumb,#sidebar.scroll-dragging::-webkit-scrollbar-thumb{background-color:var(--muted)}
+#editor::-webkit-scrollbar-track,#sidebar::-webkit-scrollbar-track,#editor::-webkit-scrollbar-corner,#sidebar::-webkit-scrollbar-corner{background:transparent}
+@media(forced-colors:active){:is(body,body.dark) #editor,:is(body,body.dark) #sidebar{scrollbar-color:auto}#editor::-webkit-scrollbar-thumb,#sidebar::-webkit-scrollbar-thumb{background-color:CanvasText}}
+@media(max-width:680px){header{overflow-x:auto;min-height:44px}.actions,.crumb{flex-shrink:0}.chapterbar>div{flex-basis:100%}#sidebar{max-width:calc(100vw - 32px);padding-bottom:max(16px,env(safe-area-inset-bottom))}#editor{padding:20px}footer{flex-wrap:wrap;gap:6px 15px}}
+@media(max-height:480px){.chapterbar{padding:7px 14px;gap:5px}.eyebrow{font-size:9px;margin-bottom:2px}#chapterTitle{font-size:17px}.toolbar{padding:0 12px 5px;gap:3px}footer{padding:5px 14px}#editor{padding:14px 20px}.project{margin:8px -6px}.progresswrap{margin:8px 0}.sidebarbottom{padding-top:12px}}
+@media print{body{height:auto}}

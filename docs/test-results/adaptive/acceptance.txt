@@ -1,0 +1,25 @@
+PASS viewport preserves document/preferences/selection (390, 844)
+PASS editor remains inside viewport (390, 844)
+PASS viewport preserves document/preferences/selection (844, 390)
+PASS editor remains inside viewport (844, 390)
+PASS viewport preserves document/preferences/selection (600, 800)
+PASS editor remains inside viewport (600, 800)
+PASS viewport preserves document/preferences/selection (1000, 700)
+PASS editor remains inside viewport (1000, 700)
+PASS viewport preserves document/preferences/selection (360, 280)
+PASS editor remains inside viewport (360, 280)
+PASS viewport preserves document/preferences/selection (320, 640)
+PASS editor remains inside viewport (320, 640)
+PASS viewport preserves document/preferences/selection (1280, 900)
+PASS editor remains inside viewport (1280, 900)
+PASS scrollbar initially transparent without removing scroll area
+PASS vertical writing wheel scrolls and reveals scrollbar
+PASS scrollbar auto hides after scrolling
+PASS horizontal writing scrolls normally
+PASS sidebar scroll reveals its scrollbar
+PASS sidebar scrollbar auto hides
+PASS dark theme also hides scrollbar
+PASS dark scrollbar uses existing theme color
+PASS forced colors keep native scrollbar
+PASS viewport zoom remains unrestricted
+24 adaptive checks passed
