@@ -17,6 +17,7 @@ try:
    page.evaluate("font=>{state=validate({...initial,font,title:'番号位置の確認',cover:false,chapters:[{id:'one',title:'章',text:'　　　ト書きの本文。\\n#C2\\n人「台詞」'}]});active='one';render();resetHistory();save();window.print=()=>{}}",font);before=page.evaluate('JSON.stringify(state)')
    page.evaluate('()=>printProject(false)');page.evaluate("$('#printRoot').classList.add('pdf-render')")
    check('cut label has dedicated type and zero indent '+font,page.locator('.printbody [data-cut-id]').evaluate_all("es=>es.length===2&&es.every(e=>e.className==='cut'&&getComputedStyle(e).textIndent==='0px'&&getComputedStyle(e).paddingInlineStart==='0px')"))
+   check('cut label prints light gray '+font,page.locator('.printbody [data-cut-id]').first.evaluate("e=>getComputedStyle(e).color==='rgb(153, 153, 153)'"))
    check('body action indentation retained '+font,page.locator('.printbody .action').evaluate("e=>parseFloat(getComputedStyle(e).paddingInlineStart)>0"))
    check('cut glyph begins above action glyph '+font,page.evaluate("()=>{const first=s=>{const r=document.createRange();r.selectNodeContents($(s));return r.getBoundingClientRect().top};return first('.printbody [data-cut-id]')<first('.printbody .action')-20}"))
    page.emulate_media(media='print');check('browser print retains zero cut indent '+font,page.locator('.printbody [data-cut-id]').first.evaluate("e=>getComputedStyle(e).textIndent==='0px'"));page.emulate_media(media='screen');page.evaluate("$('#printRoot').classList.remove('pdf-render')")

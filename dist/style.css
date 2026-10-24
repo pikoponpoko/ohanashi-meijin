@@ -73,4 +73,4 @@ body.focus #focusGesture{background:transparent;opacity:.4}body.focus #focusGest
 @media(forced-colors:active){:is(body,body.dark) #editor.scroll-dragging{scrollbar-color:auto}}
 body.focus #focusControls button{background:transparent}
 /* Printed cut labels align with the top of the writing column, as in the editor. */
-.printbody .cut{padding:0;text-indent:0}
+.printbody .cut{padding:0;text-indent:0;color:#999}
