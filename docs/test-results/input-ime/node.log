@@ -1,10 +1,10 @@
 
 > test
-> npm run check && node check.cjs && node tests/model.cjs && node tests/pwa.cjs && node tests/txt-import.cjs && node tests/formatting.cjs && node tests/timing.cjs && node tests/feedback.cjs
+> npm run check && node check.cjs && node tests/model.cjs && node tests/pwa.cjs && node tests/txt-import.cjs && node tests/formatting.cjs && node tests/timing.cjs && node tests/feedback.cjs && node tests/recovery.cjs
 
 
 > check
-> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js && node --check dist/focus.js && node --check dist/viewport.js && node --check dist/formatting-model.js && node --check dist/formatting.js && node --check dist/files.js && node --check dist/layout.js && node --check dist/timing-model.js && node --check dist/timing.js
+> node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js && node --check dist/focus.js && node --check dist/viewport.js && node --check dist/formatting-model.js && node --check dist/formatting.js && node --check dist/recovery.js && node --check dist/files.js && node --check dist/layout.js && node --check dist/timing-model.js && node --check dist/timing.js
 
 7 checks passed: line types, duration, TXT / Markdown, correction suggestions
 Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
@@ -22,3 +22,4 @@ PASS standalone half/fullwidth mixed legacy markers normalize once in body order
 PASS blank separators split once, empty cuts coalesce, quoted markers/prose/headings survive
 PASS existing real cut IDs and paragraph kinds retained; empty predecessor removed without offset drift
 PASS scene positive/negative cases; manual/legacy kinds not forcibly reclassified
+PASS recovery: cache exceptions fall back online; cached offline editor retained; uncached failure has a repair link

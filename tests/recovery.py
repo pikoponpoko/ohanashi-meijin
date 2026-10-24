@@ -2,7 +2,7 @@
 import functools,http.server,json,os,pathlib,shutil,threading
 from playwright.sync_api import sync_playwright,Error
 ROOT=pathlib.Path(__file__).resolve().parents[1];OUT=pathlib.Path('/tmp/ohanashi-recovery-tests');OUT.mkdir(exist_ok=True)
-legacy=pathlib.Path('/tmp/ohanashi-before-feedback/dist/sw.js').read_text();mode={'legacy':True}
+legacy=(ROOT/'tests/fixtures/legacy-sw-v5.js').read_text();mode={'legacy':True}
 hook="""\nself.addEventListener('message',e=>{if(e.data==='BREAK_CACHE'){caches.open=()=>Promise.reject(Error('simulated CacheStorage failure'));e.ports[0].postMessage('ready')}});"""
 class Handler(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
