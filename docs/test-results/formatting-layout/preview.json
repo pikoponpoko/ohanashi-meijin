@@ -1,0 +1,14 @@
+{
+  "preview": "https://writing-review-ohanashi-meijin.pikoponpoko.workers.dev/",
+  "version": "ec2e9357-58e7-4d40-be95-ca9a88b9e2d4",
+  "sourceCommit": "92f590c70c05641459273a1f5fb3f60c609fe730",
+  "productionDeploymentsUnchanged": true,
+  "latestProductionDeployment": "1fcd447a-c240-4d0c-ae53-e3f653cebfde",
+  "productionVersions": [
+    {
+      "version_id": "22cc14aa-531b-4f8d-965e-afdfbd0c4932",
+      "percentage": 100
+    }
+  ],
+  "externalPreviewCheck": "Blocked by managed environment CONNECT proxy: 403 Forbidden"
+}

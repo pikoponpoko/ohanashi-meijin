@@ -2,6 +2,10 @@
 
 2026-10-24。`feat/paragraph-formatting` は `preview/txt-pwa` を基点とした追加差分。取得し直した最新mainは `e0359687ff29f16a86be8746d49f3d6b9b14af18`。引継ぎコミット `9e7ad0bdf91c6acf60ebc87df28367ddecfb8c81`、PWA・TXT修正・画面対応・集中モードの既存実装を継承している。元の作業ブランチと保存キー `scenario-meijin-v1`、v2形式は維持した。
 
+[試用プレビュー](https://writing-review-ohanashi-meijin.pikoponpoko.workers.dev/)・[レビューPR #5](https://github.com/pikoponpoko/ohanashi-meijin/pull/5)。アップロード元は `92f590c70c05641459273a1f5fb3f60c609fe730`、Cloudflare版は `ec2e9357-58e7-4d40-be95-ca9a88b9e2d4`。後続コミットは資料更新のみ。管理環境のCONNECTプロキシがプレビュー用サブドメインへのアクセスを403で遮断するため、このURL上の表示・外部到達は未確認。アップロード自体は成功している。
+
+`versions upload` のみを実施し、本番へのデプロイは行っていない。APIでアップロード直前・直後のデプロイ一覧と配信比率の一致を確認した。作成日時で選んだ最新本番デプロイは `1fcd447a-c240-4d0c-ae53-e3f653cebfde`。記録は [preview.json](test-results/formatting-layout/preview.json)。
+
 ## 操作と配置
 
 - 通常画面の左サイドバーを廃止し、章名から章一覧を開く。章追加・削除・分割・タイトル・進捗変更もこの一覧に配置。章の円形マーク `● / ◐ / ○` と全体の進捗計算・配色は従来どおり。
