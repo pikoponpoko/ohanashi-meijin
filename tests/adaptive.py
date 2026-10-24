@@ -41,7 +41,7 @@ try:
     page.locator('#sidebarBackdrop').click(position={'x':10,'y':800});page.locator('#theme').click();page.mouse.move(600,400);page.wait_for_timeout(1400)
     check('dark theme also hides scrollbar',page.locator('#editor').evaluate("e=>getComputedStyle(e).scrollbarColor==='rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)'"))
     page.locator('#editor').hover(position={'x':200,'y':100});page.mouse.wheel(0,100);page.wait_for_timeout(100)
-    check('dark scrollbar uses existing theme color',page.locator('#editor').evaluate("e=>getComputedStyle(e).scrollbarColor.includes('rgb(153, 153, 149)')"))
+    check('dark scrollbar uses subdued theme color',page.locator('#editor').evaluate("e=>getComputedStyle(e).scrollbarColor.includes('0.45')"))
     page.screenshot(path=str(OUT/'dark-theme.png'))
     page.emulate_media(forced_colors='active');check('forced colors keep native scrollbar',page.locator('#editor').evaluate("e=>getComputedStyle(e).scrollbarColor==='auto'"))
     check('viewport zoom remains unrestricted',page.locator('meta[name=viewport]').get_attribute('content')=='width=device-width,initial-scale=1' and page.locator('#editor').evaluate("e=>getComputedStyle(e).touchAction==='auto'"))

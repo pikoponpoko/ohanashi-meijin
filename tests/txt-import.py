@@ -16,9 +16,9 @@ def check(name,ok=True):
 def data(page):return page.evaluate('JSON.parse(JSON.stringify(state))')
 def body(chapter):
  lines=chapter['text'].split('\n');indices={c['line'] for c in chapter['cuts']}
- return '\n'.join(s for i,s in enumerate(lines) if i not in indices)
+ return '\n'.join(s for i,s in enumerate(lines) if i not in indices and s.strip())
 raw=(ROOT/'tests/fixtures/prepro-synthetic.txt').read_text()
-expected='\n'.join(s for s in raw.split('\n') if not s.startswith('#')).removeprefix('\n')
+expected='\n'.join(s for s in raw.split('\n') if s.strip() and not s.startswith('#'))
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or shutil.which('chromium'))
@@ -37,6 +37,9 @@ try:
   page.locator('#editor').press('Control+z');check('file import is one exact Undo',data(page)==before)
   page.locator('#editor').press('Control+Shift+z');check('file import Redo retains exact imported IDs and body',data(page)==imported)
   page.reload();check('saved TXT survives reload exactly',data(page)==imported)
+  # Exercise correction on legacy blank padding after the import has normalized separators.
+  page.evaluate(r"()=>{const c=chapter(),ls=c.text.split('\n');ls.splice(2,0,'','','');for(const cut of c.cuts)if(cut.line>=2)cut.line+=3;c.text=ls.join('\n');if(c.formats)c.formats.splice(2,0,null,null,null);if(c.formatOrigins)c.formatOrigins.splice(2,0,null,null,null);recordHistory();save();render()}")
+  imported=data(page);c=imported['chapters'][0]
   page.locator('#check').click()
   compress=page.get_by_text('増殖した空行を整理',exact=True)
   check('fixture exercises actual blank compression',compress.count()==1)
@@ -72,7 +75,7 @@ try:
   page=new_page();page.evaluate("()=>{state=validate({...initial,title:'既存作品',chapters:[{id:'old',title:'保持する章',text:'本文\\n#C5\\n'}]});active='old';render();resetHistory();save()}");old=data(page)
   import_file(page);after=data(page)
   check('existing project chapter/body/cut IDs untouched',len(after['chapters'])==2 and after['chapters'][0]==old['chapters'][0])
-  check('import into existing project preserves global consecutive numbering',page.evaluate("state.chapters.flatMap(c=>c.cuts.map(x=>c.text.split('\\n')[x.line])).join(',')==='#C1,#C2,#C3,#C4,#C5,#C6'"))
+  check('import into existing project preserves global consecutive numbering',page.evaluate("state.chapters.flatMap(c=>c.cuts.map(x=>c.text.split('\\n')[x.line])).join(',')==='#C1,#C2,#C3,#C4,#C5'"))
   page.locator('#editor').press('Control+z');check('existing project import Undo exact',data(page)==old)
   page.locator('#editor').press('Control+Shift+z');check('existing project import Redo exact',data(page)==after)
   for source in ['\ufeff\r\n# C1\r\n一\r\n#C1A\r\n二','\n#C9\n一\n#C4\n二','#プリプロ名人 台詞一覧（このまま書き換えて、コピーしてからプリプロ名人に戻ると反映できます）\n\n# C1\n一\n# C2\n二']:

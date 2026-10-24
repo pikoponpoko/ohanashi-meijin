@@ -1,7 +1,9 @@
+import re
 """Run against a local static server: python tests/browser.py. Requires Playwright + Chromium."""
 import json, pathlib, os, shutil
 import fitz
 from playwright.sync_api import sync_playwright
+from font_support import fonts
 
 def open_chapters(page):
     if page.locator('#chapterPanel').is_hidden():page.locator('#menu').click()
@@ -21,7 +23,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or shutil.which('chromium'),args=['--no-sandbox'])
     page=browser.new_page(viewport={'width':1280,'height':900},accept_downloads=True)
     # Exercise the application without relying on external font availability.
-    page.route('https://fonts.googleapis.com/**',lambda route:route.abort())
+    fonts(page)
     errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.goto(BASE);page.wait_for_function('typeof historyIndex !== "undefined"')
     check('fresh launch has blank manuscript',data(page)['title']=='' and '余白' not in data(page)['chapters'][0]['text'])
@@ -39,7 +41,7 @@ with sync_playwright() as p:
     original=page.evaluate('chapter().text')
     for i in range(4):
         open_chapters(page);page.locator('#add').click();page.locator('#newTitle').fill('章'+str(i+2));page.locator('#createChapter').click();end(page);paste(page,text)
-    check('TXT through five chapters has equal structure',len({c['text'].split('\n',1)[1] for c in data(page)['chapters']})==1)
+    check('TXT through five chapters has equal structure',len({re.sub(r'^#C\d+$','',c['text'],flags=re.M) for c in data(page)['chapters']})==1)
     # Insert a cut between existing cuts; old IDs must survive.
     setup(page,'一\n#C7\n二\n#C19\n三');ids=[c['id'] for c in data(page)['chapters'][0]['cuts']]
     end(page,1);page.keyboard.press('Enter');page.keyboard.press('Enter');page.keyboard.insert_text('新規')
@@ -71,10 +73,10 @@ with sync_playwright() as p:
     check('file picker unrestricted',page.locator('#file').get_attribute('accept') is None)
     previous=data(page);page.locator('#file').set_input_files({'name':'broken.JSON','mimeType':'application/octet-stream','buffer':b'{bad'})
     check('invalid JSON leaves manuscript unchanged',data(page)==previous)
-    valid=json.dumps(previous,ensure_ascii=False).encode();page.locator('#file').set_input_files({'name':'backup.JSON','mimeType':'application/octet-stream','buffer':valid});page.wait_for_selector('#restore')
+    valid=json.dumps(previous,ensure_ascii=False).encode();page.locator('#file').set_input_files({'name':'backup.JSON','mimeType':'application/octet-stream','buffer':valid});page.wait_for_selector('#openWithoutSaving')
     page.locator('#close').click();check('restore cancellation unchanged',data(page)==previous)
     page.locator('#file').set_input_files({'name':'backup.JSON','mimeType':'application/octet-stream','buffer':valid})
-    with page.expect_download():page.locator('#restore').click()
+    page.locator('#openWithoutSaving').click()
     check('uppercase JSON with generic MIME restores IDs',data(page)==previous)
     # Replacing a cross-paragraph range merges the surviving prefix and suffix.
     setup(page,'○場所\n　　　動作。\n花「言葉」')
@@ -151,7 +153,7 @@ with sync_playwright() as p:
     check('quota failure preserves stored JSON and reports unsaved changes',page.evaluate('localStorage.getItem(KEY)')==saved_json and page.evaluate('dirty'))
     before_restore=data(page)
     page.locator('#file').set_input_files({'name':'blocked.json','mimeType':'application/json','buffer':json.dumps({'chapters':[{'title':'別の章','text':'別の本文'}]}).encode()})
-    with page.expect_download():page.evaluate("document.querySelector('#restore').click()")
+    page.locator('#openWithoutSaving').click()
     check('backup storage failure aborts restore without changing manuscript',data(page)==before_restore and page.evaluate('localStorage.getItem(KEY)')==saved_json)
     page.add_init_script("if(!sessionStorage.getItem('test-corruption')){localStorage.setItem('scenario-meijin-v1','{broken');sessionStorage.setItem('test-corruption','1')}");page.reload()
     page.evaluate("""()=>{chapter().title='変更';save()}""")
@@ -159,10 +161,10 @@ with sync_playwright() as p:
     # Restore after corruption preserves original raw bytes separately.
     recovery={'version':1,'title':'復元作品','chapters':[{'id':'recover','title':'復元章','text':'本文'}]}
     page.locator('#file').set_input_files({'name':'recovery.json','mimeType':'application/json','buffer':json.dumps(recovery).encode()})
-    with page.expect_download():page.locator('#restore').click()
-    check('recovery keeps corrupt source and resumes saving',not page.evaluate('loadBlocked') and page.evaluate("localStorage.getItem(KEY+'-unreadable-recovery')")=='{broken' and data(page)['title']=='復元作品')
+    page.locator('#openWithoutSaving').click()
+    check('recovery keeps corrupt source and resumes saving',not page.evaluate('loadBlocked') and page.evaluate("archivedDocuments().some(x=>x.raw==='{broken')") and data(page)['title']=='復元作品')
     # Mobile drawer absorbs first tap; synthetic gestures use shared history.
-    mobile=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True);m=mobile.new_page();m.route('https://fonts.googleapis.com/**',lambda r:r.abort());m.goto(BASE);setup(m,'初め');end(m);m.keyboard.insert_text('追記');latest=data(m)
+    mobile=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True);m=mobile.new_page();fonts(m);m.goto(BASE);setup(m,'初め');end(m);m.keyboard.insert_text('追記');latest=data(m)
     m.locator('#menu').click();m.locator('#sidebarBackdrop').tap(position={'x':350,'y':400});check('mobile outside tap closes drawer without editing',m.evaluate("!document.body.classList.contains('mobilemenu')") and data(m)==latest)
     def gesture(fingers,moved=False):
         m.evaluate('''({fingers,moved})=>{const el=document.querySelector('#editor'),ts=Array.from({length:fingers},(_,i)=>new Touch({identifier:i,target:el,clientX:250+i*25,clientY:200}));el.dispatchEvent(new TouchEvent('touchstart',{touches:ts,changedTouches:ts,bubbles:true}));if(moved)el.dispatchEvent(new TouchEvent('touchmove',{touches:ts,changedTouches:ts.map(t=>new Touch({identifier:t.identifier,target:el,clientX:t.clientX+30,clientY:200})),bubbles:true}));el.dispatchEvent(new TouchEvent('touchend',{touches:[],changedTouches:ts,bubbles:true,cancelable:true}))}''',{'fingers':fingers,'moved':moved})

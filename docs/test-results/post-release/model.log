@@ -1,0 +1,5 @@
+PASS standalone half/fullwidth mixed legacy markers normalize once in body order
+PASS blank separators split once, empty cuts coalesce, quoted markers/prose/headings survive
+PASS existing real cut IDs and paragraph kinds retained; empty predecessor removed without offset drift
+PASS scene positive/negative cases; manual/legacy kinds not forcibly reclassified
+PASS private original: {"chapters":[{"before":1,"after":18},{"before":41,"after":40},{"before":1,"after":40},{"before":1,"after":25},{"before":17,"after":16}],"originalCuts":61,"survivingIds":59,"totalCuts":139,"reloads":5,"exactBodyAndFormats":true}

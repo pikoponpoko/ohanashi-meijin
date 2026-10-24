@@ -5,7 +5,8 @@ async function downloadPdf(){
   try{
     await document.fonts.ready;
     const pages=[...root.children];
-    const fontEmbedCSS=await htmlToImage.getFontEmbedCSS(pages[0]);
+    const fontEmbedCSS=await htmlToImage.getFontEmbedCSS(root);
+    if(!fontEmbedCSS.includes('data:')||!fontEmbedCSS.includes(state.font))throw Error('選択したフォントをPDFに埋め込めません。通信を確認して再試行してください。');
     const pdf=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});
     pdf.setProperties({title:state.title,author:state.author});
     for(let i=0;i<pages.length;i++){

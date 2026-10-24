@@ -1,0 +1,83 @@
+PASS new profile is blank and counts zero body characters
+PASS cleanup removes visual blanks ''
+PASS no rendered empty columns ''
+PASS cleanup is exactly one Undo ''
+PASS cleanup Redo exact ''
+PASS cleanup stable through ten cycles and reload ''
+PASS cleanup removes visual blanks ' '
+PASS no rendered empty columns ' '
+PASS cleanup is exactly one Undo ' '
+PASS cleanup Redo exact ' '
+PASS cleanup stable through ten cycles and reload ' '
+PASS cleanup removes visual blanks '\u3000'
+PASS no rendered empty columns '\u3000'
+PASS cleanup is exactly one Undo '\u3000'
+PASS cleanup Redo exact '\u3000'
+PASS cleanup stable through ten cycles and reload '\u3000'
+PASS cleanup removes visual blanks '\t'
+PASS no rendered empty columns '\t'
+PASS cleanup is exactly one Undo '\t'
+PASS cleanup Redo exact '\t'
+PASS cleanup stable through ten cycles and reload '\t'
+PASS cleanup removes visual blanks '\xa0'
+PASS no rendered empty columns '\xa0'
+PASS cleanup is exactly one Undo '\xa0'
+PASS cleanup Redo exact '\xa0'
+PASS cleanup stable through ten cycles and reload '\xa0'
+PASS cleanup removes visual blanks '\u200b'
+PASS no rendered empty columns '\u200b'
+PASS cleanup is exactly one Undo '\u200b'
+PASS cleanup Redo exact '\u200b'
+PASS cleanup stable through ten cycles and reload '\u200b'
+PASS cleanup removes visual blanks '\u2060'
+PASS no rendered empty columns '\u2060'
+PASS cleanup is exactly one Undo '\u2060'
+PASS cleanup Redo exact '\u2060'
+PASS cleanup stable through ten cycles and reload '\u2060'
+PASS empty cuts coalesce into one hidden editing boundary
+PASS caret placeholder accepts input without extra empty line
+PASS DOM BR and empty paragraph cleanup
+PASS chapter transfer keeps body and column styles 2
+PASS chapter transfer keeps body and column styles 3
+PASS chapter transfer keeps body and column styles 4
+PASS chapter transfer keeps body and column styles 5
+PASS all chapter/cut IDs remain unique
+PASS new document blank with original archived 余白の向こう
+PASS archive reopens exact manuscript and IDs 余白の向こう
+PASS new document blank with original archived 余白の向こう（編集済み）
+PASS archive reopens exact manuscript and IDs 余白の向こう（編集済み）
+PASS new document blank with original archived 通常原稿
+PASS archive reopens exact manuscript and IDs 通常原稿
+PASS archive failure aborts new document
+PASS active-key failure retains current state and recovery snapshot
+PASS corrupt raw bytes archived before blank start
+PASS corrupt archive downloads original bytes
+PASS browser parses manifest without errors
+PASS browser decodes 192 icon
+PASS browser decodes 512 icon
+PASS offline reload keeps manuscript and IDs
+PASS offline editing persists
+PASS drawer closes without edit portrait/landscape 390
+PASS trusted two-finger Undo 390
+PASS trusted three-finger Redo 390
+PASS gesture rejects move 390
+PASS gesture rejects long 390
+PASS gesture rejects late 390
+PASS gesture rejects cancel 390
+PASS gesture rejects ime 390
+PASS gesture rejects dialog 390
+PASS gesture rejects four 390
+PASS gesture rejects sidebar 390
+PASS drawer closes without edit portrait/landscape 844
+PASS trusted two-finger Undo 844
+PASS trusted three-finger Redo 844
+PASS gesture rejects move 844
+PASS gesture rejects long 844
+PASS gesture rejects late 844
+PASS gesture rejects cancel 844
+PASS gesture rejects ime 844
+PASS gesture rejects dialog 844
+PASS gesture rejects four 844
+PASS gesture rejects sidebar 844
+PASS no runtime errors
+82 release checks passed

@@ -22,7 +22,7 @@ try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or shutil.which('chromium'))
   page=browser.new_page(viewport={'width':1000,'height':700},device_scale_factor=3)
-  page.route('https://fonts.googleapis.com/**',lambda r:r.fulfill(content_type='text/css',body=css));page.goto(base);page.evaluate('document.fonts.ready')
+  page.route('https://fonts.googleapis.com/**',lambda r:r.fulfill(content_type='text/css',headers={'Access-Control-Allow-Origin':'*'},body=css));page.goto(base);page.evaluate('document.fonts.ready')
   markup=page.evaluate("Object.fromEntries(['12','１２','！','？'].map(s=>[s,markup(s)]))")
   styles=(ROOT/'dist/style.css').read_text()
   page.set_content('<style>'+css+'\n'+styles+'''\nbody{display:block;background:white;color:black;height:auto;overflow:auto}#editor{padding:0;width:auto;height:auto;writing-mode:horizontal-tb;background:white;color:black;overflow:visible}.probe{writing-mode:vertical-rl;font-family:var(--test-font);font-size:var(--test-size);font-feature-settings:'palt';letter-spacing:.04em;line-height:1.65;width:80px;height:180px;padding:10px;display:inline-block;vertical-align:top}#editor .probe.before .verticalGlyph{font-feature-settings:'palt'} </style><div id=editor></div>''')
@@ -42,7 +42,7 @@ try:
   page.evaluate("$('#editor').classList.add('horizontal')")
   check('horizontal glyph features remain unchanged',page.locator('.probe span').nth(1).evaluate("e=>getComputedStyle(e).fontFeatureSettings.includes('palt')&&!getComputedStyle(e).fontFeatureSettings.includes('0')"))
   printed=browser.new_page()
-  printed.route('https://fonts.googleapis.com/**',lambda r:r.fulfill(content_type='text/css',body=css));printed.goto(base)
+  printed.route('https://fonts.googleapis.com/**',lambda r:r.fulfill(content_type='text/css',headers={'Access-Control-Allow-Origin':'*'},body=css));printed.goto(base)
   for font in names:
    printed.evaluate("font=>{state=validate({...initial,font,cover:false,chapters:[{id:'proof',title:'組版確認',text:'○場\\n　　　漢12漢１２漢！漢？漢\\n人「字形を確認する。」'}]});active='proof';render();resetHistory();save()}",font)
    printed.evaluate("font=>document.fonts.load('16px \"'+font+'\"','漢１２！？12')",font)

@@ -1,6 +1,7 @@
 """Paragraph style and deterministic proposal acceptance in isolated browser storage."""
 import functools,http.server,json,os,pathlib,shutil,threading
 from playwright.sync_api import sync_playwright
+from font_support import fonts
 
 def open_chapters(page):
     if page.locator('#chapterPanel').is_hidden():page.locator('#menu').click()
@@ -20,12 +21,12 @@ def select(page,start,end,start_offset=0,end_offset=None):
 try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM_PATH') or shutil.which('chromium'))
-  ctx=browser.new_context(viewport={'width':1280,'height':900},accept_downloads=True);ctx.route('https://fonts.googleapis.com/**',lambda r:r.abort())
+  ctx=browser.new_context(viewport={'width':1280,'height':900},accept_downloads=True);fonts(ctx)
   page=ctx.new_page();page.goto('http://127.0.0.1:'+str(server.server_port));errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   source='#C1\n○駅\n　　　動作を書く\n人物「発言」\n#C2\n続き'
   setup(page,source);before=data(page);select(page,1,3,1,2)
   page.locator('[data-insert=dialogue]').click();styled=data(page)
-  check('multiple partial paragraphs change kind without altering text or IDs',styled['chapters'][0]['text']==before['chapters'][0]['text'] and styled['chapters'][0]['cuts']==before['chapters'][0]['cuts'] and styled['chapters'][0]['formats'][1:4]==['dialogue']*3)
+  check('multiple partial paragraphs wrap quotes without losing words or IDs',styled['chapters'][0]['text']=='#C1\n「○駅」\n「　　　動作を書く」\n人物「発言」\n#C2\n続き' and styled['chapters'][0]['cuts']==before['chapters'][0]['cuts'] and styled['chapters'][0]['formats'][1:4]==['dialogue']*3)
   check('style buttons never insert templates',page.locator('#editor').inner_text().count('人物名「セリフ」')==0 and len(styled['chapters'][0]['text'].split('\n'))==6)
   check('selection remains in editor after format click',page.evaluate("$('#editor').contains(getSelection().anchorNode)&&!getSelection().isCollapsed"))
   page.locator('#editor').press('Control+z');check('batch format is exactly one Undo',data(page)==before)
@@ -33,13 +34,13 @@ try:
   page.reload();check('manual formats persist through reload',data(page)==styled)
   page.evaluate('()=>{for(let i=0;i<10;i++){renderText();capture()}save()}');check('ten cycles preserve manual styles and exact raw indentation',data(page)==styled)
   select(page,3,3,1,1);page.locator('[data-insert=action]').click()
-  check('collapsed caret formats its whole paragraph',data(page)['chapters'][0]['formats'][3]=='action' and data(page)['chapters'][0]['text']==source)
+  check('collapsed caret formats its whole paragraph',data(page)['chapters'][0]['formats'][3]=='action' and data(page)['chapters'][0]['text']==styled['chapters'][0]['text'])
   baseline=data(page);select(page,0,0);page.locator('[data-insert=scene]').click();check('cut boundary cannot be restyled',data(page)==baseline)
   select(page,1,2,0,0);page.locator('[data-insert=scene]').click()
   check('selection ending at next paragraph start excludes that paragraph',data(page)['chapters'][0]['formats'][1]=='scene' and data(page)['chapters'][0]['formats'][2]=='dialogue')
   baseline=data(page);select(page,2,2);page.evaluate('composing=true');page.locator('[data-insert=scene]').click();page.evaluate('composing=false');check('IME flag blocks batch formatting',data(page)==baseline)
   page.evaluate("()=>$('#editor').dispatchEvent(new KeyboardEvent('keydown',{key:'1',altKey:true,isComposing:true,bubbles:true}))");check('IME keyboard event blocks formatting',data(page)==baseline)
-  select(page,2,2);page.keyboard.press('Alt+1');check('Alt1 changes kind without inserting text',data(page)['chapters'][0]['formats'][2]=='scene' and data(page)['chapters'][0]['text']==source)
+  select(page,2,2);page.keyboard.press('Alt+1');check('Alt1 changes kind and adds one scene symbol',data(page)['chapters'][0]['formats'][2]=='scene' and data(page)['chapters'][0]['text'].split('\n')[2].startswith('◯'))
   open_chapters(page);page.locator('#chapterTitle').focus();baseline=data(page);page.keyboard.press('Alt+2');check('chapter title input does not trigger format shortcut',data(page)==baseline)
   # Custom clipboard carries chosen paragraph kinds, including text without a scene prefix.
   select(page,2,2)
@@ -54,7 +55,7 @@ try:
   page.locator('#editor').press('Control+z');check('chapter split Undo retains formatted source exactly',data(page)==moved_before)
   # Empty editing-only slot can hold a style without adding a saved blank line.
   setup(page,'#C1');raw=data(page)['chapters'][0]['text'];page.evaluate("()=>caretEnd($('#editor').lastElementChild)");page.locator('[data-insert=dialogue]').click()
-  check('empty slot stores style without adding text or cuts',data(page)['chapters'][0]['text']==raw and data(page)['chapters'][0]['placeholderFormat']=='dialogue')
+  check('empty slot supplies an editable quote pair without extra cuts',data(page)['chapters'][0]['text']==raw+'\n「」' and len(data(page)['chapters'][0]['cuts'])==1)
   page.reload();page.evaluate("()=>caretEnd($('#editor').lastElementChild)");page.keyboard.insert_text('○本文')
   check('typing retains explicitly chosen kind instead of reclassifying from prefix',page.evaluate("chapter().formats[1]==='dialogue'&&$('#editor').lastElementChild.className==='dialogue'") and 'placeholderFormat' not in data(page)['chapters'][0])
   # Proposal preview keeps the manuscript untouched until explicit confirmation.
@@ -80,7 +81,7 @@ try:
   download.value.save_as(OUT/'formatted.pdf');check('direct PDF still downloads without changing manuscript',(OUT/'formatted.pdf').read_bytes().startswith(b'%PDF') and data(page)==pdf_data)
   setup(page,'#C1\n　　　#C2\n　　　\n　　　動作')
   before=data(page);page.evaluate('()=>{for(let i=0;i<5;i++){renderText();capture()}save()}')
-  check('saved indented labels and whitespace are not silently reinterpreted as cuts',data(page)['chapters'][0]['text']==before['chapters'][0]['text'] and data(page)['chapters'][0]['cuts']==before['chapters'][0]['cuts'])
+  check('normalized legacy boundaries and remaining whitespace remain stable',data(page)['chapters'][0]['text']==before['chapters'][0]['text'] and data(page)['chapters'][0]['cuts']==before['chapters'][0]['cuts'])
   check('no runtime errors',not errors);page.screenshot(path=str(OUT/'formatted.png'));browser.close()
 finally:server.shutdown();server.server_close()
 (OUT/'checks.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2))
