@@ -4,6 +4,29 @@
   const scene=s=>{const t=s.trim();return /^[○◯〇]/.test(t)||/^(?:いろいろな場所・時間|[0-9０-９]+年前・[^「」。！？!?]+(?:時代|頃|回想))$/.test(t)||/^場面「[^\n]+」$/.test(t)||/^【[^\n]+】$/.test(t)||(!/[「」]/.test(t)&&/^[^（()）]+[（(][^（）()]+[）)]$/.test(t)&&/[・\s](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)|[（(](?:春|夏|秋|冬|朝|昼|夕|夜|深夜|早朝)/.test(t))};
   const inferred=s=>root.ScriptModel?.soundKind(s)||(scene(s)?'scene':/^(?:[^「\n]+)?「/.test(s.trimStart())?'dialogue':'action');
   const quoteDelta=s=>[...s].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
+  function speechMarks(chapter){
+    const marks={},cuts=new Set(chapter.cuts.map(q=>q.line));let depth=0;
+    chapter.text.split('\n').forEach((raw,line)=>{
+      if(cuts.has(line)){depth=0;return}
+      const kind=root.ScriptModel?.paragraphKind(chapter,line)||chapter.formats?.[line]||inferred(raw);
+      if(!depth&&kind!=='dialogue')return;
+      for(let i=0;i<raw.length;i++){
+        if(raw[i]==='「'){if(!depth)(marks[line]??=[]).push(i);depth++}
+        else if(raw[i]==='」'&&depth){depth--;if(!depth)(marks[line]??=[]).push(i)}
+      }
+    });return marks;
+  }
+  function markerConversion(raw,oldKind,newKind,speechPositions){
+    const removals=[];
+    if(oldKind==='scene'&&newKind!=='scene'){const m=raw.match(/^([ \t\u3000]*)[○◯〇]/);if(m)removals.push(m[1].length)}
+    if(newKind!=='dialogue'&&speechPositions!==undefined)removals.push(...speechPositions);
+    else if(oldKind==='dialogue'&&newKind!=='dialogue'){
+      const open=raw.indexOf('「');if(open>=0)removals.push(open);
+      const closing=raw.match(/」(?=[ \t\u3000]*$)/);if(closing)removals.push(closing.index);
+    }
+    return {text:raw.split('').filter((_,i)=>!removals.includes(i)).join(''),removals};
+  }
+  const removeTypeMarkers=(raw,oldKind,newKind)=>markerConversion(raw,oldKind,newKind).text;
   function analyze(chapter){
     const cuts=new Set(chapter.cuts.map(c=>c.line));let depth=0,speechStart=null;
     return chapter.text.split('\n').map((raw,line)=>{
@@ -31,8 +54,8 @@
       return p.certainty==='uncertain'?(choice||p.current):p.kind;
     });
     const formatOrigins=plan.map(p=>p.cut?null:(choices[p.line]?'manual':p.certainty==='uncertain'?p.origin:p.origin==='manual'?'manual':'auto'));
-    const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
+    const speech=speechMarks(chapter);const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;raw=markerConversion(raw,current,next,speech[i]||[]).text;if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
     return root.ScriptModel.syncSoundCues({...chapter,text,formats:formats.map(k=>['music','se'].includes(k)?'action':k),formatOrigins});
   }
-  root.ScriptFormatting={kinds,scene,inferred,analyze,apply};
+  root.ScriptFormatting={speechMarks,markerConversion,removeTypeMarkers,kinds,scene,inferred,analyze,apply};
 })(typeof window==='undefined'?globalThis:window);

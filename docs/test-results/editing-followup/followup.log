@@ -1,0 +1,63 @@
+PASS desktop vertical cut visible immediately before any typing
+PASS desktop vertical separator saved without blank paragraph
+PASS desktop vertical double Enter Undo exact
+PASS desktop vertical pending cut Redo exact
+PASS desktop vertical pending empty cut survives reload with same ID
+PASS desktop vertical typing reuses pending ID without extra blank
+PASS desktop vertical double Enter inside speech closes wrapper and creates cut
+PASS desktop vertical speaker IME remains in dialog
+PASS desktop vertical IME confirmation does not submit speaker dialog
+PASS desktop vertical speaker and speech entered separately
+PASS desktop vertical dialogue conversion removes only outer quotes
+PASS desktop vertical format conversion Undo exact
+PASS desktop vertical scene conversion removes circle
+PASS desktop vertical caret stays at same body position after marker removal
+PASS desktop vertical inner quotations preserved
+PASS desktop horizontal cut visible immediately before any typing
+PASS desktop horizontal separator saved without blank paragraph
+PASS desktop horizontal double Enter Undo exact
+PASS desktop horizontal pending cut Redo exact
+PASS desktop horizontal pending empty cut survives reload with same ID
+PASS desktop horizontal typing reuses pending ID without extra blank
+PASS desktop horizontal double Enter inside speech closes wrapper and creates cut
+PASS desktop horizontal speaker IME remains in dialog
+PASS desktop horizontal IME confirmation does not submit speaker dialog
+PASS desktop horizontal speaker and speech entered separately
+PASS desktop horizontal dialogue conversion removes only outer quotes
+PASS desktop horizontal format conversion Undo exact
+PASS desktop horizontal scene conversion removes circle
+PASS desktop horizontal caret stays at same body position after marker removal
+PASS desktop horizontal inner quotations preserved
+PASS desktop wrapped dialogue retains interior quotation marks
+PASS mobile vertical cut visible immediately before any typing
+PASS mobile vertical separator saved without blank paragraph
+PASS mobile vertical double Enter Undo exact
+PASS mobile vertical pending cut Redo exact
+PASS mobile vertical pending empty cut survives reload with same ID
+PASS mobile vertical typing reuses pending ID without extra blank
+PASS mobile vertical double Enter inside speech closes wrapper and creates cut
+PASS mobile vertical speaker IME remains in dialog
+PASS mobile vertical IME confirmation does not submit speaker dialog
+PASS mobile vertical speaker and speech entered separately
+PASS mobile vertical dialogue conversion removes only outer quotes
+PASS mobile vertical format conversion Undo exact
+PASS mobile vertical scene conversion removes circle
+PASS mobile vertical caret stays at same body position after marker removal
+PASS mobile vertical inner quotations preserved
+PASS mobile horizontal cut visible immediately before any typing
+PASS mobile horizontal separator saved without blank paragraph
+PASS mobile horizontal double Enter Undo exact
+PASS mobile horizontal pending cut Redo exact
+PASS mobile horizontal pending empty cut survives reload with same ID
+PASS mobile horizontal typing reuses pending ID without extra blank
+PASS mobile horizontal double Enter inside speech closes wrapper and creates cut
+PASS mobile horizontal speaker IME remains in dialog
+PASS mobile horizontal IME confirmation does not submit speaker dialog
+PASS mobile horizontal speaker and speech entered separately
+PASS mobile horizontal dialogue conversion removes only outer quotes
+PASS mobile horizontal format conversion Undo exact
+PASS mobile horizontal scene conversion removes circle
+PASS mobile horizontal caret stays at same body position after marker removal
+PASS mobile horizontal inner quotations preserved
+PASS mobile wrapped dialogue retains interior quotation marks
+62 editing followup checks passed

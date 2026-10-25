@@ -1,0 +1,71 @@
+PASS desktop music distinct in DOM and compatible JSON
+PASS desktop sound conversion one Undo
+PASS desktop sound conversion Redo exact
+PASS desktop music to SE has one prefix
+PASS desktop sound to dialogue removes only type marker
+PASS desktop empty cue accepts text and ellipsis without extra rows
+PASS desktop save reload preserves sound types IDs and raw
+PASS desktop legacy quoted sound stays unchanged before explicit conversion
+PASS desktop explicit legacy conversion preserves description
+PASS desktop legacy conversion Undo exact
+PASS desktop batch cue conversion keeps paragraphs
+PASS desktop batch cue Undo exact
+PASS desktop deleting cue prefix returns to prose consistently
+PASS desktop clipboard preserves independent sound types
+PASS desktop saved JSON keeps metadata and compatible formats
+PASS desktop print preserves music and SE types
+PASS desktop cut spacing is before number column
+PASS desktop sound quotes do not open spoken composition context
+PASS desktop autocorrection updates cue witness without losing kind
+PASS desktop quoted SE is dialogue not a cue
+PASS desktop advice-only issues do not inflate correction badge
+PASS desktop zero fixes dialog agrees with badge
+PASS desktop actionable correction badge matches dialog
+PASS desktop actionable fix visible
+PASS desktop focus opens native browser fullscreen
+PASS desktop fullscreen button removed and exit is accessible cross
+PASS desktop top bottom and editor share paper
+PASS desktop dark focus bands also share paper
+PASS desktop chapter name centered at bottom without number
+PASS desktop focus chapter moves safely
+PASS desktop focus shortcut and metadata preserve original
+PASS desktop cross exits fullscreen and focus
+PASS desktop denied fullscreen falls back to focus
+PASS desktop scrollbar reduced alpha while active
+PASS desktop no script exceptions
+PASS mobile music distinct in DOM and compatible JSON
+PASS mobile sound conversion one Undo
+PASS mobile sound conversion Redo exact
+PASS mobile music to SE has one prefix
+PASS mobile sound to dialogue removes only type marker
+PASS mobile empty cue accepts text and ellipsis without extra rows
+PASS mobile save reload preserves sound types IDs and raw
+PASS mobile legacy quoted sound stays unchanged before explicit conversion
+PASS mobile explicit legacy conversion preserves description
+PASS mobile legacy conversion Undo exact
+PASS mobile batch cue conversion keeps paragraphs
+PASS mobile batch cue Undo exact
+PASS mobile deleting cue prefix returns to prose consistently
+PASS mobile clipboard preserves independent sound types
+PASS mobile saved JSON keeps metadata and compatible formats
+PASS mobile print preserves music and SE types
+PASS mobile cut spacing is before number column
+PASS mobile sound quotes do not open spoken composition context
+PASS mobile autocorrection updates cue witness without losing kind
+PASS mobile quoted SE is dialogue not a cue
+PASS mobile advice-only issues do not inflate correction badge
+PASS mobile zero fixes dialog agrees with badge
+PASS mobile actionable correction badge matches dialog
+PASS mobile actionable fix visible
+PASS mobile focus opens native browser fullscreen
+PASS mobile fullscreen button removed and exit is accessible cross
+PASS mobile top bottom and editor share paper
+PASS mobile dark focus bands also share paper
+PASS mobile chapter name centered at bottom without number
+PASS mobile focus chapter moves safely
+PASS mobile focus shortcut and metadata preserve original
+PASS mobile cross exits fullscreen and focus
+PASS mobile denied fullscreen falls back to focus
+PASS mobile scrollbar reduced alpha while active
+PASS mobile no script exceptions
+70 sound/focus checks passed

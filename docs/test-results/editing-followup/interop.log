@@ -1,0 +1,4 @@
+PASS receiver current main: new soundCues and legacy-prefix-only JSON yield identical music/SE, null speakers, preserved wrapped speech and stable cut IDs
+PASS receiver accepts explicit pending cut metadata and preserves reserved ID without body text
+PASS receiver main: unchanged v2 IDs and chapter order, repaired structural headings, music/SE prefixes, wrapped dialogue, action lines; source immutable
+PASS existing draft.1: normal import rejects unapproved draft; explicit trial accepts unchanged sample
