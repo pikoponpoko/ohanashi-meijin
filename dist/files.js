@@ -2,7 +2,7 @@
 (()=>{
   const baselineKey=KEY+'-file-baseline';let baseline=JSON.stringify(state),pendingOpen=0,handle=null,generation=0,busy=false;try{baseline=localStorage.getItem(baselineKey)||baseline}catch(_){}
   const snapshot=()=>JSON.stringify(state);
-  function markSaved(){baseline=snapshot();try{localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}
+  function markSaved(){baseline=snapshot();try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}
   function fileChanged(){return snapshot()!==baseline}
   function sync(){
     const changed=fileChanged(),label=handle?(changed?'ファイル未保存':'ファイル保存済み'):(changed?'ファイル未保存':'ファイル未接続');
@@ -17,17 +17,17 @@
         const target=(!asNew&&handle)||await showSaveFilePicker({suggestedName:(state.title||'脚本')+'.json',types:[{description:'脚本 JSON',accept:{'application/json':['.json']}}]});
         const writable=await target.createWritable();try{await writable.write(content);await writable.close()}catch(e){try{await writable.abort()}catch(_){}throw e}
         // An edit made while the picker was open remains unsaved.
-        if(epoch===generation){handle=target;baseline=captured;try{localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}toast(epoch===generation?'ファイルに保存しました':'切り替え前の原稿をファイルに保存しました');return true;
+        if(epoch===generation){handle=target;baseline=captured;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}toast(epoch===generation?'ファイルに保存しました':'切り替え前の原稿をファイルに保存しました');return true;
       }catch(e){if(e.name!=='AbortError')toast('保存できません。現在の作品は保持しています。');return false}finally{busy=false;sync()}
     }
     try{download(content,'json','application/json');return 'download'}catch(_){toast('保存できません。現在の作品は保持しています。');return false}
   }
-  function commitOpen(incoming,nextHandle=null){if(!openDocument(incoming))return false;handle=nextHandle;markSaved();return true}
+  async function commitOpen(incoming,nextHandle=null){if(!await openDocument(incoming))return false;handle=nextHandle;markSaved();return true}
   function requestOpen(incoming,nextHandle=null){
     if(composing)return;
     if(!fileChanged()&&!dirty&&!loadBlocked)return commitOpen(incoming,nextHandle);
     const expected=snapshot();
-    modal('開く','<button id="saveAndOpen" class="primary">保存して開く</button><button id="openWithoutSaving">保存せず開く</button><button id="cancelOpen">キャンセル</button>');
+    modal('開く','<p>別の作品として開きます。現在の原稿は「保存した原稿」に残します。</p><button id="saveAndOpen" class="primary">保存して開く</button><button id="openWithoutSaving">保存せず開く</button><button id="cancelOpen">キャンセル</button>');
     $('#cancelOpen').onclick=()=>$('#dialog').close();
     $('#openWithoutSaving').onclick=()=>{if(snapshot()!==expected)return requestOpen(incoming,nextHandle);commitOpen(incoming,nextHandle)};
     $('#saveAndOpen').onclick=async()=>{
@@ -43,24 +43,25 @@
   async function saveCommand(asNew=false){
     const captured=snapshot(),epoch=generation,result=await saveFile(asNew);if(result!=='download')return result;
     modal('保存','<button id="confirmFileSaved" class="primary">保存を確認</button><button id="cancelFileSave">キャンセル</button>');
-    $('#cancelFileSave').onclick=()=>$('#dialog').close();$('#confirmFileSaved').onclick=()=>{if(epoch===generation){baseline=captured;try{localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}$('#dialog').close()};return result;
+    $('#cancelFileSave').onclick=()=>$('#dialog').close();$('#confirmFileSaved').onclick=()=>{if(epoch===generation){baseline=captured;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync()}$('#dialog').close()};return result;
   }
   $('#backup').textContent='保存';$('#backup').setAttribute('aria-label','保存');$('#backup').onclick=()=>saveCommand();$('#saveAs').onclick=()=>saveCommand(true);
   $('#import').onclick=async()=>{
     if(composing||busy)return;
     if(!window.showOpenFilePicker)return $('#file').click();
-    const request=++pendingOpen;try{const [picked]=await showOpenFilePicker({multiple:false,types:[{description:'脚本',accept:{'application/json':['.json'],'text/plain':['.txt','.md']}}]});await readFile(await picked.getFile(),picked,request)}catch(e){if(e.name!=='AbortError')toast('開けません。現在の作品は保持しています。')}
+    // Android providers may label .json as application/octet-stream (BIN).
+    // Do not filter the OS picker by MIME; validate the selected contents below.
+    const request=++pendingOpen;try{const [picked]=await showOpenFilePicker({multiple:false});await readFile(await picked.getFile(),picked,request)}catch(e){if(e.name!=='AbortError')toast('開けません。現在の作品は保持しています。')}
   };
   async function readFile(f,picked=null,request=++pendingOpen){
     try{
       const text=(await f.text()).replace(/^\uFEFF/,'');if(request!==pendingOpen)return;
-      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type))requestOpen(validate(JSON.parse(text)),/\.json$/i.test(f.name)?picked:null);
+      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type))await requestOpen(validate(JSON.parse(text)),/\.json$/i.test(f.name)?picked:null);
       else{
         if(!/\.(txt|md)$/i.test(f.name)||loadBlocked)throw Error('未対応の形式');
         const c=ScriptModel.importChapter({id:uid(),title:f.name.replace(/\.(txt|md)$/i,''),status:'未着手',text});
-        const starter=state.chapters[0],replace=!state.title&&!state.author&&state.chapters.length===1&&!ScriptModel.realCuts(starter).length&&starter.title==='新しい章';
-        if(replace){c.id=starter.id;state.chapters[0]=c}else state.chapters.push(c);
-        active=c.id;ScriptModel.renumber(state);recordHistory();save();render();$('#dialog').close();toast('開きました');
+        const incoming=validate({...initial,...projectPreferences(),title:c.title,chapters:[c]});
+        await requestOpen(incoming);
       }
     }catch(_){toast('開けません。現在の作品は保持しています。')}
   }

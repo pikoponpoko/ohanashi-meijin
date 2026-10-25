@@ -16,12 +16,38 @@ try{
       localStorage.setItem(KEY,JSON.stringify(state));
     }
   }
-}catch(e){loadBlocked=true;setTimeout(()=>toast('保存データを保護中です。「開く」からJSONを選択してください。自動保存は停止しています。'),500)}
+}catch(e){loadBlocked=true;setTimeout(()=>{if(loadBlocked)toast('保存データを保護中です。「開く」からJSONを選択してください。自動保存は停止しています。')},500)}
 
 active=state.chapters[0].id;
 function validate(v){return ScriptModel.validate(v,initial)}
 const chapter=()=>state.chapters.find(c=>c.id===active);
-function save(){clearTimeout(timer);if(loadBlocked){$('#saved').textContent='開き直しが必要';return}try{validate(state);localStorage.setItem(KEY,JSON.stringify(state));dirty=false;$('#saved').textContent='ブラウザに保存済み';window.FileControls?.sync();}catch(e){dirty=true;$('#saved').textContent='保存失敗';toast('自動保存できません。「保存」でファイルを残してください。')}}
+// Keep input disabled until an overflow document, if any, has been restored.
+const bootState=state,bootSignature=JSON.stringify(state),appRoot=document.querySelector('main');appRoot.inert=true;
+window.manuscriptReady=Promise.all([window.ManuscriptStorage.ready,new Promise(resolve=>{
+  if(document.readyState!=='loading')resolve();else document.addEventListener('DOMContentLoaded',resolve,{once:true});
+})]).then(()=>{
+  try{
+    const raw=window.ManuscriptStorage.activeRaw;
+    if(raw!==null&&state===bootState&&JSON.stringify(state)===bootSignature){
+      state=validate(JSON.parse(raw));active=state.chapters[0].id;loadBlocked=false;dirty=false;
+      resetHistory();render();window.FileControls?.documentOpened();
+    }
+    window.syncArchives?.();
+  }catch(_){loadBlocked=true;toast('保存データを保護中です。「保存」で原稿をファイルに残してください。')}
+  finally{appRoot.inert=false}
+});
+function save(){
+  clearTimeout(timer);if(appRoot.inert)return false;if(loadBlocked){$('#saved').textContent='開き直しが必要';return false}
+  const current=state;
+  const failed=()=>{if(state!==current)return;dirty=true;$('#saved').textContent='保存失敗';toast('自動保存できません。「保存」でファイルを残してください。');return false};
+  let raw;try{validate(state);raw=JSON.stringify(state)}catch(_){return failed()}
+  const saved=()=>{if(state!==current||JSON.stringify(state)!==raw)return false;dirty=false;$('#saved').textContent='ブラウザに保存済み';window.FileControls?.sync();return true};
+  if(!window.ManuscriptStorage.usingDatabase){
+    try{localStorage.setItem(KEY,raw);return saved()}catch(error){if(error.name!=='QuotaExceededError')return failed()}
+  }
+  dirty=true;$('#saved').textContent='ブラウザに保存中';
+  return window.ManuscriptStorage.commit(raw).then(saved,failed);
+}
 function changed(){recordHistory();dirty=true;$('#saved').textContent='ブラウザに保存中';window.FileControls?.sync();clearTimeout(timer);timer=setTimeout(save,350)}
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function type(s){return ScriptFormatting.inferred(s)}
@@ -96,3 +122,5 @@ $('#editor').addEventListener('wheel',e=>{if(state.direction==='vertical'&&Math.
 $('#deleteChapter').onclick=()=>{const c=chapter();modal('章を削除','<p>'+esc(c.title)+'を削除します。この画面を閉じるとキャンセルします。削除後は「元に戻す」で取り消せます（再読み込みまで）。</p><label><input type="checkbox" id="deleteBackup"> バックアップを保存する</label><button class="primary" id="confirmDelete">削除する</button>');$('#confirmDelete').onclick=()=>{if($('#deleteBackup').checked)download(JSON.stringify(state,null,2),'json','application/json');state.chapters=state.chapters.filter(x=>x.id!==c.id);if(!state.chapters.length)state.chapters.push(ScriptModel.migrateChapter({id:uid(),title:'新しい章',text:'',status:'未着手'}));active=state.chapters[0].id;ScriptModel.renumber(state);recordHistory();save();render();$('#dialog').close()}};
 let selectedRange;document.addEventListener('selectionchange',()=>{const sel=window.getSelection();if(sel.rangeCount&&!sel.isCollapsed&&$('#editor').contains(sel.anchorNode)&&$('#editor').contains(sel.focusNode))selectedRange=sel.getRangeAt(0).cloneRange()});
 $('#splitChapter').onmousedown=e=>e.preventDefault();$('#splitChapter').onclick=()=>{if(!selectedRange||!selectedRange.toString().trim()||!$('#editor').contains(selectedRange.commonAncestorContainer))return toast('本文を選択してください');const range=selectedRange.cloneRange(),source=chapter();modal('選択範囲から章を作成','<label>章のタイトル</label><input id="splitTitle" value="新しい章"><button id="confirmSplit" class="primary">選択範囲を移動</button>');$('#confirmSplit').onclick=()=>{if(source!==chapter())return;const records=rangeRecords(range,true);assignLines(source,domLines($('#editor')));const c={id:uid(),title:$('#splitTitle').value||'新しい章',text:'',status:'未着手'};assignLines(c,records);state.chapters.splice(state.chapters.indexOf(source)+1,0,c);active=c.id;selectedRange=null;ScriptModel.renumber(state);recordHistory();save();render();$('#dialog').close()}};
+
+window.addEventListener('manuscriptstoragechange',()=>toast('別の画面で原稿が更新されました。同時編集を避け、JSONを保存してください。'));
