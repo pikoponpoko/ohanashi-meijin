@@ -5,4 +5,4 @@ __pycache__/
 .env.*
 .dev.vars
 .dev.vars.*
-test-results/
+/test-results/
