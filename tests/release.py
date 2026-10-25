@@ -92,26 +92,14 @@ with sync_playwright() as p:
     download.value.save_as(OUT/'corrupt-recovery.json')
     check('corrupt archive downloads original bytes',(OUT/'corrupt-recovery.json').read_bytes()==b'{broken')
 
-    # PWA real registration, browser manifest parser, offline shell, data preservation.
-    page.evaluate("""async()=>{
-      let timer;
-      try { window.pwaRegistration=await Promise.race([
-        navigator.serviceWorker.ready,
-        new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('SW ready timeout')),10000)})
-      ]); } finally { clearTimeout(timer); }
-    }""")
-    page.wait_for_function('window.pwaRegistration.active?.state === "activated"',timeout=10000)
-    page.reload();page.wait_for_function('navigator.serviceWorker.controller!==null')
+    # Offline caching is suspended; installed shortcuts still use this editor online.
+    check('no service worker registered',page.evaluate('navigator.serviceWorker.getRegistrations().then(r=>r.length===0)'))
     manifest=page.context.new_cdp_session(page).send('Page.getAppManifest')
     check('browser parses manifest without errors',manifest['url'].endswith('manifest.webmanifest') and not manifest['errors'] and json.loads(manifest['data'])['display']=='standalone')
     for size in [192,512]:
-        check('browser decodes '+str(size)+' icon',page.evaluate('''size=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i.naturalWidth===size&&i.naturalHeight===size);i.onerror=()=>resolve(false);i.src='icons/icon-'+size+'.png'})''',size))
-    setup(page,'○場\n人「オフライン」');before=data(page)
-    ctx.set_offline(True);page.reload()
-    check('offline reload keeps manuscript and IDs',data(page)==before)
-    page.evaluate('()=>caretEnd($("#editor").lastElementChild)');page.keyboard.insert_text('続き');offline=data(page);page.reload()
-    check('offline editing persists',data(page)==offline)
-    ctx.set_offline(False)
+        check('browser decodes '+str(size)+' icon',page.evaluate('''size=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i.naturalWidth===size&&i.naturalHeight===size);i.onerror=()=>resolve(false);i.src='icons/official-'+size+'.png'})''',size))
+    setup(page,'○場\n人「オンライン」');before=data(page);page.reload()
+    check('online reload keeps manuscript and IDs',data(page)==before)
     page.screenshot(path=str(OUT/'desktop.png'))
 
     # Physical touch injection is trusted Chromium input; it is still not Android/iOS OS input.

@@ -7,7 +7,9 @@ hook="""\nself.addEventListener('message',e=>{if(e.data==='BREAK_CACHE'){caches.
 class Handler(http.server.SimpleHTTPRequestHandler):
  def log_message(self,*args):pass
  def do_GET(self):
-  if self.path=='/sw.js':
+  if self.path=='/pwa.js' and mode['legacy']:
+   code=(ROOT/'tests/fixtures/legacy-pwa.js').read_bytes();self.send_response(200);self.send_header('Content-Type','text/javascript');self.end_headers();self.wfile.write(code)
+  elif self.path=='/sw.js':
    code=legacy+hook if mode['legacy'] else (ROOT/'dist/sw.js').read_text();self.send_response(200);self.send_header('Content-Type','text/javascript');self.send_header('Cache-Control','no-store');self.end_headers();self.wfile.write(code.encode())
   else:super().do_GET()
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(Handler,directory=str(ROOT/'dist')));threading.Thread(target=server.serve_forever,daemon=True).start();base='http://127.0.0.1:'+str(server.server_port);checks=[]
@@ -18,7 +20,7 @@ try:
  with sync_playwright() as p:
   browser=p.chromium.launch(executable_path=shutil.which('chromium'));ctx=browser.new_context(accept_downloads=True);ctx.route('https://fonts.googleapis.com/**',lambda r:r.abort());page=ctx.new_page();page.goto(base)
   page.evaluate("()=>{state=validate({...initial,title:'保持する原稿',chapters:[{id:'safe',title:'第一章',text:'○場所\\n人「原稿を保持する」'}]});active='safe';render();resetHistory();save();localStorage.setItem(KEY+'-document-safe',JSON.stringify({raw:localStorage.getItem(KEY),title:'退避原稿',savedAt:new Date().toISOString()}));localStorage.setItem('unrelated','keep')}")
-  raw=page.evaluate('localStorage.getItem(KEY)');page.evaluate('async()=>{window.reg=await navigator.serviceWorker.ready}');page.reload();page.wait_for_function('!!navigator.serviceWorker.controller')
+  raw=page.evaluate('localStorage.getItem(KEY)');page.evaluate("navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'})");page.evaluate('async()=>{window.reg=await navigator.serviceWorker.ready}');page.reload();page.wait_for_function('!!navigator.serviceWorker.controller')
   page.evaluate("async()=>{await new Promise(resolve=>{const c=new MessageChannel();c.port1.onmessage=resolve;navigator.serviceWorker.controller.postMessage('BREAK_CACHE',[c.port2])})}")
   failed=False
   try:page.reload(timeout=10000)
