@@ -1,0 +1,24 @@
+PASS legacy profile controlled by real v11 worker
+PASS old cache still serves auto-registering pwa.js after server fix
+PASS retirement activates over old worker and unregisters without reload
+PASS retirement preserves all localStorage bytes
+PASS other caches retained
+PASS existing profile full Chromium restart 1: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 2: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 3: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 4: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 5: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 6: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 7: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 8: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 9: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 10: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 11: HTTP 200, no controller, data intact
+PASS existing profile full Chromium restart 12: HTTP 200, no controller, data intact
+PASS repair requires backup before repair
+PASS recovery downloads original corrupt bytes
+PASS repair navigates without re-registration and preserves storage
+PASS new profile has no worker
+PASS offline navigation explicitly fails at network, not inside editor
+PASS no application runtime errors
+23 connection browser checks passed
