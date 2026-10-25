@@ -6,6 +6,11 @@
 > check
 > node --check dist/app.js && node --check dist/model.js && node --check dist/editing.js && node --check dist/pdf.js && node --check dist/projects.js && node --check dist/pwa.js && node --check dist/sw.js && node --check dist/focus.js && node --check dist/viewport.js && node --check dist/formatting-model.js && node --check dist/formatting.js && node --check dist/recovery.js && node --check dist/files.js && node --check dist/layout.js && node --check dist/timing-model.js && node --check dist/timing.js
 
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
 7 checks passed: line types, duration, TXT / Markdown, correction suggestions
 Model checks passed: legacy migration, IDs, duplicate numbers, empty cuts, repair, validation, global numbering
 Explicit blank removal checks passed: whitespace, zero-width-only lines, cut IDs, formats, empty cuts, idempotence
@@ -27,3 +32,8 @@ PASS sound model: additive v2 metadata, unchanged source/IDs/formats, quoted spe
 PASS sound formatting/timing: independent kinds, explicit conversions, compatible serialized action and audio excluded from speech/action duration
 PASS immediate pending cut keeps ID and no blank line across validation; first input reuses ID
 PASS formatting removes outer structural marks and preserves nested quotes and ordinary prose
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

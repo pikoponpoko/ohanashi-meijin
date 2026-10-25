@@ -28,6 +28,7 @@ PASS desktop horizontal format conversion Undo exact
 PASS desktop horizontal scene conversion removes circle
 PASS desktop horizontal caret stays at same body position after marker removal
 PASS desktop horizontal inner quotations preserved
+PASS desktop wrapped dialogue retains interior quotation marks
 PASS mobile vertical cut visible immediately before any typing
 PASS mobile vertical separator saved without blank paragraph
 PASS mobile vertical double Enter Undo exact
@@ -58,4 +59,5 @@ PASS mobile horizontal format conversion Undo exact
 PASS mobile horizontal scene conversion removes circle
 PASS mobile horizontal caret stays at same body position after marker removal
 PASS mobile horizontal inner quotations preserved
-60 editing followup checks passed
+PASS mobile wrapped dialogue retains interior quotation marks
+62 editing followup checks passed

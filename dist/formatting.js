@@ -35,11 +35,11 @@ function formatParagraphs(kind){
   }
   targets=targets.filter(p=>p&&!p.dataset.cutId);
   if(!targets.length)return;
-  const c=chapter(),lines=c.text.split('\n');
+  const c=chapter(),lines=c.text.split('\n'),speech=ScriptFormatting.speechMarks(c);
   const origins=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formatOrigins?.[i]||(c.formats?.[i]?'legacy':'auto'));
   const formats=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formats?.[i]||ScriptFormatting.inferred(s));
   for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=['music','se'].includes(kind)?'action':kind;if(['music','se'].includes(kind)){lines.push(ScriptModel.soundText('',kind));formats.push('action');origins.push('manual');delete c.placeholderFormat}if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
-    let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i)||p.dataset.kind||ScriptFormatting.inferred(raw);const originalRaw=raw;const converted=ScriptFormatting.markerConversion(raw,oldKind,kind);raw=converted.text;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset-=converted.removals.filter(at=>at<pos.offset).length;if(['music','se'].includes(kind))raw=ScriptModel.soundText(/^(?:音楽|BGM|SE|ＳＥ|効果音)「/.test(originalRaw.trim())?originalRaw:raw,kind);else if(['music','se'].includes(oldKind)){const stripped=ScriptModel.stripSound(raw),shift=raw.length-stripped.length;raw=stripped;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(0,pos.offset-shift)}lines[i]=raw;const trimmed=raw.trimStart();
+    let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i)||p.dataset.kind||ScriptFormatting.inferred(raw);const originalRaw=raw;const converted=ScriptFormatting.markerConversion(raw,oldKind,kind,speech[i]||[]);raw=converted.text;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset-=converted.removals.filter(at=>at<pos.offset).length;if(['music','se'].includes(kind))raw=ScriptModel.soundText(/^(?:音楽|BGM|SE|ＳＥ|効果音)「/.test(originalRaw.trim())?originalRaw:raw,kind);else if(['music','se'].includes(oldKind)){const stripped=ScriptModel.stripSound(raw),shift=raw.length-stripped.length;raw=stripped;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(0,pos.offset-shift)}lines[i]=raw;const trimmed=raw.trimStart();
     if(kind==='scene'&&!/^[○◯〇]/.test(trimmed)){lines[i]='◯'+trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(1,pos.offset-(raw.length-trimmed.length)+1)}
     if(kind==='dialogue'&&!/「/.test(trimmed)){lines[i]='「'+raw+'」';for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset++}
     formats[i]=['music','se'].includes(kind)?'action':kind;origins[i]='manual';
@@ -90,7 +90,7 @@ $('#speaker').onclick=()=>{
   const block=topBlock(r.startContainer),c=chapter(),lines=c.text.split('\n');let index=[...$('#editor').children].indexOf(block),start=null,depth=0;
   for(let i=0;i<=index;i++){
     if(c.cuts.some(q=>q.line===i)){start=null;depth=0;continue}
-    if(['music','se'].includes(ScriptModel.paragraphKind(c,i)))continue;
+    const kind=ScriptModel.paragraphKind(c,i)||ScriptFormatting.inferred(lines[i]||'');if(!depth&&kind!=='dialogue')continue;
     if(!depth&&lines[i]?.includes('「'))start=i;
     depth=Math.max(0,depth+[...(lines[i]||'')].reduce((n,t)=>n+(t==='「'?1:t==='」'?-1:0),0));
     if(i<index&&!depth)start=null;

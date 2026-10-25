@@ -33,6 +33,7 @@ try:
     setup('◯場所',direction);page.locator('[data-insert=action]').click();check(name+' scene conversion removes circle',page.evaluate("chapter().text==='#C1\\n場所'"))
     setup('◯場所',direction);page.evaluate("()=>{const p=$('#editor').lastElementChild,r=document.createRange();r.setStart(p.firstChild,2);r.collapse(true);getSelection().removeAllRanges();getSelection().addRange(r)}");page.locator('[data-insert=action]').click();check(name+' caret stays at same body position after marker removal',page.evaluate('historySelection().start.offset===1'))
     setup('太郎「彼は「はい」と言った」',direction);page.locator('[data-insert=action]').click();check(name+' inner quotations preserved',page.evaluate("chapter().text==='#C1\\n太郎彼は「はい」と言った'"))
+   setup('太郎「第一行\n彼は「はい」と言った\n終わり」');page.evaluate("()=>{const ed=$('#editor'),r=document.createRange();r.setStart(ed.children[1],0);r.setEnd(ed.lastElementChild,ed.lastElementChild.childNodes.length);getSelection().removeAllRanges();getSelection().addRange(r)}");page.locator('[data-insert=action]').click();check(tag+' wrapped dialogue retains interior quotation marks',page.evaluate("chapter().text==='#C1\\n太郎第一行\\n彼は「はい」と言った\\n終わり'"))
   b.close()
 finally:s.shutdown();s.server_close()
 (OUT/'checks.json').write_text(json.dumps(checks,ensure_ascii=False,indent=2));print(len(checks),'editing followup checks passed')
