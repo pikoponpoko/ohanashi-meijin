@@ -1,0 +1,36 @@
+name: Windows desktop
+on:
+  pull_request:
+    paths:
+      - 'desktop/**'
+      - 'dist/**'
+      - '.github/workflows/desktop.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci --prefix desktop
+      - run: npm --prefix desktop test
+      - run: npm --prefix desktop run prepare:assets
+      - run: npm --prefix desktop run test:electron
+      - run: npm --prefix desktop run dist:win
+      - name: Hash installer
+        shell: pwsh
+        run: Get-FileHash desktop-release/*-Setup.exe -Algorithm SHA256 | Format-List | Out-File desktop-release/SHA256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OhanashiMeijin-Windows-x64
+          path: |
+            desktop-release/*-Setup.exe
+            desktop-release/SHA256.txt
+          if-no-files-found: error
