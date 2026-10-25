@@ -9,8 +9,10 @@ let currentApp;
 function check(name,condition=true){assert.ok(condition,name);checks.push(name);console.log('PASS',name)}
 async function launch(userData=profile){
  const binary=process.platform==='darwin'?'Electron.app/Contents/MacOS/Electron':process.platform==='win32'?'electron.exe':'electron';
+ const executable=process.env.OHANASHI_TEST_EXECUTABLE||path.join(root,'node_modules/electron/dist',binary);
+ assert.ok(fs.existsSync(executable),'Electron executable missing: run node node_modules/electron/install.js');
  const args=process.platform==='linux'?['--no-sandbox','--headless','--ozone-platform=headless','--disable-gpu',root]:[root];
- const app=await electron.launch({executablePath:process.env.OHANASHI_TEST_EXECUTABLE||path.join(root,'node_modules/electron/dist',binary),args,env:{...process.env,OHANASHI_TEST_USER_DATA:userData,XDG_CACHE_HOME:path.join(directory,'cache')}});
+ const app=await electron.launch({executablePath:executable,args,env:{...process.env,OHANASHI_TEST_USER_DATA:userData,XDG_CACHE_HOME:path.join(directory,'cache')}});
  currentApp=app;const page=await app.firstWindow();page.on('pageerror',e=>errors.push(String(e)));await page.waitForSelector('#editor');return {app,page};
 }
 (async()=>{

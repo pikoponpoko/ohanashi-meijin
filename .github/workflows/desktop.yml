@@ -20,6 +20,8 @@ jobs:
           cache: npm
           cache-dependency-path: desktop/package-lock.json
       - run: npm ci --prefix desktop
+      - name: Ensure Electron runtime is installed
+        run: node desktop/node_modules/electron/install.js
       - run: npm --prefix desktop test
       - run: npm --prefix desktop run prepare:assets
       - run: npm --prefix desktop run test:electron
