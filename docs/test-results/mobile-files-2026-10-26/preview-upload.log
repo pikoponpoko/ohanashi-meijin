@@ -1,0 +1,27 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+🌀 Building list of assets...
+✨ Read 37 files from the assets directory /workspace/ohanashi-meijin/dist
+🌀 Starting asset upload...
+🌀 Found 1 new or modified static asset to upload. Proceeding with upload...
++ /app.js
+Uploaded 1 of 1 asset
+✨ Success! Uploaded 1 file (33 already uploaded) (0.69 sec)
+
+Total Upload: 0.33 KiB / gzip: 0.24 KiB
+Worker Startup Time: 0 ms
+Uploaded ohanashi-meijin (2.31 sec)
+Worker Version ID: 727677f4-a9ff-4e3e-9c1e-6891bacb2773
+Version Preview URL: https://727677f4-ohanashi-meijin.pikoponpoko.workers.dev
+Version Preview Alias URL: https://connection-review-ohanashi-meijin.pikoponpoko.workers.dev
+
+To deploy this version to production traffic use the command wrangler versions deploy
+
+Changes to non-versioned settings (config properties 'logpush' or 'tail_consumers') take effect after your next deployment using the command wrangler versions deploy
+
+Changes to triggers (routes, custom domains, cron schedules, etc) must be applied with the command wrangler triggers deploy
+

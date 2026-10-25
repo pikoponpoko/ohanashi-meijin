@@ -1,0 +1,30 @@
+PASS Android picker has no MIME or extension restriction
+PASS BIN/octet-stream JSON opens and previous manuscript is archived
+PASS TXT open 1 creates a separate two-cut work
+PASS TXT open 2 creates a separate two-cut work
+PASS TXT open 3 creates a separate two-cut work
+PASS TXT open 4 creates a separate two-cut work
+PASS TXT open 5 creates a separate two-cut work
+PASS TXT opening retains original manuscript exactly
+PASS blank work retains display and timing preferences
+PASS TXT work retains display and timing preferences
+PASS real browser quota exhaustion allows a safe blank start
+PASS actual full storage is preserved without evicting any keys
+PASS JSON larger than old active document opens with actual storage full
+PASS real quota fallback survives reload
+PASS new work retains invalid draft and last valid saved bytes
+PASS legacy archives without timestamps cannot block a new work
+PASS new work succeeds with localStorage full
+PASS all existing localStorage bytes are retained
+PASS old manuscript is archived before switching
+PASS JSON opens while localStorage is full
+PASS overflow manuscript and settings survive reload
+PASS valid overflow document takes priority over corrupt legacy storage
+PASS overflow archive reopens exact original IDs and settings
+PASS recovery exports latest overflow document
+PASS recovery rejects an outdated backup after database update
+PASS both storage failures abort switch with original intact
+PASS failed active write aborts the entire archive transaction
+PASS failed switch leaves no partial database archive
+PASS no application exceptions
+29 mobile file checks passed

@@ -35,7 +35,7 @@ try:
     page.evaluate("()=>modal('確認','<input id=otherInput>')");page.locator('#otherInput').focus();page.keyboard.press('Alt+PageUp');check('dialog input does not move chapter',page.evaluate("active==='three'"));page.locator('#close').click()
     page.locator('#exitFocus').click();check('exit button leaves focus mode',not page.evaluate("document.body.classList.contains('focus')"))
     page.locator('#editor').focus();page.keyboard.press('Alt+PageUp');check('normal editor does not intercept chapter shortcut',page.evaluate("active==='three'"))
-    page.locator('#focus').click();page.evaluate("()=>{caretEnd($('#editor').lastElementChild)}");page.keyboard.insert_text('容量不足');page.evaluate("()=>{clearTimeout(timer);Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')}}")
+    page.locator('#focus').click();page.evaluate("()=>{caretEnd($('#editor').lastElementChild)}");page.keyboard.insert_text('容量不足');page.evaluate("()=>{clearTimeout(timer);Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')};ManuscriptStorage.commit=async()=>{throw Error('All storage unavailable')}}")
     page.keyboard.press('Alt+PageUp');check('save failure aborts navigation and retains pending text',page.evaluate("active==='three'&&dirty&&chapter().text.endsWith('容量不足')"))
     page.reload();page.locator('#settings').click();page.locator('#pinchFocusToggle').check();page.locator('#close').click()
     check('explicit preference enables dedicated gesture handle',page.locator('#focusGesture').is_visible())

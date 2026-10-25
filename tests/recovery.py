@@ -35,6 +35,7 @@ try:
   check('repair preserves archives and unrelated storage',page.evaluate("localStorage.getItem('unrelated')==='keep'&&!!localStorage.getItem(KEY+'-document-safe')"))
   # A concurrently saved manuscript must not be overwritten or repaired using a stale backup.
   page.goto(base+'/recovery.html');page.locator('#saveRecovery').click();page.evaluate("localStorage.setItem('scenario-meijin-v1',localStorage.getItem('scenario-meijin-v1')+' ')");new=page.evaluate("localStorage.getItem('scenario-meijin-v1')");page.locator('#repairConnection').click()
+  page.wait_for_function("document.querySelector('#status').textContent.includes('更新')")
   check('concurrent update prevents stale repair',page.url.endswith('/recovery.html') and page.evaluate("localStorage.getItem('scenario-meijin-v1')")==new and '更新' in page.locator('#status').inner_text())
   page.screenshot(path=str(OUT/'recovery.png'));browser.close()
 finally:server.shutdown();server.server_close()

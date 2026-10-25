@@ -149,7 +149,7 @@ with sync_playwright() as p:
     page.evaluate("""()=>{chapter().cuts[0].line=99;save()}""")
     check('invalid in-memory structure does not overwrite saved manuscript',page.evaluate('localStorage.getItem(KEY)')==saved_json and page.locator('#saved').inner_text()=='保存失敗')
     page.reload();check('last valid manuscript recovers after failed save',page.evaluate('chapter().text')=='#C1\n保存済み本文')
-    page.evaluate("""()=>{Storage.prototype.setItem=function(){throw new DOMException('Quota','QuotaExceededError')};chapter().text+='追記';save()}""")
+    page.evaluate("""()=>{Storage.prototype.setItem=function(){throw new DOMException('Quota','QuotaExceededError')};ManuscriptStorage.commit=async()=>{throw Error('All storage unavailable')};chapter().text+='追記';save()}""")
     check('quota failure preserves stored JSON and reports unsaved changes',page.evaluate('localStorage.getItem(KEY)')==saved_json and page.evaluate('dirty'))
     before_restore=data(page)
     page.locator('#file').set_input_files({'name':'blocked.json','mimeType':'application/json','buffer':json.dumps({'chapters':[{'title':'別の章','text':'別の本文'}]}).encode()})
