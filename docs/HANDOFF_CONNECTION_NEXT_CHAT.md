@@ -1,4 +1,4 @@
-> 2026-10-25 続行済み：本番は4bd3dfd8-baf7-46cf-bdc1-6663604e66bfへ100%反映。プレビュー・本番各54+82項目、原稿保存をassertしたローカル旧SW退役23項目、本番原稿保持12回再起動成功。詳細はCONNECTION_RETIREMENT.mdとconnection-live-2026-10-25証跡を参照。PR #12 mergeは自動承認レビューで明示許可不足として拒否されたため未マージ。以下は続行前の記録。
+> 2026-10-25 続行済み：本番は4bd3dfd8-baf7-46cf-bdc1-6663604e66bfへ100%反映。プレビュー・本番各54+82項目、原稿保存をassertしたローカル旧SW退役23項目、本番原稿保持12回再起動成功。詳細はCONNECTION_RETIREMENT.mdとconnection-live-2026-10-25証跡を参照。PR #12は2026-10-26 JSTにユーザーの明示許可後mainへマージ済み。Windows開発はPR #13・docs/WINDOWS_DESKTOP.mdを参照。以下は続行前の記録。
 
 # 次のチャットへの引き継ぎ：接続修正とWindows版
 

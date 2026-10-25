@@ -1,0 +1,25 @@
+PASS stable local application origin
+PASS renderer has no Node access
+PASS desktop update button exists
+PASS update command opens only the repository releases page
+PASS privileged IPC rejects other origins
+PASS bundled Japanese font loads
+PASS no service worker registration
+PASS remote application cannot be fetched
+PASS offline Undo restores manuscript
+PASS offline Redo restores new input
+PASS atomic snapshot contains every raw storage value
+PASS native JSON export contains current manuscript
+PASS save overwrites the chosen file without another picker
+PASS cancelled Save As preserves manuscript and file
+PASS invalid imported JSON preserves current manuscript
+PASS browser JSON imports locally
+PASS import archives previous manuscript
+PASS offline PDF is generated
+PASS offline restart 1 preserves input, archive and preferences
+PASS offline restart 2 preserves input, archive and preferences
+PASS offline restart 3 preserves input, archive and preferences
+PASS empty Chromium profile restores all raw values from disk
+PASS no application exceptions
+Evidence: /tmp/ohanashi-desktop-test-toymdB
+23 Electron checks passed

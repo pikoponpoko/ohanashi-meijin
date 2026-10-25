@@ -6,7 +6,7 @@ Webの `dist/` は変更せず、Electron専用の `desktop/web/` に生成す�
 ## 利用とデータ移行
 
 Windows x64用インストーラーは `OhanashiMeijin-0.1.0-x64-Setup.exe`。
-生成成功はGitHub ActionsのWindows desktopワークフローと成果物で確認する。
+生成と旧版置換試験が成功した[Actions成果物（EXE・SHA256のZIP）](https://github.com/pikoponpoko/ohanashi-meijin/actions/runs/40241978557/artifacts/12617138361)を使用する。
 未署名のためWindowsのSmartScreen警告が出る場合がある。署名・一般公開は未実施。
 
 ブラウザ版の「保存」でJSONを書き出し、デスクトップ版の「開く」で取り込む。
@@ -44,6 +44,7 @@ Node 24を使用する。
 
 ```sh
 npm ci --prefix desktop
+node desktop/node_modules/electron/install.js
 npm --prefix desktop test
 npm --prefix desktop run prepare:assets
 npm --prefix desktop run test:electron
@@ -63,8 +64,8 @@ LinuxのWine11ツールセットはkernel32.dll等の不足でNSIS処理に失�
 
 ## 検証状況
 
-Linux headless Electron 45で18項目成功：起動・権限境界・内蔵フォント・外部通信拒否、
+Linux headless Electron 45とWindows Server 2025 CIで23項目成功：起動・権限境界・内蔵フォント・外部通信拒否、
 Undo/Redo・全localStorageのディスク予備コピー、ネイティブJSON保存・取込と元原稿の退避、
 オフラインPDF、終了直前入力保持と3回の再起動、空プロファイルの予備コピー復元。
 保存スナップショットの再読込、直前コピーへのフォールバック、破損データの上書き防止も単体試験済み。
-Windows CI実行、Windows実機でのインストール・旧版置換・OS再起動は別途確認する。
+Windows Server 2025 CIでNSIS生成と旧版fixture 0.0.9→0.1.0の置換試験25項目成功。実際にインストールした旧版で原稿・設定・退避値を保存し、新版インストーラーで置換後、バージョン0.1.0とデータ保持・3回の再起動を確認。Actions run 40241978557、検証ソース0d671351fc7fe4e50d6b944eb0ebada7e8081e0a。[証跡](test-results/desktop-2026-10-26/)。利用者のWindows 10/11 PC、OS再起動、macOSは未確認。CIのファイルダイアログは選択結果をスタブしており、実GUIの選択操作は未確認。NSIS更新試験の旧版は同じコードから版番号0.0.9として生成した試験用fixtureで、過去に配布した別実装との移行を証明するものではない。

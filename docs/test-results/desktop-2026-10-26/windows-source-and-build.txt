@@ -1,0 +1,28 @@
+2026-10-25T22:48:43.5166428Z PASS stable local application origin
+2026-10-25T22:48:43.5401599Z PASS renderer has no Node access
+2026-10-25T22:48:43.5429841Z PASS desktop update button exists
+2026-10-25T22:48:43.6261094Z PASS update command opens only the repository releases page
+2026-10-25T22:48:43.6983688Z PASS privileged IPC rejects other origins
+2026-10-25T22:48:43.9345391Z PASS bundled Japanese font loads
+2026-10-25T22:48:43.9364248Z PASS no service worker registration
+2026-10-25T22:48:43.9387665Z PASS remote application cannot be fetched
+2026-10-25T22:48:43.9833572Z PASS offline Undo restores manuscript
+2026-10-25T22:48:44.0113597Z PASS offline Redo restores new input
+2026-10-25T22:48:44.0148752Z PASS atomic snapshot contains every raw storage value
+2026-10-25T22:48:44.0683441Z PASS native JSON export contains current manuscript
+2026-10-25T22:48:44.1544328Z PASS save overwrites the chosen file without another picker
+2026-10-25T22:48:44.1936804Z PASS cancelled Save As preserves manuscript and file
+2026-10-25T22:48:44.2612814Z PASS invalid imported JSON preserves current manuscript
+2026-10-25T22:48:44.4499367Z PASS browser JSON imports locally
+2026-10-25T22:48:44.4515545Z PASS import archives previous manuscript
+2026-10-25T22:48:49.3759693Z PASS offline PDF is generated
+2026-10-25T22:48:50.1363907Z PASS offline restart 1 preserves input, archive and preferences
+2026-10-25T22:48:50.7899252Z PASS offline restart 2 preserves input, archive and preferences
+2026-10-25T22:48:51.4285153Z PASS offline restart 3 preserves input, archive and preferences
+2026-10-25T22:48:52.2129437Z PASS empty Chromium profile restores all raw values from disk
+2026-10-25T22:48:52.3719933Z PASS no application exceptions
+2026-10-25T22:48:52.3726842Z 23 Electron checks passed
+2026-10-25T22:49:08.4959478Z   • file signing skipped via signExecutable configuration  file=release\win-unpacked\OhanashiMeijin.exe
+2026-10-25T22:49:08.4977449Z   • building        target=nsis file=release\OhanashiMeijin-0.1.0-x64-Setup.exe archs=x64 oneClick=false perMachine=false
+2026-10-25T22:49:52.8624606Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.1.0-x64-Setup.__uninstaller.exe
+2026-10-25T22:49:54.5700902Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.1.0-x64-Setup.exe
