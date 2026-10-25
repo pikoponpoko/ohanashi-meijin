@@ -18,6 +18,9 @@ globalThis.crypto=require('node:crypto').webcrypto;require('../dist/model.js');r
  assert.equal(got.cuts[0].lines.find(l=>l.kind==='normal').text,'音楽も\nSE：これは発話の続き');
  assert.equal(JSON.stringify(audio),audioText);
  console.log('PASS receiver current main: new soundCues and legacy-prefix-only JSON yield identical music/SE, null speakers, preserved wrapped speech and stable cut IDs');
+ const pending={version:2,chapters:[{id:'pending-chapter',title:'入力待ち',text:'#C1\n本文\n#C2',cuts:[{id:'existing-cut',line:0},{id:'reserved-cut',line:2}],formats:[null,'action',null],pendingCutId:'reserved-cut'}]};
+ const pendingRead=readScript(JSON.stringify(pending),'pending.json');assert.deepEqual(pendingRead.cuts.map(q=>q.id),['existing-cut','reserved-cut']);assert.equal(pendingRead.cuts[1].lines.length,0);
+ console.log('PASS receiver accepts explicit pending cut metadata and preserves reserved ID without body text');
  const proposal=JSON.parse(fs.readFileSync('docs/interop/samples/baseline.json'));assert.throws(()=>readScript(JSON.stringify(proposal),'draft.json'));assert.ok(readScript(JSON.stringify(proposal),'draft.json',{allowDraft:true}).cuts.length);
  console.log('PASS receiver main: unchanged v2 IDs and chapter order, repaired structural headings, music/SE prefixes, wrapped dialogue, action lines; source immutable');console.log('PASS existing draft.1: normal import rejects unapproved draft; explicit trial accepts unchanged sample');
  process.exit(0);

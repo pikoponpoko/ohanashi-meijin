@@ -39,7 +39,7 @@ function formatParagraphs(kind){
   const origins=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formatOrigins?.[i]||(c.formats?.[i]?'legacy':'auto'));
   const formats=lines.map((s,i)=>c.cuts.some(cut=>cut.line===i)?null:c.formats?.[i]||ScriptFormatting.inferred(s));
   for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=['music','se'].includes(kind)?'action':kind;if(['music','se'].includes(kind)){lines.push(ScriptModel.soundText('',kind));formats.push('action');origins.push('manual');delete c.placeholderFormat}if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
-    let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i);if(['music','se'].includes(kind))raw=ScriptModel.soundText(raw,kind);else if(['music','se'].includes(oldKind))raw=ScriptModel.stripSound(raw);lines[i]=raw;const trimmed=raw.trimStart();
+    let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i)||p.dataset.kind||ScriptFormatting.inferred(raw);const originalRaw=raw;const converted=ScriptFormatting.markerConversion(raw,oldKind,kind);raw=converted.text;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset-=converted.removals.filter(at=>at<pos.offset).length;if(['music','se'].includes(kind))raw=ScriptModel.soundText(/^(?:音楽|BGM|SE|ＳＥ|効果音)「/.test(originalRaw.trim())?originalRaw:raw,kind);else if(['music','se'].includes(oldKind)){const stripped=ScriptModel.stripSound(raw),shift=raw.length-stripped.length;raw=stripped;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(0,pos.offset-shift)}lines[i]=raw;const trimmed=raw.trimStart();
     if(kind==='scene'&&!/^[○◯〇]/.test(trimmed)){lines[i]='◯'+trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(1,pos.offset-(raw.length-trimmed.length)+1)}
     if(kind==='dialogue'&&!/「/.test(trimmed)){lines[i]='「'+raw+'」';for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset++}
     formats[i]=['music','se'].includes(kind)?'action':kind;origins[i]='manual';
@@ -82,3 +82,31 @@ $('#autoFormat').onclick=()=>{
 
 $('#cueType').addEventListener('pointerdown',()=>{const r=editorRange();if(r)selectedRange=r.cloneRange()});
 $('#cueType').onchange=e=>{const kind=e.target.value;if(kind)formatParagraphs(kind);e.target.value=''};
+
+$('#speaker').onmousedown=e=>e.preventDefault();
+$('#speaker').onclick=()=>{
+  if(composing||loadBlocked)return;
+  const r=editorRange()||(selectedRange?.startContainer.isConnected?selectedRange:null);if(!r)return toast('セリフの段落を選択してください。');
+  const block=topBlock(r.startContainer),c=chapter(),lines=c.text.split('\n');let index=[...$('#editor').children].indexOf(block),start=null,depth=0;
+  for(let i=0;i<=index;i++){
+    if(c.cuts.some(q=>q.line===i)){start=null;depth=0;continue}
+    if(['music','se'].includes(ScriptModel.paragraphKind(c,i)))continue;
+    if(!depth&&lines[i]?.includes('「'))start=i;
+    depth=Math.max(0,depth+[...(lines[i]||'')].reduce((n,t)=>n+(t==='「'?1:t==='」'?-1:0),0));
+    if(i<index&&!depth)start=null;
+  }
+  if(start===null)return toast('セリフの段落を選択してください。');index=start;
+  const raw=lines[index],open=raw.indexOf('「'),baseline=JSON.stringify(c);
+  modal('話者名','<label for="speakerName">話者名</label><input id="speakerName" autocomplete="off"><button id="applySpeaker" class="primary">適用</button>');
+  const input=$('#speakerName');input.value=raw.slice(0,open).trim();let ime=false,compositionEnded=-Infinity;
+  input.addEventListener('compositionstart',()=>ime=true);input.addEventListener('compositionend',()=>{ime=false;compositionEnded=performance.now()});
+  $('#applySpeaker').onclick=()=>{
+    if(ime||chapter()!==c||JSON.stringify(c)!==baseline)return;
+    if(/[「」\r\n]/.test(input.value))return toast('話者名にはカギ括弧を含めないでください。');
+    const name=input.value.trim();lines[index]=name+raw.slice(open);c.text=lines.join('\n');
+    c.formats=lines.map((s,i)=>c.cuts.some(q=>q.line===i)?null:i===index?'dialogue':c.formats?.[i]||ScriptFormatting.inferred(s));
+    c.formatOrigins=lines.map((s,i)=>c.cuts.some(q=>q.line===i)?null:i===index?'manual':c.formatOrigins?.[i]||'legacy');
+    ScriptModel.renumber(state);recordHistory();save();renderText();stats();$('#dialog').close();formatRestore({start:{block:index,offset:name.length+1},end:{block:index,offset:name.length+1}});
+  };
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!ime&&!e.isComposing&&e.keyCode!==229&&performance.now()-compositionEnded>60){e.preventDefault();$('#applySpeaker').click()}});input.focus();
+};

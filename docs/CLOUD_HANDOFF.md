@@ -1,5 +1,7 @@
 # おはなし名人：クラウド再開用引継ぎ
 
+> 2026-10-25 追加編集修正：`fix/immediate-cut-speaker`、[Enter即時確定・話者・形式変換](EDITING_FOLLOWUP.md)。入力待ちのIDをpendingCutIdで保持し、Enter2回直後から表示。話者入力欄、外側の形式記号の除去を実装。公開結果は最新PR説明を確認。
+
 > 2026-10-25 後続指示：PR #10に⑦音楽・SEの実装と集中モード調整を追加。[最新記録](FOCUS_SOUND_UPDATE.md)、[プリプロ向け指示書](PREPRO_SOUND_HANDOFF.md)。カット余白は手前側へ変更。保存v2のformatsを維持し、任意のsoundCues.version=1を追加。以下の「⑦は提案のみ」は前回段階の記録。公開状態はPR説明を確認。
 
 > 2026-10-25 使用後11項目：`fix/usage-feedback`、[項目別状態・検証資料](USAGE_FEEDBACK.md)、[連携維持と音楽／SE提案](interop/README.md)。⑦以外の10項目を実装し、⑦は提案のみ。原本・添付画像・プリプロのコードは変更しない。直前の正式アイコンはPR #9でmain b477a7bへマージ・公開済み。今回の11項目の公開状態は最新PR説明を確認する。

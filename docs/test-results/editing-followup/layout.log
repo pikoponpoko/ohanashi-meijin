@@ -1,0 +1,116 @@
+PASS body typography unchanged desktop vertical
+PASS body typography unchanged desktop horizontal
+PASS normal writing area grows desktop
+PASS desktop sidebar and onscreen Undo Redo are removed desktop
+PASS header stays one compact row desktop
+PASS main control directly visible desktop [data-insert=scene]
+PASS main control directly visible desktop [data-insert=action]
+PASS main control directly visible desktop #check
+PASS main control directly visible desktop #focus
+PASS main control directly visible desktop #direction
+PASS main control directly visible desktop #settings
+PASS overall progress remains visible desktop
+PASS chapter picker preserves moon marks desktop
+PASS progress uses existing status calculation desktop
+PASS status change remains undoable by keyboard desktop
+PASS chapter backdrop does not click through to footer desktop
+PASS timing basis is accessible desktop
+PASS timing settings save without changing text or cut IDs desktop
+PASS timing settings apply is one Undo desktop
+PASS focus previous is bottom right and next bottom left desktop
+PASS first chapter previous button disabled desktop
+PASS focus placement stays stable while typing desktop
+PASS keyboard history works without buttons desktop
+PASS last chapter next button disabled desktop
+PASS focus keyboard chapter navigation remains available desktop
+PASS onscreen focus exit remains available desktop
+PASS normal chapter selection preserves manuscript edits desktop
+PASS export remains directly accessible desktop
+PASS body typography unchanged phone vertical
+PASS body typography unchanged phone horizontal
+PASS normal writing area grows phone
+PASS desktop sidebar and onscreen Undo Redo are removed phone
+PASS header stays one compact row phone
+PASS main control directly visible phone [data-insert=scene]
+PASS main control directly visible phone [data-insert=action]
+PASS main control directly visible phone #check
+PASS main control directly visible phone #focus
+PASS main control directly visible phone #direction
+PASS main control directly visible phone #settings
+PASS overall progress remains visible phone
+PASS chapter picker preserves moon marks phone
+PASS progress uses existing status calculation phone
+PASS status change remains undoable by keyboard phone
+PASS chapter backdrop does not click through to footer phone
+PASS timing basis is accessible phone
+PASS timing settings save without changing text or cut IDs phone
+PASS timing settings apply is one Undo phone
+PASS focus previous is bottom right and next bottom left phone
+PASS first chapter previous button disabled phone
+PASS focus follows visual keyboard viewport without rebuilding caret
+PASS focus placement stays stable while typing phone
+PASS keyboard history works without buttons phone
+PASS touch history remains active 2
+PASS touch history remains active 3
+PASS last chapter next button disabled phone
+PASS focus keyboard chapter navigation remains available phone
+PASS onscreen focus exit remains available phone
+PASS normal chapter selection preserves manuscript edits phone
+PASS export remains directly accessible phone
+PASS body typography unchanged landscape vertical
+PASS body typography unchanged landscape horizontal
+PASS normal writing area grows landscape
+PASS desktop sidebar and onscreen Undo Redo are removed landscape
+PASS header stays one compact row landscape
+PASS main control directly visible landscape [data-insert=scene]
+PASS main control directly visible landscape [data-insert=action]
+PASS main control directly visible landscape #check
+PASS main control directly visible landscape #focus
+PASS main control directly visible landscape #direction
+PASS main control directly visible landscape #settings
+PASS overall progress remains visible landscape
+PASS chapter picker preserves moon marks landscape
+PASS progress uses existing status calculation landscape
+PASS status change remains undoable by keyboard landscape
+PASS chapter backdrop does not click through to footer landscape
+PASS timing basis is accessible landscape
+PASS timing settings save without changing text or cut IDs landscape
+PASS timing settings apply is one Undo landscape
+PASS focus previous is bottom right and next bottom left landscape
+PASS first chapter previous button disabled landscape
+PASS focus placement stays stable while typing landscape
+PASS keyboard history works without buttons landscape
+PASS last chapter next button disabled landscape
+PASS focus keyboard chapter navigation remains available landscape
+PASS onscreen focus exit remains available landscape
+PASS normal chapter selection preserves manuscript edits landscape
+PASS export remains directly accessible landscape
+PASS body typography unchanged keyboard vertical
+PASS body typography unchanged keyboard horizontal
+PASS normal writing area grows keyboard
+PASS desktop sidebar and onscreen Undo Redo are removed keyboard
+PASS header stays one compact row keyboard
+PASS main control directly visible keyboard [data-insert=scene]
+PASS main control directly visible keyboard [data-insert=action]
+PASS main control directly visible keyboard #check
+PASS main control directly visible keyboard #focus
+PASS main control directly visible keyboard #direction
+PASS main control directly visible keyboard #settings
+PASS overall progress remains visible keyboard
+PASS chapter picker preserves moon marks keyboard
+PASS progress uses existing status calculation keyboard
+PASS status change remains undoable by keyboard keyboard
+PASS chapter backdrop does not click through to footer keyboard
+PASS timing basis is accessible keyboard
+PASS timing settings save without changing text or cut IDs keyboard
+PASS timing settings apply is one Undo keyboard
+PASS focus previous is bottom right and next bottom left keyboard
+PASS first chapter previous button disabled keyboard
+PASS focus placement stays stable while typing keyboard
+PASS keyboard history works without buttons keyboard
+PASS last chapter next button disabled keyboard
+PASS focus keyboard chapter navigation remains available keyboard
+PASS onscreen focus exit remains available keyboard
+PASS normal chapter selection preserves manuscript edits keyboard
+PASS export remains directly accessible keyboard
+115 layout checks passed; recordings are browser simulations, not physical devices

@@ -1,0 +1,16 @@
+PASS dirty manuscript saved on pagehide
+PASS dirty manuscript saved on visibilitychange
+PASS new SW waits while editor remains open
+PASS editing continues while update waits
+PASS editing preserves original chapter and cut IDs
+PASS clean stale hidden window does not overwrite saved edits
+PASS update still waits while another app window remains
+PASS closing all editors activates update without losing IDs/body
+PASS activation retains archived manuscripts and unrelated storage
+PASS activation retains unrelated cache contents
+PASS updated shell opens offline with exact manuscript and IDs
+PASS offline edits survive reload under updated shell
+PASS failed precache does not replace active shell
+PASS previous shell works offline after failed update
+PASS failed update retains archive and unrelated data
+15 PWA lifecycle checks passed

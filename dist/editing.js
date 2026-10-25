@@ -115,7 +115,12 @@ function replaceSelection(records,externalCuts=false){
   $('#editor').focus({preventScroll:true});const sel=getSelection();sel.removeAllRanges();sel.addRange(caret);capture();
 }
 function enterParagraph(allowCut){
-  const r=editorRange();if(!r)return;const p=topBlock(r.startContainer);
+  let r=editorRange();if(!r)return;const p=topBlock(r.startContainer);
+  if(allowCut&&r.collapsed&&p?.textContent.trim()==='」'&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){
+    const before=document.createRange();before.selectNodeContents(p);before.setEnd(r.startContainer,r.startOffset);
+    let depth=0;for(const row of $('#editor').children){if(row===p)break;if(row.dataset.cutId){depth=0;continue}if(!['music','se'].includes(row.dataset.kind))depth=Math.max(0,depth+[...row.textContent].reduce((n,t)=>n+(t==='「'?1:t==='」'?-1:0),0))}
+    if(!before.toString()&&depth===1){p.previousElementSibling.append(document.createTextNode('」'));p.replaceChildren(document.createElement('br'));caretEnd(p);r=editorRange()}
+  }
   if(allowCut&&r.collapsed&&p&&!p.dataset.cutId){
     const before=document.createRange();before.selectNodeContents(p);before.setEnd(r.startContainer,r.startOffset);
     const previous=p.previousElementSibling;
@@ -130,7 +135,7 @@ function enterParagraph(allowCut){
     for(const b of before.reverse()){if(b.dataset.cutId)break;if(b.textContent.trim())hasBody=true}if(!hasBody)return;
   }
   if(allowCut&&r.collapsed&&p&&!p.dataset.cutId&&!p.textContent.trim()&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){
-    p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';const next=paragraph('');p.after(next);caretEnd(next);capture();
+    p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();chapter().pendingCutId=p.dataset.cutId;p.contentEditable='false';const next=paragraph('');next.dataset.placeholder='true';p.after(next);caretEnd(next);capture();
   }else replaceSelection([{text:''},{text:''}]);
 }
 let cutClipboard=null;

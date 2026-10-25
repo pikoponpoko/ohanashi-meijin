@@ -25,7 +25,7 @@
   function normalizeChapter(c,{splitBlank=false}={}){
     const lines=newline(c.text).split('\n'),byLine=new Map((c.cuts||[]).map(x=>[x.line,x]));
     const segments=[];let body=[],pending=null,depth=0;
-    function flush(){if(body.some(r=>!blankLine(r.text)))segments.push({cut:pending||{id:id()},body});body=[];pending=null;depth=0}
+    function flush(){if(body.some(r=>!blankLine(r.text))||(c.pendingCutId&&pending?.id===c.pendingCutId))segments.push({cut:pending||{id:id()},body});body=[];pending=null;depth=0}
     lines.forEach((text,line)=>{
       const existing=byLine.get(line);
       if(existing||(!depth&&externalMarker.test(text))){
@@ -48,6 +48,7 @@
     if(!cuts.length){cuts.push({id:c.cuts?.[0]?.id||id(),line:0});out.push('#C1');formats.push(null);origins.push(null)}
     const result={...c,text:out.join('\n'),cuts};
     if(c.formats)result.formats=formats;if(c.formatOrigins)result.formatOrigins=origins;
+    if(result.pendingCutId&&realCuts(result).some(q=>q.id===result.pendingCutId))delete result.pendingCutId;
     return syncSoundCues(result);
   }
   function importText(text){
@@ -63,7 +64,7 @@
     return {...c,...(prepend&&c.formats?{formats:[null,...c.formats]}:{}),...(prepend&&c.formatOrigins?{formatOrigins:[null,...c.formatOrigins]}:{}),id:typeof c.id==='string'&&c.id?c.id:id(),text:lines.join('\n'),cuts};
   }
   function realCuts(c){const lines=c.text.split('\n');return c.cuts.filter((cut,i)=>lines.slice(cut.line+1,c.cuts[i+1]?.line??lines.length).some(l=>!blankLine(l)))}
-  function renumber(project){let n=0;for(const c of project.chapters){const lines=c.text.split('\n'),real=new Set(realCuts(c).map(x=>x.id));for(const cut of c.cuts)lines[cut.line]='#C'+(real.has(cut.id)?++n:n+1);c.text=lines.join('\n');syncSoundCues(c)}return project}
+  function renumber(project){let n=0;for(const c of project.chapters){const lines=c.text.split('\n'),real=new Set(realCuts(c).map(x=>x.id));if(c.pendingCutId&&real.has(c.pendingCutId))delete c.pendingCutId;for(const cut of c.cuts)lines[cut.line]='#C'+(real.has(cut.id)?++n:n+1);c.text=lines.join('\n');syncSoundCues(c)}return project}
   function checkCuts(chapters){const seen=new Set();for(const c of chapters){if(!Array.isArray(c.cuts)||!c.cuts.length)throw Error('カット情報がありません');let previous=-1;const lines=c.text.split('\n');for(const cut of c.cuts){if(!cut||typeof cut.id!=='string'||!cut.id||seen.has(cut.id)||!Number.isInteger(cut.line)||cut.line<=previous||cut.line>=lines.length||!externalMarker.test(lines[cut.line]))throw Error('カット情報が不正です');seen.add(cut.id);previous=cut.line}let depth=0;const orphan=lines.some((s,i)=>{if(c.cuts.some(x=>x.line===i)){depth=0;return false}const invalid=!depth&&marker.test(s);if(depth||!soundKind(s))depth=Math.max(0,depth+quoteDelta(s));return invalid});if((c.cuts[0].line!==0&&!lines.slice(0,c.cuts[0].line).every(blankLine))||orphan)throw Error('カット境界が不正です')}}
   function validate(v,defaults){
     if(!v||typeof v!=='object'||![1,2,undefined].includes(v.version)||!Array.isArray(v.chapters)||!v.chapters.length||v.chapters.some(c=>!c||typeof c.text!=='string'||typeof c.title!=='string'))throw Error('原稿形式が違います');
@@ -73,6 +74,7 @@
       const cue=c.soundCues;
       if(!cue||cue.version!==1||Object.keys(cue).some(k=>!['version','entries'].includes(k))||!Array.isArray(cue.entries)||cue.entries.some(q=>!q||Object.keys(q).some(k=>!['line','kind','raw'].includes(k))||!Number.isInteger(q.line)||q.line<0||!['music','se'].includes(q.kind)||typeof q.raw!=='string')||new Set(cue.entries.map(q=>q.line)).size!==cue.entries.length)throw Error('音楽・SE情報が不正または未対応です');
     }
+    for(const c of chapters)if(c.pendingCutId!==undefined){if(typeof c.pendingCutId!=='string'||!c.pendingCutId)throw Error('編集中のカット情報が不正です');if(c.cuts?.at(-1)?.id!==c.pendingCutId)delete c.pendingCutId;}
     checkCuts(chapters);for(const c of chapters)if(c.placeholderFormat!==undefined&&!['scene','action','dialogue'].includes(c.placeholderFormat))throw Error('編集中の段落書式が不正です');for(const c of chapters)if(c.formats!==undefined&&(!Array.isArray(c.formats)||c.formats.length!==c.text.split('\n').length||c.formats.some(k=>![null,'scene','action','dialogue'].includes(k))))throw Error('段落情報が不正です');
     for(const c of chapters)if(c.formatOrigins!==undefined&&(!Array.isArray(c.formatOrigins)||c.formatOrigins.length!==c.text.split('\n').length||c.formatOrigins.some(k=>![null,'manual','auto','legacy'].includes(k))))throw Error('書式指定元が不正です');
     chapters=chapters.map(c=>normalizeChapter(c));
