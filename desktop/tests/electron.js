@@ -8,7 +8,9 @@ const profile=path.join(directory,'profile'),checks=[],errors=[];
 let currentApp;
 function check(name,condition=true){assert.ok(condition,name);checks.push(name);console.log('PASS',name)}
 async function launch(userData=profile){
- const app=await electron.launch({executablePath:path.join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':'electron'),args:['--no-sandbox','--headless','--ozone-platform=headless','--disable-gpu',root],env:{...process.env,OHANASHI_TEST_USER_DATA:userData,XDG_CACHE_HOME:path.join(directory,'cache')}});
+ const binary=process.platform==='darwin'?'Electron.app/Contents/MacOS/Electron':process.platform==='win32'?'electron.exe':'electron';
+ const args=process.platform==='linux'?['--no-sandbox','--headless','--ozone-platform=headless','--disable-gpu',root]:[root];
+ const app=await electron.launch({executablePath:process.env.OHANASHI_TEST_EXECUTABLE||path.join(root,'node_modules/electron/dist',binary),args,env:{...process.env,OHANASHI_TEST_USER_DATA:userData,XDG_CACHE_HOME:path.join(directory,'cache')}});
  currentApp=app;const page=await app.firstWindow();page.on('pageerror',e=>errors.push(String(e)));await page.waitForSelector('#editor');return {app,page};
 }
 (async()=>{
@@ -16,6 +18,13 @@ async function launch(userData=profile){
  check('stable local application origin',page.url()==='ohanashi://app/');
  check('renderer has no Node access',await page.evaluate(()=>typeof require==='undefined'&&typeof process==='undefined'));
  check('desktop update button exists',await page.locator('#desktopUpdates').count()===1);
+ await app.evaluate(({shell})=>{globalThis.testUpdateURL=null;shell.openExternal=async url=>{globalThis.testUpdateURL=url}});
+ await page.locator('#desktopUpdates').click();
+ check('update command opens only the repository releases page',await app.evaluate(()=>globalThis.testUpdateURL)==='https://github.com/pikoponpoko/ohanashi-meijin/releases');
+ check('privileged IPC rejects other origins',await app.evaluate(async({BrowserWindow},preload)=>{
+  const other=new BrowserWindow({show:false,webPreferences:{preload,contextIsolation:true,sandbox:true,nodeIntegration:false}});
+  await other.loadURL('about:blank');const result=await other.webContents.executeJavaScript('window.ohanashiDesktop.readBackup()');other.destroy();return result.ok===false;
+ },path.join(root,'preload.cjs')));
  await page.evaluate(()=>{state=validate({version:1,title:'ブラウザから移行',dark:true,chapters:[{id:'desktop',title:'第一章',text:'○場所\n花「オフライン原稿」'}]});active=state.chapters[0].id;resetHistory();render();save();localStorage.setItem('desktop-archive-witness','退避は保持')});
  await page.evaluate(async()=>{await document.fonts.load('16px "Noto Serif JP"','原稿');await document.fonts.ready});
  check('bundled Japanese font loads',await page.evaluate(()=>document.fonts.check('16px "Noto Serif JP"','原稿')));
@@ -36,6 +45,17 @@ async function launch(userData=profile){
  },directory);
  await page.locator('#backup').click();await page.waitForFunction(()=>document.querySelector('#fileStatus').textContent==='ファイル保存済み');
  const raw=fs.readFileSync(path.join(directory,'export.json'),'utf8');check('native JSON export contains current manuscript',JSON.parse(raw).title==='ブラウザから移行');
+ await page.locator('#editor').press('Control+End');await page.keyboard.insertText('上書き');
+ await app.evaluate(({dialog})=>{dialog.showSaveDialog=async()=>({canceled:true})});
+ await page.locator('#backup').click();await page.waitForFunction(()=>document.querySelector('#fileStatus').textContent==='ファイル保存済み');
+ check('save overwrites the chosen file without another picker',fs.readFileSync(path.join(directory,'export.json'),'utf8').includes('上書き'));
+ const cancelState=await page.evaluate(()=>JSON.parse(JSON.stringify(state))),cancelFile=fs.readFileSync(path.join(directory,'export.json'),'utf8');
+ await page.locator('#saveAs').click();await page.waitForFunction(()=>!document.querySelector('#backup').disabled);
+ assert.deepEqual(await page.evaluate(()=>state),cancelState);check('cancelled Save As preserves manuscript and file',fs.readFileSync(path.join(directory,'export.json'),'utf8')===cancelFile);
+ const malformed=path.join(directory,'malformed.json');fs.writeFileSync(malformed,'{broken');
+ await app.evaluate(({dialog},filename)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[filename]})},malformed);
+ await page.locator('#import').click();await page.waitForFunction(()=>document.querySelector('#toast').textContent.startsWith('開けません'));
+ assert.deepEqual(await page.evaluate(()=>state),cancelState);check('invalid imported JSON preserves current manuscript');
  const incoming={version:1,title:'移行JSON',dark:true,chapters:[{id:'incoming',title:'第一章',text:'取込本文'}]};
  const imported=path.join(directory,'browser-export.json');fs.writeFileSync(imported,JSON.stringify(incoming));
  await app.evaluate(({dialog},filename)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[filename]})},imported);

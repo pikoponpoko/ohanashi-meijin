@@ -23,6 +23,8 @@ jobs:
       - run: npm --prefix desktop test
       - run: npm --prefix desktop run prepare:assets
       - run: npm --prefix desktop run test:electron
+        env:
+          DEBUG: pw:browser
       - run: npm --prefix desktop run dist:win
       - name: Hash installer
         shell: pwsh
