@@ -8,6 +8,9 @@
 /recovery.html
   Cache-Control: no-store
 
+/recovery
+  Cache-Control: no-store
+
 /recovery.js
   Cache-Control: no-store
 
