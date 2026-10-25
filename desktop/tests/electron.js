@@ -17,6 +17,7 @@ async function launch(userData=profile){
 }
 (async()=>{
  let {app,page}=await launch();
+ if(process.env.OHANASHI_TEST_INSTALLER)check('installed previous version launches',await app.evaluate(({app})=>app.getVersion())==='0.0.9');
  check('stable local application origin',page.url()==='ohanashi://app/');
  check('renderer has no Node access',await page.evaluate(()=>typeof require==='undefined'&&typeof process==='undefined'));
  check('desktop update button exists',await page.locator('#desktopUpdates').count()===1);
@@ -71,8 +72,13 @@ async function launch(userData=profile){
  while(Date.now()<deadline){pdf=fs.readdirSync(directory).find(name=>name.endsWith('.pdf'));if(pdf)break;await new Promise(resolve=>setTimeout(resolve,100))}
  check('offline PDF is generated',!!pdf&&fs.readFileSync(path.join(directory,pdf)).subarray(0,4).toString()==='%PDF');
  await page.locator('#editor').press('Control+End');await page.keyboard.insertText('終了直前');await app.close();
+ if(process.env.OHANASHI_TEST_INSTALLER){
+  const result=require('node:child_process').spawnSync(process.env.OHANASHI_TEST_INSTALLER,['/S','/D='+process.env.OHANASHI_TEST_INSTALL_DIR],{timeout:120000,windowsHide:true,encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr||String(result.error||'Installer failed'));check('new installer replaces previous version');
+ }
  for(let i=0;i<3;i++){
   ({app,page}=await launch());
+  if(process.env.OHANASHI_TEST_INSTALLER)assert.equal(await app.evaluate(({app})=>app.getVersion()),require('../package.json').version);
   check('offline restart '+(i+1)+' preserves input, archive and preferences',await page.evaluate(()=>chapter().text.includes('終了直前')&&state.dark&&localStorage.getItem('desktop-archive-witness')==='退避は保持'&&archivedDocuments().some(x=>JSON.parse(x.raw).title==='ブラウザから移行')));
   const value=await page.evaluate(()=>({...localStorage}));if(i)assert.deepEqual(value,saved);saved=value;await app.close();
  }
