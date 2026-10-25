@@ -1,0 +1,38 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+╭ Deploy Worker Versions by splitting traffic between multiple versions
+│
+├ Fetching latest deployment
+│
+├ Your current deployment has 1 version(s):
+│
+│ (100%) d9210d25-68e1-4cf2-ad56-ce97c7a0b3f8
+│       Created:  2026-10-25T00:21:25.845307Z
+│           Tag:  -
+│       Message:  -
+│
+├ Fetching versions
+│
+├ Which version(s) do you want to deploy?
+├ 1 Worker Version(s) selected
+│
+├     Worker Version 1:  4bd3dfd8-baf7-46cf-bdc1-6663604e66bf
+│              Created:  2026-10-25T12:35:39.667761Z
+│                  Tag:  retirement-recovery-header
+│              Message:  Retire legacy SW; also no-store canonical /recovery route
+│
+├ What percentage of traffic should Worker Version 1 receive?
+├ 100% of traffic
+├
+├ Add a deployment message
+│ Deployment message Verified live preview: 54 browser + 82 release checks; retire legacy SW, preserve manuscripts and settings
+│
+├ Deploying 1 version(s)
+│
+│ No non-versioned settings to sync. Skipping...
+│
+╰  SUCCESS  Deployed ohanashi-meijin version 4bd3dfd8-baf7-46cf-bdc1-6663604e66bf at 100% (0.48 sec)

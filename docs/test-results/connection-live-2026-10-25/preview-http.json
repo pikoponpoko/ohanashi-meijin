@@ -1,0 +1,44 @@
+[
+  {
+    "path": "index.html",
+    "status": 200,
+    "cache_control": "no-cache",
+    "matches_source": true
+  },
+  {
+    "path": "pwa.js",
+    "status": 200,
+    "cache_control": "no-cache",
+    "matches_source": true
+  },
+  {
+    "path": "connection.js",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "matches_source": true
+  },
+  {
+    "path": "sw.js",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "matches_source": true
+  },
+  {
+    "path": "recovery.html",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "matches_source": true
+  },
+  {
+    "path": "recovery.js",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "matches_source": true
+  },
+  {
+    "path": "app.js",
+    "status": 200,
+    "cache_control": "no-cache",
+    "matches_source": true
+  }
+]

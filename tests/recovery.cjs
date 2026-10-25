@@ -1,13 +1,12 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const source=fs.readFileSync('dist/sw.js','utf8');
-async function navigate({cacheError=false,networkError=false,cached=false}={}){
-  const events={};let networkCalls=0,promise;
-  const context={URL,Request,Response,Set,Promise,Error,caches:{open:async()=>{if(cacheError)throw Error('cache unavailable');return {match:async()=>cached?new Response('cached editor'):undefined}}},fetch:async()=>{networkCalls++;if(networkError)throw Error('offline');return new Response('online editor')},self:{registration:{scope:'https://example.test/'},location:{origin:'https://example.test'},addEventListener:(name,fn)=>events[name]=fn}};
-  vm.runInNewContext(source,context);events.fetch({request:{method:'GET',url:'https://example.test/',mode:'navigate'},respondWith:p=>promise=p});const response=await promise;return {response,text:await response.text(),networkCalls};
+const source=fs.readFileSync('dist/connection.js','utf8');
+async function run(secure=true){
+ const removed=[];const root='https://example.test/';
+ const registration=(scope,scriptURL)=>({scope,active:{scriptURL},unregister:async()=>removed.push(scope)});
+ const window={isSecureContext:secure};
+ vm.runInNewContext(source,{window,URL,location:{href:root+'recovery.html'},navigator:{serviceWorker:{getRegistrations:async()=>[
+ registration(root,root+'sw.js'),registration(root+'other/',root+'other/sw.js'),registration(root,root+'unrelated.js')
+ ]}}});
+ await window.ohanashiConnection.retire();assert.deepEqual(removed,secure?[root]:[]);
 }
-(async()=>{
- let r=await navigate({cacheError:true});assert.equal(r.text,'online editor');assert.equal(r.networkCalls,1);
- r=await navigate({cached:true,networkError:true});assert.equal(r.text,'cached editor');assert.equal(r.networkCalls,0);
- r=await navigate({cacheError:true,networkError:true});assert.equal(r.response.status,503);assert.match(r.text,/recovery\.html/);assert.equal(r.response.headers.get('Cache-Control'),'no-store');
- console.log('PASS recovery: cache exceptions fall back online; cached offline editor retained; uncached failure has a repair link');
-})().catch(e=>{console.error(e);process.exitCode=1});
+(async()=>{await run();await run(false);assert.doesNotMatch(fs.readFileSync('dist/pwa.js','utf8'),/serviceWorker\.register\(/);for(const name of ['connection.js','sw.js','recovery.js'])assert.doesNotMatch(fs.readFileSync('dist/'+name,'utf8'),/localStorage\.(clear|removeItem|setItem)\(/);console.log('PASS repair: exact worker URL/scope only, insecure context safe, no re-registration or manuscript writes')})().catch(e=>{console.error(e);process.exitCode=1});

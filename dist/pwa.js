@@ -8,8 +8,9 @@ installButton.onclick=async()=>{
   try{await prompt.prompt();await prompt.userChoice}catch(_){toast('ブラウザのメニューからインストールしてください。')}
 };
 if('serviceWorker' in navigator&&window.isSecureContext){
-  navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(registration=>{
-    const notify=()=>{if(registration.waiting&&navigator.serviceWorker.controller)toast('更新はアプリの画面をすべて閉じた後に適用されます。')};
-    notify();registration.addEventListener('updatefound',()=>{const worker=registration.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed')notify()})});
-  }).catch(()=>toast('オフライン用の準備ができませんでした。オンラインで引き続き利用できます。'));
+  // Offline caching is suspended. Never register again after repair.
+  window.ohanashiConnection.retire().catch(error=>{
+    console.warn('[ohanashi:service-worker-retirement]',error);
+    toast('接続設定の更新ができませんでした。原稿を保存して接続の修復ページを開いてください。');
+  });
 }

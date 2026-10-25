@@ -1,0 +1,19 @@
+{
+  "browser": "Linux headless Chromium, dedicated synthetic profile",
+  "checks": [
+    "Production browser process restart 1: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 2: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 3: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 4: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 5: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 6: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 7: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 8: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 9: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 10: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 11: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved",
+    "Production browser process restart 12: HTTP 200, no registration/controller, every localStorage value byte-identical and unrelated caches preserved"
+  ],
+  "app_errors": [],
+  "legacy_retirement": "Actual v11 registered before deployment; retirement update verified via independent recovery page. Two sentinel values retained; original manuscript fixture was invalid. Validated manuscript/settings retention through legacy update separately in local 23-check suite, then through 12 live restarts here."
+}

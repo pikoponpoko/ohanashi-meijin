@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+date: Sun, 25 Oct 2026 11:59:01 GMT
+server: envoy
+
+HTTP/2 200 
+date: Sun, 25 Oct 2026 11:59:02 GMT
+content-type: text/html
+cf-cache-status: HIT
+cache-control: public, max-age=0, must-revalidate
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9T554K3d1vq9rGfZYccQhB1%2FLtRAh6lye8tvofB%2FGTEC6rawlSdla%2Fc%2Fe0JeaNoBHrBJOp7sGkNBdStvVsV20vM5VRvf3S%2FA6ECPkXmSpuxbF8zo%2FcBkwUqgunUcOYx3L8Q92WwIGgMEMCuOPQJqYyGr6ZFe9E0uPdA%3D"}]}
+server: envoy
+cf-ray: a5010d864938a213-MSP
+alt-svc: h3=":443"; ma=86400
+x-envoy-upstream-service-time: 48
+

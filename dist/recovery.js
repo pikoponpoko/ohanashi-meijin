@@ -19,9 +19,7 @@
     try{
       // Recheck because another app window may have saved while this page was open.
       if(localStorage.getItem('scenario-meijin-v1')!==raw){status.textContent='別の画面で原稿が更新されました。このページを開き直して保存してください。';return}
-      const scope=new URL('./',location.href).href;
-      const registration=await navigator.serviceWorker?.getRegistration(scope);
-      if(registration&&registration.scope===scope)await registration.unregister();
+      await window.ohanashiConnection.retire();
       location.replace('./?recovered=1');
     }catch(_){repair.disabled=false;status.textContent='接続を修復できませんでした。原稿は変更していません。'}
   };

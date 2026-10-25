@@ -1,0 +1,18 @@
+/*
+  Cache-Control: no-cache
+
+/sw.js
+  Cache-Control: no-store
+  Service-Worker-Allowed: /
+
+/recovery.html
+  Cache-Control: no-store
+
+/recovery
+  Cache-Control: no-store
+
+/recovery.js
+  Cache-Control: no-store
+
+/connection.js
+  Cache-Control: no-store
