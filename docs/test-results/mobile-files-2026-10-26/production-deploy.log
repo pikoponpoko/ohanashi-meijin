@@ -1,0 +1,38 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ ⛅️ wrangler 4.152.0
+────────────────────
+╭ Deploy Worker Versions by splitting traffic between multiple versions
+│
+├ Fetching latest deployment
+│
+├ Your current deployment has 1 version(s):
+│
+│ (100%) 64b25660-b162-4f61-976c-4226aa0e39a2
+│       Created:  2026-10-25T22:47:30.36885Z
+│           Tag:  -
+│       Message:  -
+│
+├ Fetching versions
+│
+├ Which version(s) do you want to deploy?
+├ 1 Worker Version(s) selected
+│
+├     Worker Version 1:  727677f4-a9ff-4e3e-9c1e-6891bacb2773
+│              Created:  2026-10-25T23:26:25.917912Z
+│                  Tag:  mobile-files
+│              Message:  Android BIN JSON selection; separate TXT works and preferences; safe quota fallback with current recovery export
+│
+├ What percentage of traffic should Worker Version 1 receive?
+├ 100% of traffic
+├
+├ Add a deployment message
+│ Deployment message User approved PR14 and this production rollout: Android JSON picker, separate TXT works, safe quota fallback; preserve existing data; 0d676d5
+│
+├ Deploying 1 version(s)
+│
+│ No non-versioned settings to sync. Skipping...
+│
+╰  SUCCESS  Deployed ohanashi-meijin version 727677f4-a9ff-4e3e-9c1e-6891bacb2773 at 100% (0.54 sec)
