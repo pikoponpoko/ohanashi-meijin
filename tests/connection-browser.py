@@ -35,12 +35,13 @@ def wait_true(page,expression):
   if page.evaluate(expression):return
   page.wait_for_timeout(50)
  raise AssertionError('Timed out: '+expression)
-def storage(page):return page.evaluate('JSON.stringify({...localStorage})')
+def storage(page):return page.evaluate('({...localStorage})')
 with sync_playwright() as p, tempfile.TemporaryDirectory(prefix='ohanashi-profiles-') as directory:
  profile=pathlib.Path(directory)/'existing'
  legacy=True
  ctx,page=launch(p,profile);page.goto(BASE);page.evaluate('navigator.serviceWorker.ready.then(()=>true)');page.reload();page.wait_for_function('navigator.serviceWorker.controller!==null')
- page.evaluate("""()=>{state.title='接続保持試験';state.dark=true;chapter().text='原稿は消さない';render();save();localStorage.setItem('scenario-meijin-connection-test-archive','退避データ');localStorage.setItem('unrelated-setting','保持')}""")
+ page.evaluate("""()=>{state=validate({version:1,title:'接続保持試験',dark:true,chapters:[{id:'retention',title:'第一章',text:'原稿は消さない'}]});active=state.chapters[0].id;resetHistory();render();save();localStorage.setItem('scenario-meijin-connection-test-archive','退避データ');localStorage.setItem('unrelated-setting','保持')}""")
+ assert page.evaluate("JSON.parse(localStorage.getItem(KEY)).title==='接続保持試験'")
  page.evaluate("""async()=>{await caches.open('other-app-v1');await caches.open('ohanashi-shell-custom')}""")
  saved=storage(page)
  check('legacy profile controlled by real v11 worker',page.evaluate("caches.has('ohanashi-shell-v11')"))

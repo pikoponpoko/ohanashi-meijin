@@ -32,16 +32,16 @@ LinuxのheadlessシステムChromium、専用テストプロファイル、ロ�
 
 [証跡](test-results/connection-2026-10-25/)にログ・接続試験JSON・本番HTTPヘッダーを保存。接続JSONではHTTP異常、ネットワーク失敗、アプリ内部例外を別種別に記録。外部フォントの遮断は試験の意図的処理、オフライン試験のERR_INTERNET_DISCONNECTEDも期待する通信失敗であり、アプリ内部例外はゼロ。
 
-## 公開状態と残作業
+## 公開状態：2026-10-25 21:42 JST
 
-- 修正版プレビュー: https://connection-review-ohanashi-meijin.pikoponpoko.workers.dev/
-- 固定版URL: https://6a2ad246-ohanashi-meijin.pikoponpoko.workers.dev/
-- Cloudflare Version ID: `6a2ad246-b76d-4a5c-9cc5-3d3630803b9a`
-- 本番は切替前：調査時の現行Version ID `d9210d25-68e1-4cf2-ad56-ce97c7a0b3f8`。本番 https://ohanashi-meijin.pikoponpoko.workers.dev/ の旧SWはまだ退役していない。
-- バージョンアップロードは成功。本環境のネットワーク許可がプレビューホストを含まず、CONNECT段階でプロキシ403となる。Cloudflare側のPython-UA拒否とは別。許可追加をユーザーへ依頼済み。プレビューのHTTP応答、ヘッダー、本番相当の操作はまだ確認できていない。
-- プレビュー確認後に限り、同じVersion IDを本番へ100%切り替える。公開後、`sw.js`・pwa.js・_headersの実配信、旧プロファイルでの退役を再確認する。旧Workerを再登録する版への単純ロールバックは再発を招くので避ける。
-- プレビューは本番と別オリジンで、localStorageも別。原稿は本番からJSONを書き出して取り込む。プレビューに本番の原稿が見えなくても削除された意味ではない。
-- 利用者の通常Chromeで10回以上の実終了・再起動、Windows、インストール済みPWAのOS終了・再起動、Android/iPhone実機、Safariは未確認。headless Chromiumの結果で代替完了としない。
-- Windows EXEは未着手。ユーザー指定どおりWeb版のプレビュー・本番・旧版更新確認を先に完了する。Electron採用、同梱資産・永続保存・JSON移行、NSIS更新・設定保持、配布ページへのデスクトップ専用リンク、将来のmacOSビルドは第2段階に残る。
+本番 https://ohanashi-meijin.pikoponpoko.workers.dev/ は修正版 `4bd3dfd8-baf7-46cf-bdc1-6663604e66bf` に100%切替済み。プレビューと本番で各54 browser + 82 release項目成功。7資産のソース一致とHTTP 200、no-cache/no-store配信を確認した。`recovery.html` は `/recovery` に307転送されるため、転送先にもno-storeを追加した。この修正のため、引き継ぎ時の6a2ad246版ではなく4bd3dfd8版を公開した。
 
-本番反映後に旧Workerが最初の接続を妨げる場合は https://ohanashi-meijin.pikoponpoko.workers.dev/recovery.html を直接開き、他画面を保存して閉じ、JSONをダウンロードしてから接続を修復する。サイトデータ・localStorageの削除は行わない。
+本番切替前に専用Chromiumプロファイルへ実v11を登録し、切替後に独立した修復ページから更新して、登録解除・v11キャッシュ削除・他キャッシュ保持と2個のlocalStorage試験値保持を確認した。最初の原稿fixtureは不正なモデル直接変更により保存されていなかったため、この時点の結果を原稿保持の証明には用いない。ローカル旧v11更新試験をvalidate済み原稿と保存成功assertionへ補強して23項目を再実行した。本番では保存成功を確認した原稿・設定・退避試験値を使って12回のブラウザプロセス終了・起動を行い、全localStorageキーの値がバイト単位で一致、登録・controllerなし、他キャッシュ保持を確認した。localStorage列挙順は保証されないので、辞書として比較し各値の文字列を厳密比較する。
+
+新環境では追加HTTP許可が実接続で機能した。runtime statusのpolicy/secret stateはunknownだったが、Cloudflare whoami・一覧・配信・公開の実操作は成功。実行時にnetwork追加権限が必要。HTTPS ChromiumはNSS DBを書き込み可能にする必要があり、`additional_permissions.file_system.write: ["/home/agent/.pki/nssdb"]` を併用。既存環境CAを使用し、TLS検証は無効にしていない。
+
+[公開先の証跡](test-results/connection-live-2026-10-25/)。利用者の実Chrome、Windows、インストール済みPWAのOS再起動、スマホ実機・Safariは引き続き未確認。Webオフライン起動は停止中。利用者の実プロファイルの直接原因は未確定。
+
+PR #12はready、未マージ。自動承認レビューが「本番反映は許可されたがdefault branchへのmergeには明示許可が必要」と拒否したため、mergeは再試行しない。ソースはfix/retire-service-workerへpush済み。Windows開発は別ブランチで続行する。
+
+本番で旧Workerが最初の接続を妨げる場合は https://ohanashi-meijin.pikoponpoko.workers.dev/recovery.html を直接開き、他画面を保存して閉じ、JSONを保存してから接続を修復する。サイトデータ・localStorageは削除しない。sw.jsは旧版の更新先なので削除しない。
