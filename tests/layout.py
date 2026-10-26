@@ -42,7 +42,7 @@ try:
     old.screenshot(path=str(OUT/(name+'-before.png')));old.close()
    check('desktop sidebar and onscreen Undo Redo are removed '+name,page.locator('aside,#sidebar,#undo,#redo').count()==0)
    check('header stays one compact row '+name,page.locator('header').bounding_box()['height']<=48)
-   for selector in ['[data-insert=scene]','[data-insert=action]','#check','#focus','#direction','#settings']:
+   for selector in ['[data-insert=scene]','[data-insert=action]','[data-fix=blank]','#focus','#direction','#settings']:
     box=page.locator(selector).bounding_box();check('main control directly visible '+name+' '+selector,page.locator(selector).is_visible() and box['x']>=0 and box['x']+box['width']<=width+1)
    check('overall progress remains visible '+name,page.locator('#overallProgress').is_visible() and page.locator('#percent').inner_text()=='33%' and page.locator('#progressText').inner_text()=='1 / 3 章')
    page.locator('#menu').click();pause(page);check('chapter picker preserves moon marks '+name,page.locator('#chapters .dot').all_text_contents()==['●','◐','○'] and page.locator('#currentChapterMark').inner_text()=='●')

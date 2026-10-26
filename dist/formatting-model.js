@@ -35,6 +35,7 @@
       let kind=current,certainty='uncertain',reason='文脈の確認が必要です',unit='unresolved',group=null;
       if(depth>0){kind='dialogue';certainty='certain';reason='開いたカギ括弧内の折り返し';unit='speech';group=speechStart;depth=Math.max(0,depth+quoteDelta(raw))}
       else if(!raw.trim()){certainty='unchanged';reason='空行を保持';unit='blank'}
+      else if(root.ScriptModel?.memoLine(raw)){certainty='unchanged';reason='メモ';unit='memo'}
       else if(root.ScriptModel?.soundKind(raw)){kind=root.ScriptModel.soundKind(raw);certainty='certain';reason='明示的な音響指示';unit='sound'}
       else if(scene(raw)){kind='scene';certainty='certain';reason='明示的な柱';unit='scene'}
       else if(/^[^「\n]+「/.test(raw.trimStart())){kind='dialogue';certainty='certain';reason='話者とカギ括弧のある発話';unit='speech';group=line;speechStart=line;depth=Math.max(0,quoteDelta(raw))}
@@ -54,7 +55,7 @@
       return p.certainty==='uncertain'?(choice||p.current):p.kind;
     });
     const formatOrigins=plan.map(p=>p.cut?null:(choices[p.line]?'manual':p.certainty==='uncertain'?p.origin:p.origin==='manual'?'manual':'auto'));
-    const speech=speechMarks(chapter);const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;raw=markerConversion(raw,current,next,speech[i]||[]).text;if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
+    const speech=speechMarks(chapter);const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;raw=markerConversion(raw,current,next,speech[i]||[]).text;if(next==='dialogue'&&current!=='dialogue')raw=raw.trimStart();if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
     return root.ScriptModel.syncSoundCues({...chapter,text,formats:formats.map(k=>['music','se'].includes(k)?'action':k),formatOrigins});
   }
   root.ScriptFormatting={speechMarks,markerConversion,removeTypeMarkers,kinds,scene,inferred,analyze,apply};

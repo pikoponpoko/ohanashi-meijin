@@ -15,7 +15,7 @@ def data(page):return page.evaluate('JSON.parse(JSON.stringify(state))')
 def setup(page,text):
     page.evaluate('''text=>{state=validate({version:1,title:'確認原稿',chapters:[{id:'release',title:'第一章',text}]});active=state.chapters[0].id;loadBlocked=false;resetHistory();render();save()}''',text)
 def cleanup(page):
-    page.locator('#check').click();page.get_by_text('空行を整理',exact=True).click()
+    page.locator('[data-fix=blank]').click()
 def new_document(page):
     page.locator('#newDocument').click();page.locator('#confirmNewDocument').click()
 def context(browser,**options):

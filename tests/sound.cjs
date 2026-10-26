@@ -24,3 +24,23 @@ if(process.env.LEGACY_MODEL_PATH){
  const reopened=M.validate(old,defaults).chapters[0];assert.deepEqual(reopened.soundCues.entries.map(q=>q.line),[3,4]);assert.deepEqual(reopened.cuts.map(q=>q.id),c.cuts.map(q=>q.id));
  console.log('PASS previous main model reads new v2; after legacy insertion current model rebuilds shifted cue positions without changing cut IDs');
 }
+{
+  const M=globalThis.ScriptModel;
+  assert.equal(M.detectSoundLine('SE「ピンポーン」'),'SE：ピンポーン');
+  assert.equal(M.detectSoundLine('音楽（OFF）「パーティー音楽」'),'音楽：（OFF）パーティー音楽');
+  assert.equal(M.detectSoundLine('「SE：打撃音」'),'SE：打撃音');
+  assert.equal(M.detectSoundLine('通知音「ピコン！」'),'SE：通知音「ピコン！」');
+  for(const s of ['母「おかえり」','「ドアの軋むかすかな音」','音楽：曲','　　　とりからのDM（テキスト＋音声）「やあ」'])assert.equal(M.detectSoundLine(s),null);
+  const c=M.migrateChapter({id:'x',title:'',text:'人「こんにちは\nSE「発話の続き」\n」\n音楽「曲」'});const r=M.detectSound(c);
+  assert.equal(r.count,1);assert.equal(r.chapter.text.split('\n')[4],'音楽：曲');assert.equal(r.chapter.soundCues.entries[0].kind,'music');
+  console.log('PASS load-time sound detection: legacy notations to prefixes, speech and quoted lines untouched');
+}
+{
+  const M=globalThis.ScriptModel,T=globalThis.ScriptTiming;
+  assert.equal(M.detectSoundLine('メモ：SE「あとで差し替え」'),null);
+  const base={rate:300,actionSeconds:5,chapters:[M.migrateChapter({id:'m',title:'',text:'　　　歩く。'})]};
+  const memo={...base,chapters:[M.migrateChapter({id:'m',title:'',text:'　　　歩く。\nメモ：ここは尺を伸ばす\n　メモ:要確認'})]};
+  assert.equal(T.analyze(memo).seconds,T.analyze(base).seconds);
+  const plan=globalThis.ScriptFormatting.analyze(memo.chapters[0]);assert.equal(plan[2].certainty,'unchanged');
+  console.log('PASS memo lines: ignored by sound detection, timing and format proposals');
+}

@@ -114,5 +114,27 @@
     }
     return syncSoundCues({...c,text:out.join('\n'),cuts,formats,...(c.formatOrigins?{formatOrigins:origins}:{})});
   }
-  root.ScriptModel={soundKind,stripSound,soundText,syncSoundCues,paragraphKind,marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,tidyBlankLines,blankLine,checkCuts};
+  // Opening a file converts unmistakable legacy sound notations to the canonical prefix.
+  // 「メモ：」lines are the writer's notes: excluded from detection, corrections and timing.
+  const memoLine=s=>/^[ \t\u3000]*メモ[：:]/.test(s);
+  const soundLabel=k=>['音楽','BGM'].includes(k)?'音楽：':'SE：';
+  function detectSoundLine(raw){
+    if(soundKind(raw)||memoLine(raw))return null;const t=raw.trim();let m;
+    if(m=t.match(/^「(音楽|BGM|SE|ＳＥ|効果音)[：:]\s*([^「」]*)」$/))return soundLabel(m[1])+m[2];
+    if(m=t.match(/^(音楽|BGM|SE|ＳＥ|効果音)((?:[（(][^（）()「」]*[）)])?)「([^「」]*)」$/))return soundLabel(m[1])+m[2]+m[3];
+    if(/^[^「」\s（）()]*[^声楽]?音「[^「」]*」$/.test(t)&&!/^[^「]*音声「/.test(t))return 'SE：'+t;
+    return null;
+  }
+  function detectSound(c){
+    const lines=c.text.split('\n'),cuts=new Set(c.cuts.map(x=>x.line));let depth=0,count=0;const formats=c.formats?[...c.formats]:lines.map(()=>null),origins=c.formatOrigins?[...c.formatOrigins]:null;
+    lines.forEach((raw,line)=>{
+      if(cuts.has(line)){depth=0;return}
+      const next=!depth&&detectSoundLine(raw);
+      if(next){lines[line]=next;formats[line]='action';if(origins&&origins[line]!=='manual')origins[line]='auto';count++;return}
+      if(depth||!soundKind(raw))depth=Math.max(0,depth+quoteDelta(raw));
+    });
+    if(!count)return {chapter:c,count};
+    return {chapter:syncSoundCues({...c,text:lines.join('\n'),formats,...(origins?{formatOrigins:origins}:{})}),count};
+  }
+  root.ScriptModel={memoLine,detectSound,detectSoundLine,soundKind,stripSound,soundText,syncSoundCues,paragraphKind,marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,tidyBlankLines,blankLine,checkCuts};
 })(typeof window==='undefined'?globalThis:window);
