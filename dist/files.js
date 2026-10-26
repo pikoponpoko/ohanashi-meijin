@@ -40,6 +40,26 @@
       $('#cancelOpen').onclick=()=>$('#dialog').close();$('#confirmSavedOpen').onclick=()=>{if(snapshot()!==expected)return requestOpen(incoming,nextHandle);commitOpen(incoming,nextHandle)};
     };
   }
+  // A JSON sent from プリプロ名人: merged into the same work (by workId) after confirmation.
+  // The manuscript before merging is archived by openDocument; the connected file stays connected and unsaved.
+  async function receivePrepro(value){
+    if(composing)return;
+    const info=value.preproReturn,incoming={...value};delete incoming.preproReturn;
+    const next=validate(incoming);
+    if(loadBlocked||next.workId!==state.workId)return requestOpen(next);
+    const expected=snapshot(),{next:merged,counts:n}=window.PreproReturn.merge(state,next,info),result=validate(merged);
+    const conflicts=n.conflicts.length?'<p>競合（原稿を残します）：'+esc(n.conflicts.join('・'))+'</p>':'';
+    if(!n.changed&&!n.added&&!n.removed)return modal('プリプロ名人の変更を反映','<p>反映する変更はありません</p>'+conflicts);
+    modal('プリプロ名人の変更を反映','<p>変更 '+n.changed+' ／ 追加 '+n.added+' ／ 削除 '+n.removed+(n.conflicts.length?' ／ 競合 '+n.conflicts.length:'')+'</p>'+conflicts+'<p>反映前の原稿は「保存した原稿」に残します。</p><button id="applyPrepro" class="primary">反映</button><button id="cancelPrepro">キャンセル</button>');
+    $('#cancelPrepro').onclick=()=>$('#dialog').close();
+    $('#applyPrepro').onclick=async()=>{
+      if(snapshot()!==expected){$('#dialog').close();return toast('原稿が変更されたため中止しました。もう一度開いてください。')}
+      const keepHandle=handle,keepBaseline=baseline;
+      if(!await openDocument(result))return;
+      handle=keepHandle;baseline=keepBaseline;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync();
+      toast('プリプロ名人の変更を反映しました');
+    };
+  }
   async function saveCommand(asNew=false){
     const captured=snapshot(),epoch=generation,result=await saveFile(asNew);if(result!=='download')return result;
     modal('保存','<button id="confirmFileSaved" class="primary">保存を確認</button><button id="cancelFileSave">キャンセル</button>');
@@ -56,7 +76,11 @@
   async function readFile(f,picked=null,request=++pendingOpen){
     try{
       const text=(await f.text()).replace(/^\uFEFF/,'');if(request!==pendingOpen)return;
-      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type))await requestOpen(validate(JSON.parse(text)),/\.json$/i.test(f.name)?picked:null);
+      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type)){
+        const value=JSON.parse(text);
+        if(value&&typeof value==='object'&&value.preproReturn)await receivePrepro(value);
+        else await requestOpen(validate(value),/\.json$/i.test(f.name)?picked:null);
+      }
       else{
         if(!/\.(txt|md)$/i.test(f.name)||loadBlocked)throw Error('未対応の形式');
         const c=ScriptModel.importChapter({id:uid(),title:f.name.replace(/\.(txt|md)$/i,''),status:'未着手',text});
