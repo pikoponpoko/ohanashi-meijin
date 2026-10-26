@@ -65,6 +65,10 @@
       }
     }catch(_){toast('開けません。現在の作品は保持しています。')}
   }
+  // Dropped files use the same validation and unsaved-change confirmation as 開く.
+  const fileDrag=e=>[...(e.dataTransfer?.types||[])].includes('Files');
+  addEventListener('dragover',e=>{if(!fileDrag(e))return;e.preventDefault();e.dataTransfer.dropEffect=composing||busy?'none':'copy'},true);
+  addEventListener('drop',e=>{if(!fileDrag(e))return;e.preventDefault();e.stopPropagation();const f=e.dataTransfer.files[0];if(f&&!composing&&!busy)readFile(f)},true);
   $('#file').onchange=async e=>{const f=e.target.files[0];if(f)await readFile(f);e.target.value=''};
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&!composing&&!e.isComposing){e.preventDefault();saveCommand(e.shiftKey)}});
   window.FileControls={saveFile:saveCommand,fileChanged,markSaved,requestOpen,documentOpened,sync};sync();

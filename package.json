@@ -8,6 +8,7 @@
     "test:browser": "python tests/browser.py",
     "test:connection": "python tests/connection-browser.py && python tests/recovery.py",
     "test:mobile-files": "python tests/mobile-files.py",
+    "test:drop-chapter": "python tests/drop-chapter.py",
     "test:release": "python tests/release.py"
   },
   "devDependencies": {
