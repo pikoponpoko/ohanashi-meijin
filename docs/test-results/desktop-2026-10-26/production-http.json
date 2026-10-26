@@ -1,0 +1,26 @@
+[
+  {
+    "path": "sw.js",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "source_matches": true
+  },
+  {
+    "path": "pwa.js",
+    "status": 200,
+    "cache_control": "no-cache",
+    "source_matches": true
+  },
+  {
+    "path": "connection.js",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "source_matches": true
+  },
+  {
+    "path": "recovery.html",
+    "status": 200,
+    "cache_control": "no-cache, no-store",
+    "source_matches": true
+  }
+]

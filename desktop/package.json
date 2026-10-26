@@ -1,0 +1,68 @@
+{
+  "name": "ohanashi-meijin-desktop",
+  "version": "0.1.3",
+  "private": true,
+  "description": "おはなし名人 デスクトップ版",
+  "author": "pikoponpoko",
+  "main": "main.cjs",
+  "scripts": {
+    "prepare:assets": "node build-assets.cjs",
+    "start": "npm run prepare:assets && electron .",
+    "test": "node --test tests/*.cjs",
+    "test:electron": "node tests/electron.js",
+    "dist:win": "npm run prepare:assets && electron-builder --win nsis --x64 --publish never",
+    "dist:mac": "npm run prepare:assets && electron-builder --mac dmg --universal --publish never"
+  },
+  "devDependencies": {
+    "@fontsource/noto-sans-jp": "5.2.8",
+    "@fontsource/noto-serif-jp": "5.2.8",
+    "@fontsource/zen-old-mincho": "5.2.8",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
+    "playwright": "1.64.1"
+  },
+  "build": {
+    "appId": "jp.pikoponpoko.ohanashimeijin",
+    "productName": "OhanashiMeijin",
+    "artifactName": "OhanashiMeijin-${version}-${arch}-Setup.${ext}",
+    "directories": {
+      "output": "../desktop-release"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "storage.cjs",
+      "web/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "signExecutable": false,
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "おはなし名人"
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg"
+      ]
+    },
+    "toolsets": {
+      "wine": "1.0.1"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pikoponpoko/ohanashi-meijin.git"
+  }
+}

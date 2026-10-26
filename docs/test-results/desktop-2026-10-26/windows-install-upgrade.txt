@@ -1,0 +1,60 @@
+2026-10-25T22:50:18.9711345Z PASS stable local application origin
+2026-10-25T22:50:18.9952076Z PASS renderer has no Node access
+2026-10-25T22:50:18.9986105Z PASS desktop update button exists
+2026-10-25T22:50:19.0727644Z PASS update command opens only the repository releases page
+2026-10-25T22:50:19.1462466Z PASS privileged IPC rejects other origins
+2026-10-25T22:50:19.4047090Z PASS bundled Japanese font loads
+2026-10-25T22:50:19.4074168Z PASS no service worker registration
+2026-10-25T22:50:19.4099997Z PASS remote application cannot be fetched
+2026-10-25T22:50:19.4524739Z PASS offline Undo restores manuscript
+2026-10-25T22:50:19.4850335Z PASS offline Redo restores new input
+2026-10-25T22:50:19.4886784Z PASS atomic snapshot contains every raw storage value
+2026-10-25T22:50:19.5449046Z PASS native JSON export contains current manuscript
+2026-10-25T22:50:19.6249028Z PASS save overwrites the chosen file without another picker
+2026-10-25T22:50:19.6638300Z PASS cancelled Save As preserves manuscript and file
+2026-10-25T22:50:19.7345053Z PASS invalid imported JSON preserves current manuscript
+2026-10-25T22:50:19.9276951Z PASS browser JSON imports locally
+2026-10-25T22:50:19.9290558Z PASS import archives previous manuscript
+2026-10-25T22:50:24.9123659Z PASS offline PDF is generated
+2026-10-25T22:50:25.6924166Z PASS offline restart 1 preserves input, archive and preferences
+2026-10-25T22:50:26.3603765Z PASS offline restart 2 preserves input, archive and preferences
+2026-10-25T22:50:27.0232718Z PASS offline restart 3 preserves input, archive and preferences
+2026-10-25T22:50:27.8607600Z PASS empty Chromium profile restores all raw values from disk
+2026-10-25T22:50:28.0175859Z PASS no application exceptions
+2026-10-25T22:50:28.0183155Z 23 Electron checks passed
+2026-10-25T22:50:40.9509756Z   • file signing skipped via signExecutable configuration  file=release\win-unpacked\OhanashiMeijin.exe
+2026-10-25T22:50:40.9523582Z   • building        target=nsis file=release\OhanashiMeijin-0.1.0-x64-Setup.exe archs=x64 oneClick=false perMachine=false
+2026-10-25T22:51:23.6883512Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.1.0-x64-Setup.__uninstaller.exe
+2026-10-25T22:51:25.4614988Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.1.0-x64-Setup.exe
+2026-10-25T22:51:41.8195330Z   • file signing skipped via signExecutable configuration  file=release\win-unpacked\OhanashiMeijin.exe
+2026-10-25T22:51:41.8209122Z   • building        target=nsis file=release\OhanashiMeijin-0.0.9-x64-Setup.exe archs=x64 oneClick=false perMachine=false
+2026-10-25T22:52:22.9707584Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.0.9-x64-Setup.__uninstaller.exe
+2026-10-25T22:52:24.6154352Z   • file signing skipped via signExecutable configuration  file=release\OhanashiMeijin-0.0.9-x64-Setup.exe
+2026-10-25T22:52:45.4621556Z PASS installed previous version launches
+2026-10-25T22:52:45.4622815Z PASS stable local application origin
+2026-10-25T22:52:45.4813335Z PASS renderer has no Node access
+2026-10-25T22:52:45.4841397Z PASS desktop update button exists
+2026-10-25T22:52:45.5335681Z PASS update command opens only the repository releases page
+2026-10-25T22:52:45.6054995Z PASS privileged IPC rejects other origins
+2026-10-25T22:52:45.6814158Z PASS bundled Japanese font loads
+2026-10-25T22:52:45.6842865Z PASS no service worker registration
+2026-10-25T22:52:45.6869237Z PASS remote application cannot be fetched
+2026-10-25T22:52:45.7274879Z PASS offline Undo restores manuscript
+2026-10-25T22:52:45.7603258Z PASS offline Redo restores new input
+2026-10-25T22:52:45.7649847Z PASS atomic snapshot contains every raw storage value
+2026-10-25T22:52:45.8261538Z PASS native JSON export contains current manuscript
+2026-10-25T22:52:45.9047628Z PASS save overwrites the chosen file without another picker
+2026-10-25T22:52:45.9314256Z PASS cancelled Save As preserves manuscript and file
+2026-10-25T22:52:46.0015510Z PASS invalid imported JSON preserves current manuscript
+2026-10-25T22:52:46.1521083Z PASS browser JSON imports locally
+2026-10-25T22:52:46.1545548Z PASS import archives previous manuscript
+2026-10-25T22:52:51.2289785Z PASS offline PDF is generated
+2026-10-25T22:53:00.2472038Z PASS new installer replaces previous version
+2026-10-25T22:53:00.9395750Z PASS offline restart 1 preserves input, archive and preferences
+2026-10-25T22:53:01.6128285Z PASS offline restart 2 preserves input, archive and preferences
+2026-10-25T22:53:02.2529326Z PASS offline restart 3 preserves input, archive and preferences
+2026-10-25T22:53:02.9422801Z PASS empty Chromium profile restores all raw values from disk
+2026-10-25T22:53:03.0926898Z PASS no application exceptions
+2026-10-25T22:53:03.0933718Z 25 Electron checks passed
+2026-10-25T22:53:09.6314116Z Artifact OhanashiMeijin-Windows-x64.zip successfully finalized. Artifact ID 12617138361
+2026-10-25T22:53:09.6316085Z Artifact OhanashiMeijin-Windows-x64 has been successfully uploaded! Final size is 141197474 bytes. Artifact ID is 12617138361
