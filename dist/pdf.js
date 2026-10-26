@@ -4,7 +4,9 @@ function inUnicodeRange(range,codes){
   return range.split(',').some(part=>{
     const [a,b]=part.trim().replace(/^U\+/i,'').split('-');
     const low=parseInt(a.replace(/\?/g,'0'),16),high=parseInt((b||a).replace(/\?/g,'F'),16);
-    return codes.some(c=>c>=low&&c<=high);
+    let first=0,last=codes.length;
+    while(first<last){const middle=(first+last)>>1;if(codes[middle]<low)first=middle+1;else last=middle}
+    return first<codes.length&&codes[first]<=high;
   });
 }
 const fontData=new Map();
@@ -22,7 +24,7 @@ async function fetchFontData(url){
   }
 }
 async function usedFontCSS(root){
-  const codes=[...new Set(Array.from(root.textContent+'0123456789',c=>c.codePointAt(0)))];
+  const codes=[...new Set(Array.from(root.textContent+'0123456789',c=>c.codePointAt(0)))].sort((a,b)=>a-b);
   const families=new Set([state.font.toLowerCase()]),rules=[];
   for(const element of [root,...root.querySelectorAll('*')])for(const name of getComputedStyle(element).fontFamily.split(','))families.add(name.replace(/["']/g,'').trim().toLowerCase());
   for(const sheet of document.styleSheets){
@@ -35,15 +37,20 @@ async function usedFontCSS(root){
       rules.push({rule,base:sheet.href||location.href});
     }
   }
-  const css=await Promise.all(rules.map(async({rule,base})=>{
-    let text=rule.cssText;
-    for(const match of [...text.matchAll(/url\(["']?([^"')]+)["']?\)/g)]){
-      if(match[1].startsWith('data:'))continue;
-      text=text.replace(match[0],'url('+await fontDataURL(new URL(match[1],base).href)+')');
-    }
-    return text;
+  const css=await Promise.all(rules.map(({rule,base})=>{
+    if(!embeddedRules.has(rule))embeddedRules.set(rule,embedRule(rule,base).catch(error=>{embeddedRules.delete(rule);throw error}));
+    return embeddedRules.get(rule);
   }));
   return css.join('\n');
+}
+const embeddedRules=new WeakMap();
+async function embedRule(rule,base){
+  let text=rule.cssText;
+  for(const match of [...text.matchAll(/url\(["']?([^"')]+)["']?\)/g)]){
+    if(match[1].startsWith('data:'))continue;
+    text=text.replace(match[0],'url('+await fontDataURL(new URL(match[1],base).href)+')');
+  }
+  return text;
 }
 async function downloadPdf(){
   if(!window.htmlToImage||!window.jspdf)throw Error('PDF libraries unavailable');
@@ -59,7 +66,7 @@ async function downloadPdf(){
       if(!fontEmbedCSS.includes('data:')||!fontEmbedCSS.includes(state.font))throw Error('選択したフォントをPDFに埋め込めません。通信を確認して再試行してください。');
       const canvas=await htmlToImage.toCanvas(pages[i],{pixelRatio:3,backgroundColor:'#ffffff',fontEmbedCSS});
       if(i)pdf.addPage('a4','landscape');
-      pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,297,210,undefined,'FAST');
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,297,210,undefined,'NONE');
       canvas.width=canvas.height=0;
     }
     download(pdf.output('arraybuffer'),'pdf','application/pdf');toast('PDFを保存しました');
