@@ -81,6 +81,8 @@ Wranglerが返す正式URLをブラウザで開き、アプリ名、本文編集
 
 ## 実装上の制限
 
+Windowsデスクトップ版は [開発・移行・保存先](docs/WINDOWS_DESKTOP.md) を参照してください。Web版と別に資産・日本語フォントを内蔵し、オフラインで編集できます。インストーラーはWindows CIで生成します。
+
 ブラウザ標準の縦書き・禁則処理を使用します。推定尺と作法チェックは簡易的な目安です。日本語Webフォントの初回取得には通信が必要です。Android/iPhone実機、Safari/WebKit、Dropbox実プロバイダーやOSのジェスチャーとの競合は別途確認が必要です。
 
 PDF用のjsPDFとhtml-to-imageはローカル同梱し、ライセンス・出典を `dist/vendor/` に記載しています。

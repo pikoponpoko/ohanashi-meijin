@@ -1,0 +1,17 @@
+{
+  "source_commit": "0d671351fc7fe4e50d6b944eb0ebada7e8081e0a",
+  "run_url": "https://github.com/pikoponpoko/ohanashi-meijin/actions/runs/40241978557",
+  "artifact_url": "https://github.com/pikoponpoko/ohanashi-meijin/actions/runs/40241978557/artifacts/12617138361",
+  "artifact_zip_sha256": "04a3d480d5e7d90bae7c6463b43191d4b8f1991b903988e77e5c2a43df3f6925",
+  "runtime": "Electron 45.0.0 / Windows Server 2025",
+  "source_electron_checks": 23,
+  "installed_upgrade_checks": 25,
+  "storage_unit_tests": 2,
+  "old_fixture_version": "0.0.9",
+  "installed_new_version": "0.1.0",
+  "signed": false,
+  "windows_user_pc_and_os_restart_tested": false,
+  "native_file_picker_ui_tested": false,
+  "web_pr_12_merge_commit": "2f5f89c61b946e14acf08c97ced2ffbba448947b",
+  "web_production_cloudflare_version": "4bd3dfd8-baf7-46cf-bdc1-6663604e66bf"
+}

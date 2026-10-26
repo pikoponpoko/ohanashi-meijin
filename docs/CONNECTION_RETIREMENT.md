@@ -42,6 +42,6 @@ LinuxのheadlessシステムChromium、専用テストプロファイル、ロ�
 
 [公開先の証跡](test-results/connection-live-2026-10-25/)。利用者の実Chrome、Windows、インストール済みPWAのOS再起動、スマホ実機・Safariは引き続き未確認。Webオフライン起動は停止中。利用者の実プロファイルの直接原因は未確定。
 
-PR #12はready、未マージ。自動承認レビューが「本番反映は許可されたがdefault branchへのmergeには明示許可が必要」と拒否したため、mergeは再試行しない。ソースはfix/retire-service-workerへpush済み。Windows開発は別ブランチで続行する。
+PR #12は2026-10-26 JSTにユーザーの明示許可後、mainへマージ済み（2f5f89c61b946e14acf08c97ced2ffbba448947b）。最初は自動承認レビューが明示許可不足として拒否したが、確認回答で解消した。Windows開発は別PR #13、feat/windows-desktopで実施。Web本番の追加変更はない。
 
 本番で旧Workerが最初の接続を妨げる場合は https://ohanashi-meijin.pikoponpoko.workers.dev/recovery.html を直接開き、他画面を保存して閉じ、JSONを保存してから接続を修復する。サイトデータ・localStorageは削除しない。sw.jsは旧版の更新先なので削除しない。
