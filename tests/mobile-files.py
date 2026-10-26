@@ -36,6 +36,15 @@ try:
    open_file(p,'繰り返し.txt','#C1\n最初\n#C2\n最後','text/plain')
    check('TXT open '+str(i+1)+' creates a separate two-cut work',len(data(p)['chapters'])==1 and len(data(p)['chapters'][0]['cuts'])==2 and data(p)['chapters'][0]['text']=='#C1\n最初\n#C2\n最後')
   check('TXT opening retains original manuscript exactly',p.evaluate('old=>archivedDocuments().some(x=>x.raw===JSON.stringify(old))',old))
+  p=page();seed(p);seeded=data(p)['workId']
+  open_file(p,'作品ID.json',json.dumps({**incoming,'workId':'kept-work'},ensure_ascii=False))
+  check('JSON work ID is kept on open',data(p)['workId']=='kept-work')
+  p.evaluate("()=>{chapter().text+='\\n追記';changed()}");p.wait_for_function("!dirty")
+  p.reload();p.evaluate('window.manuscriptReady');check('work ID survives autosave and reload',data(p)['workId']=='kept-work')
+  open_file(p,'別作品.txt','#C1\n本文','text/plain');txt=data(p)['workId']
+  check('TXT open gets a new work ID',txt not in ('kept-work',seeded))
+  new(p);check('new work gets a new work ID',data(p)['workId'] not in ('kept-work',seeded,txt))
+  check('archived work keeps its work ID',p.evaluate("archivedDocuments().some(x=>JSON.parse(x.raw).workId==='kept-work')"))
   p=page();seed(p);p.evaluate("()=>{state.rate=840;state.actionSeconds=17;state.speechPause=1.3;state.timingMode='sequential';save()}");new(p)
   check('blank work retains display and timing preferences',p.evaluate("state.dark&&state.rate===840&&state.actionSeconds===17&&state.speechPause===1.3&&state.timingMode==='sequential'"))
   open_file(p,'settings.txt','本文','text/plain')

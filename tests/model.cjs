@@ -23,3 +23,15 @@ const emptyCuts=M.migrateChapter({id:'empty',title:'空カット',text:'#C1\n\n#
 const cleanEmpty=M.removeBlankLines(emptyCuts);assert.equal(cleanEmpty.text,'#C1\n#C2');assert.equal(cleanEmpty.cuts.length,2);
 const embedded=M.migrateChapter({title:'文字保持',text:'人「中\u200b身」'});assert.ok(M.removeBlankLines(embedded).text.includes('中\u200b身'));
 console.log('Explicit blank removal checks passed: whitespace, zero-width-only lines, cut IDs, formats, empty cuts, idempotence');
+{
+const legacy={version:2,title:'作品ID',chapters:[{id:'chapter-1',title:'一章',text:'#C1\n本文',cuts:[{id:'cut-1',line:0}]},{id:'chapter-2',title:'二章',text:'#C1\n続き',cuts:[{id:'cut-2',line:0}]}]};
+const first=M.validate(JSON.parse(JSON.stringify(legacy)),defaults),again=M.validate(JSON.parse(JSON.stringify(legacy)),defaults);
+assert.equal(first.workId,'work-chapter-1');assert.equal(again.workId,first.workId);
+const saved=JSON.parse(JSON.stringify(first));saved.chapters.reverse();assert.equal(M.validate(saved,defaults).workId,'work-chapter-1');
+assert.equal(M.validate({...legacy,workId:'shared-work'},defaults).workId,'shared-work');
+for(const workId of ['',' ',42,null,'x'.repeat(201)])assert.equal(M.validate({...legacy,workId},defaults).workId,'work-chapter-1');
+assert.deepEqual(M.validate({...legacy,workId:'shared-work'},defaults).chapters.map(c=>c.cuts.map(x=>x.id)),[['cut-1'],['cut-2']]);
+assert.equal(legacy.workId,undefined);
+assert.notEqual(M.validate({version:1,title:'',chapters:[{id:'new-a',title:'新',text:''}]},defaults).workId,M.validate({version:1,title:'',chapters:[{id:'new-b',title:'新',text:''}]},defaults).workId);
+console.log('Work ID checks passed: legacy derivation stable, saved ID kept after reorder, invalid IDs replaced, cut IDs unchanged, input not mutated, new works distinct');
+}
