@@ -1,0 +1,51 @@
+name: Windows desktop
+on:
+  pull_request:
+    paths:
+      - 'desktop/**'
+      - 'dist/**'
+      - '.github/workflows/desktop.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci --prefix desktop
+      - name: Ensure Electron runtime is installed
+        run: node desktop/node_modules/electron/install.js
+      - run: npm --prefix desktop test
+      - run: npm --prefix desktop run prepare:assets
+      - run: npm --prefix desktop run test:electron
+        env:
+          DEBUG: pw:browser
+      - run: npm --prefix desktop run dist:win
+      - name: Build previous version fixture for installer upgrade test
+        working-directory: desktop
+        run: npx electron-builder --win nsis --x64 --publish never --config.extraMetadata.version=0.0.9
+      - name: Install previous version and verify upgrade preserves data
+        shell: pwsh
+        run: ./desktop/tests/install-windows.ps1
+      - name: Hash installer
+        id: installer
+        shell: pwsh
+        run: |
+          $version = (Get-Content desktop/package.json | ConvertFrom-Json).version
+          $file = "desktop-release/OhanashiMeijin-$version-x64-Setup.exe"
+          Get-FileHash $file -Algorithm SHA256 | Format-List | Out-File desktop-release/SHA256.txt
+          "path=$file" >> $env:GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OhanashiMeijin-Windows-x64
+          path: |
+            ${{ steps.installer.outputs.path }}
+            desktop-release/SHA256.txt
+          if-no-files-found: error
