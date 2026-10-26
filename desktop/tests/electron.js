@@ -67,10 +67,12 @@ async function launch(userData=profile){
  check('browser JSON imports locally',await page.evaluate(()=>state.title==='移行JSON'&&chapter().text.includes('取込本文')));
  check('import archives previous manuscript',await page.evaluate(()=>archivedDocuments().some(x=>JSON.parse(x.raw).title==='ブラウザから移行')));
  await page.evaluate(()=>{state.cover=false;render();save()});
+ await app.evaluate(({dialog},directory)=>{dialog.showSaveDialog=async(_win,options)=>{globalThis.downloadOptions=options;return {canceled:false,filePath:directory+'/'+options.defaultPath.split(/[\\/]/).pop()}}},directory);
  await page.evaluate(()=>printProject(true));
  const deadline=Date.now()+120000;let pdf;
  while(Date.now()<deadline){pdf=fs.readdirSync(directory).find(name=>name.endsWith('.pdf'));if(pdf)break;await new Promise(resolve=>setTimeout(resolve,100))}
  check('offline PDF is generated',!!pdf&&fs.readFileSync(path.join(directory,pdf)).subarray(0,4).toString()==='%PDF');
+ check('PDF keeps the manuscript title and .pdf extension',pdf==='移行JSON.pdf'&&(await app.evaluate(()=>globalThis.downloadOptions.filters[0].extensions[0]))==='pdf');
  await page.locator('#editor').press('Control+End');await page.keyboard.insertText('終了直前');await app.close();
  if(process.env.OHANASHI_TEST_INSTALLER){
   const result=require('node:child_process').spawnSync(process.env.OHANASHI_TEST_INSTALLER,['/S','/D='+process.env.OHANASHI_TEST_INSTALL_DIR],{timeout:120000,windowsHide:true,encoding:'utf8'});

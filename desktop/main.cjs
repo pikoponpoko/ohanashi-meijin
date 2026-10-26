@@ -53,6 +53,16 @@ if(!app.requestSingleInstanceLock()){app.quit()}else{
       try{fs.writeFileSync(fd,content);fs.fsyncSync(fd)}finally{fs.closeSync(fd)}
       fs.renameSync(temporary,filename);
     });
+    // Blob downloads (PDF/TXT/MD) go through a native dialog so the file keeps its name and extension.
+    ipcMain.handle('save-download',async(event,name,data)=>{
+      if(!trusted(event)||!(data instanceof ArrayBuffer||ArrayBuffer.isView(data))||data.byteLength>512*1024*1024)throw Error('Unauthorized file');
+      const filename=path.basename(String(name||'脚本')),ext=path.extname(filename).slice(1);
+      const result=await dialog.showSaveDialog(win,{title:'ファイルを保存',defaultPath:path.join(app.getPath('documents'),filename),filters:ext?[{name:ext.toUpperCase(),extensions:[ext]}]:[]});
+      if(result.canceled)return false;
+      const temporary=result.filePath+'.'+randomUUID()+'.tmp',fd=fs.openSync(temporary,'wx',0o600);
+      try{fs.writeFileSync(fd,ArrayBuffer.isView(data)?Buffer.from(data.buffer,data.byteOffset,data.byteLength):Buffer.from(data));fs.fsyncSync(fd)}finally{fs.closeSync(fd)}
+      fs.renameSync(temporary,result.filePath);return true;
+    });
     ipcMain.on('storage-read',event=>{
       try{if(!trusted(event))throw Error('Unauthorized frame');event.returnValue={ok:true,value:storage.read()}}catch{event.returnValue={ok:false,error:'Backup read failed'}}
     });

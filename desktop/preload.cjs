@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('ohanashiDesktop',{
   chooseOpen:()=>ipcRenderer.invoke('file-open-dialog'),
   readFile:token=>ipcRenderer.invoke('file-read',token),
   writeFile:(token,content)=>ipcRenderer.invoke('file-write',token,content),
+  saveDownload:(name,data)=>ipcRenderer.invoke('save-download',name,data),
   checkUpdates:()=>ipcRenderer.invoke('check-updates')
 });

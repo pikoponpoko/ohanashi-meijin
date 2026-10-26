@@ -5,7 +5,7 @@ Webの `dist/` は変更せず、Electron専用の `desktop/web/` に生成す�
 
 ## 利用とデータ移行
 
-Windows x64用インストーラーは `OhanashiMeijin-0.1.0-x64-Setup.exe`。
+Windows x64用インストーラーは `OhanashiMeijin-0.1.1-x64-Setup.exe`。
 生成と旧版置換試験が成功した[Actions成果物（EXE・SHA256のZIP）](https://github.com/pikoponpoko/ohanashi-meijin/actions/runs/40241978557/artifacts/12617138361)を使用する。
 未署名のためWindowsのSmartScreen警告が出る場合がある。署名・一般公開は未実施。
 
@@ -38,7 +38,8 @@ IndexedDBが存在しない場合だけディスク上の予備コピーから�
 
 JSONの保存・開くはネイティブダイアログを使用。パスはメインプロセス内に保持し、
 rendererには選択したファイルのトークンだけを渡す。選択していないファイルは読めない。
-上書き保存も一時ファイル→fsync→renameで行う。キャンセル時は元原稿を保持する。
+上書き保存も一時ファイル→fsync→renameで行う。
+PDF・TXT・MDの書き出しもネイティブの保存ダイアログを使い、原稿名と拡張子を初期値にする。キャンセル時は元原稿を保持する。
 RendererはNode無効、contextIsolationとsandbox有効。外部ナビゲーションと外部アプリ通信を遮断し、
 IPCはメインフレームとアプリのオリジンを確認する。
 

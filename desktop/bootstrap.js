@@ -16,6 +16,11 @@
     const selected=await bridge.chooseOpen();
     if(!selected)throw new DOMException('Cancelled','AbortError');return [handle(selected)];
   };
+  const click=HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click=function(){
+    if(!this.download||!this.href.startsWith('blob:'))return click.call(this);
+    fetch(this.href).then(response=>response.arrayBuffer()).then(data=>bridge.saveDownload(this.download,data)).catch(()=>toast('ファイルを保存できませんでした。'));
+  };
   let failure='';
   try{
     const result=bridge.readBackup();
