@@ -53,15 +53,16 @@
     // Do not filter the OS picker by MIME; validate the selected contents below.
     const request=++pendingOpen;try{const [picked]=await showOpenFilePicker({multiple:false});await readFile(await picked.getFile(),picked,request)}catch(e){if(e.name!=='AbortError')toast('開けません。現在の作品は保持しています。')}
   };
+  const detectSound=p=>({...p,chapters:p.chapters.map(c=>ScriptModel.detectSound(c).chapter)});
   async function readFile(f,picked=null,request=++pendingOpen){
     try{
       const text=(await f.text()).replace(/^\uFEFF/,'');if(request!==pendingOpen)return;
-      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type))await requestOpen(validate(JSON.parse(text)),/\.json$/i.test(f.name)?picked:null);
+      if(/\.json$/i.test(f.name)||/^[\s]*[\[{]/.test(text)||/json/i.test(f.type))await requestOpen(detectSound(validate(JSON.parse(text))),/\.json$/i.test(f.name)?picked:null);
       else{
         if(!/\.(txt|md)$/i.test(f.name)||loadBlocked)throw Error('未対応の形式');
         const c=ScriptModel.importChapter({id:uid(),title:f.name.replace(/\.(txt|md)$/i,''),status:'未着手',text});
         const incoming=validate({...initial,...projectPreferences(),title:c.title,chapters:[c]});
-        await requestOpen(incoming);
+        await requestOpen(detectSound(incoming));
       }
     }catch(_){toast('開けません。現在の作品は保持しています。')}
   }

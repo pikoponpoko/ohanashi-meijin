@@ -54,7 +54,7 @@
       return p.certainty==='uncertain'?(choice||p.current):p.kind;
     });
     const formatOrigins=plan.map(p=>p.cut?null:(choices[p.line]?'manual':p.certainty==='uncertain'?p.origin:p.origin==='manual'?'manual':'auto'));
-    const speech=speechMarks(chapter);const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;raw=markerConversion(raw,current,next,speech[i]||[]).text;if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
+    const speech=speechMarks(chapter);const text=lines.map((raw,i)=>{const next=formats[i],current=plan[i].current;raw=markerConversion(raw,current,next,speech[i]||[]).text;if(next==='dialogue'&&current!=='dialogue')raw=raw.trimStart();if(['music','se'].includes(next))return root.ScriptModel.soundText(raw,next);return ['music','se'].includes(current)?root.ScriptModel.stripSound(raw):raw}).join('\n');
     return root.ScriptModel.syncSoundCues({...chapter,text,formats:formats.map(k=>['music','se'].includes(k)?'action':k),formatOrigins});
   }
   root.ScriptFormatting={speechMarks,markerConversion,removeTypeMarkers,kinds,scene,inferred,analyze,apply};

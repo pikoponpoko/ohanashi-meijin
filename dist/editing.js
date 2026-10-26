@@ -135,7 +135,12 @@ function enterParagraph(allowCut){
     for(const b of before.reverse()){if(b.dataset.cutId)break;if(b.textContent.trim())hasBody=true}if(!hasBody)return;
   }
   if(allowCut&&r.collapsed&&p&&!p.dataset.cutId&&!p.textContent.trim()&&p.previousElementSibling&&!p.previousElementSibling.dataset.cutId){
-    p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();chapter().pendingCutId=p.dataset.cutId;p.contentEditable='false';const next=paragraph('');next.dataset.placeholder='true';p.after(next);caretEnd(next);capture();
+    p.replaceChildren(document.createTextNode('#C1'));p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';
+    // Splitting before existing text moves the caret to that text instead of adding an empty line.
+    const following=p.nextElementSibling;
+    if(following&&!following.dataset.cutId&&following.textContent.trim()){const first=document.createTreeWalker(following,NodeFilter.SHOW_TEXT).nextNode(),r=document.createRange();r.setStart(first||following,0);r.collapse(true);$('#editor').focus({preventScroll:true});getSelection().removeAllRanges();getSelection().addRange(r)}
+    else{chapter().pendingCutId=p.dataset.cutId;const next=paragraph('');next.dataset.placeholder='true';p.after(next);caretEnd(next)}
+    capture();
   }else replaceSelection([{text:''},{text:''}]);
 }
 let cutClipboard=null;
@@ -152,17 +157,6 @@ function pasteText(e){if(composing)return;e.preventDefault();let records;try{con
   const external=!records;
   if(external){const raw=ScriptModel.importText(e.clipboardData.getData('text/plain')),parsed=ScriptModel.importChapter({id:uid(),title:'',text:raw}),cuts=new Map(parsed.cuts.map(c=>[c.line,c]));records=parsed.text.split('\n').map((text,i)=>({text,...(cuts.has(i)?{id:cuts.get(i).id}:{})}));if(!ScriptModel.marker.test(raw.split('\n')[0]))records.shift();if(!records.length)records=[{text:''}]}replaceSelection(records,external);cutClipboard=null;
 }
-// Repair only redundant empty lines; cut boundaries remain explicit and retain IDs.
-const originalCheck=showCheck;
-showCheck=function(){
-  originalCheck();const c=chapter();
-  for(const [label,fix] of [['空行を整理',ScriptModel.tidyBlankLines]]){
-    const fixed=fix(c);if(fixed.text===c.text)continue;
-    const b=document.createElement('button');b.className='primary';b.textContent=label;
-    b.onclick=()=>{if(composing||loadBlocked)return;Object.assign(c,fixed);ScriptModel.renumber(state);recordHistory();save();renderText();stats();$('#dialog').close()};
-    $('#dialogBody').prepend(b);
-  }
-};$('#check').onclick=()=>showCheck();
 // Text in non-editor controls also participates in the same project history.
 $('#chapterTitle').addEventListener('input',recordHistory);$('#status').addEventListener('change',recordHistory);
 // First outside tap closes the drawer without changing the selection/caret.
