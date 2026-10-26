@@ -51,7 +51,7 @@ function save(){
 function changed(){recordHistory();dirty=true;$('#saved').textContent='ブラウザに保存中';window.FileControls?.sync();clearTimeout(timer);timer=setTimeout(save,350)}
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function type(s){return ScriptFormatting.inferred(s)}
-function markup(s){return s.split(/([A-Za-z0-9]+|[０-９！？]+|[…⋯]+)/).map(m=>/^[A-Za-z0-9]{1,2}$/.test(m)?'<span class="tcy">'+esc(m)+'</span>':/^[０-９！？]+$/.test(m)?'<span class="verticalGlyph">'+esc(m)+'</span>':/^[…⋯]+$/.test(m)?'<span class="verticalEllipsis">'+esc(m)+'</span>':esc(m)).join('')}
+function markup(s){return s.split(/([A-Za-z0-9]+|-+|[０-９！？]+|[…⋯]+)/).map(m=>/^(?:[A-Za-z0-9]{1,2}|-{1,2})$/.test(m)?'<span class="tcy">'+esc(m)+'</span>':/^[０-９！？]+$/.test(m)?'<span class="verticalGlyph">'+esc(m)+'</span>':/^[…⋯]+$/.test(m)?'<span class="verticalEllipsis">'+esc(m)+'</span>':esc(m)).join('')}
 function paragraph(line,forced,origin){const kind=forced||type(line);const p=document.createElement('p');p.dataset.kind=kind;p.dataset.leading=(line.match(/^[ \u3000]*/)||[''])[0];p.dataset.formatOrigin=origin||(forced?'legacy':'auto');if(!forced||origin==='auto')p.dataset.auto='true';p.className=kind;p.innerHTML=line?markup(kind==='action'&&line.trim()?line.replace(/^[ \u3000]+/,''):line):'<br>';return p}
 // Serialize logical DOM blocks, never layout-dependent innerText.
 function domLines(root){

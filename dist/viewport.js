@@ -30,7 +30,7 @@
     let timer;
     function reveal(){
       el.classList.add('scroll-active');clearTimeout(timer);
-      timer=setTimeout(()=>el.classList.remove('scroll-active'),1200);
+      timer=setTimeout(()=>el.classList.remove('scroll-active'),500);
     }
     el.addEventListener('scroll',reveal,{passive:true});
     el.addEventListener('wheel',reveal,{passive:true});
