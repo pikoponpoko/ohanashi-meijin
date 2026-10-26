@@ -125,3 +125,18 @@ body.focus{background:var(--paper)}body.focus main,body.focus #writing,body.focu
 }}
 @media(max-width:680px){.formatActions{min-width:0;overflow-x:auto;scrollbar-width:none}.formatActions::-webkit-scrollbar{display:none}}
 .memo{color:var(--muted)}
+#findBox{position:fixed;top:52px;right:16px;z-index:6;width:min(420px,calc(100vw - 32px));max-height:70dvh;display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px color-mix(in srgb,var(--ink) 14%,transparent);font-size:12px}
+#findBox button{color:var(--ink);font-size:12px;padding:6px 9px;border:1px solid var(--line);border-radius:4px;background:var(--paper);white-space:nowrap}
+#findBox button:hover{background:var(--side)}
+.findHead{display:flex;align-items:center;gap:8px}.findHead b{font-weight:500}#findCount{flex:1;color:var(--muted)}#findBox #findClose{border:0;font-size:16px;padding:0 6px}
+.findRow{display:flex;gap:6px}.findRow input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:7px 9px}
+.findOption{display:flex;align-items:center;gap:6px;margin:0;padding:0;font-size:12px;color:var(--muted)}
+#findList{overflow:auto;border-top:1px solid var(--line);min-height:0}
+#findBox .findHit{display:flex;width:100%;gap:8px;align-items:baseline;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:6px 4px}
+.findHit b{flex-shrink:0;min-width:4.5em;color:var(--muted);font-weight:400}.findHit span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#findBox .findHit.on{background:var(--side)}
+.findHit mark,::highlight(findHit){background:var(--ink);color:var(--paper)}
+body.focus #findBox{top:16px}
+main:has(#editor:not(.horizontal))~#findBox{right:auto;left:16px}
+@media print{#findBox{display:none}}
+@media(max-width:600px){#findBox{top:48px;right:8px;left:8px;width:auto;max-height:42dvh}}

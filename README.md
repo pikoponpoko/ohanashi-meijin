@@ -29,6 +29,7 @@ npm run test:connection
 - TXT・Markdown・JSONの読み込み、TXT・Markdown・JSONの書き出し。
 - A4横・縦書きPDFの直接保存（画像形式のため文字検索不可）、ブラウザからの通常印刷。
 - 画面・印刷の文字設定、推定尺、原稿の自動修正。
+- 全章の検索・置換（Ctrl+F／Ctrl+H）。カット番号の行と段落の字下げは対象外。「すべて置換」も1回のUndoで戻せます。
 
 TXT/Markdownに内部カットIDは含まれません。別アプリ側のID受け入れ対応はこのリポジトリに含みません。
 
