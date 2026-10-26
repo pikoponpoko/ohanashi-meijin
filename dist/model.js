@@ -79,6 +79,9 @@
     for(const c of chapters)if(c.formatOrigins!==undefined&&(!Array.isArray(c.formatOrigins)||c.formatOrigins.length!==c.text.split('\n').length||c.formatOrigins.some(k=>![null,'manual','auto','legacy'].includes(k))))throw Error('書式指定元が不正です');
     chapters=chapters.map(c=>normalizeChapter(c));
     const result={...defaults,...v,version:2,chapters};
+    // Stable work identity for Prepro updates. A missing ID is derived from the
+    // first chapter ID so reopening the same unsaved legacy file yields the same value.
+    result.workId=typeof v.workId==='string'&&v.workId.trim()&&v.workId.length<=200?v.workId:'work-'+chapters[0].id;
     result.font=['Noto Serif JP','Noto Sans JP','Zen Old Mincho'].includes(v.font)?v.font:defaults.font;
     for(const [k,min,max,fallback] of [['size',14,32,14],['printSize',9,18,12],['rate',60,1000,300],['actionSeconds',1,120,5],['draft',1,9999,1]])result[k]=Math.min(max,Math.max(min,Number(v[k])||fallback));
     result.direction=v.direction==='horizontal'?'horizontal':'vertical';result.dark=!!v.dark;result.cover=v.cover!==false;
