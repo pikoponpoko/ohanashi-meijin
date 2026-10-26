@@ -16,3 +16,6 @@
 
 /connection.js
   Cache-Control: no-store
+
+/persistence.js
+  Cache-Control: no-store

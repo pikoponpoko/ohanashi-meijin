@@ -1,8 +1,8 @@
 // Independent of the editor shell, and deliberately outside the SW precache.
-(()=>{
-  const status=document.querySelector('#status'),save=document.querySelector('#saveRecovery'),repair=document.querySelector('#repairConnection');let raw;
+(async()=>{
+  const status=document.querySelector('#status'),save=document.querySelector('#saveRecovery'),repair=document.querySelector('#repairConnection');let raw,legacyRaw;
   try{
-    raw=localStorage.getItem('scenario-meijin-v1');
+    raw=await window.ManuscriptStorage.readRaw();legacyRaw=localStorage.getItem('scenario-meijin-v1');
     try{document.body.classList.toggle('dark',JSON.parse(raw)?.dark===true)}catch(_){}
     status.textContent=raw!==null?'このブラウザの原稿を、先にファイルへ保存してください。':'この保存領域に編集中の原稿はありません。';
     save.disabled=raw===null;repair.disabled=raw!==null;
@@ -18,7 +18,7 @@
     repair.disabled=true;
     try{
       // Recheck because another app window may have saved while this page was open.
-      if(localStorage.getItem('scenario-meijin-v1')!==raw){status.textContent='別の画面で原稿が更新されました。このページを開き直して保存してください。';return}
+      if(await window.ManuscriptStorage.readRaw()!==raw||localStorage.getItem('scenario-meijin-v1')!==legacyRaw){status.textContent='別の画面で原稿が更新されました。このページを開き直して保存してください。';return}
       await window.ohanashiConnection.retire();
       location.replace('./?recovered=1');
     }catch(_){repair.disabled=false;status.textContent='接続を修復できませんでした。原稿は変更していません。'}

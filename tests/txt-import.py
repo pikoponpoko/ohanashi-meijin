@@ -27,6 +27,9 @@ try:
    page=ctx.new_page();page.goto('http://127.0.0.1:'+str(server.server_port));return page
   def import_file(page,text=raw):
    page.locator('#file').set_input_files({'name':'prepro-fixture.txt','mimeType':'text/plain','buffer':text.encode()})
+   page.wait_for_function("document.querySelector('#file').value===''")
+   if page.locator('#openWithoutSaving').is_visible():page.locator('#openWithoutSaving').click()
+   page.wait_for_function('!switchingDocument')
    page.wait_for_function("chapter().title==='prepro-fixture'")
   page=new_page();before=data(page);import_file(page)
   imported=data(page);c=imported['chapters'][0]
@@ -34,8 +37,8 @@ try:
   check('duplicates gaps and branches preserve original cut order and body',body(c)==expected and [c['text'].split('\n')[x['line']] for x in c['cuts']]==['#C1','#C2','#C3','#C4'])
   check('cut labels render once and never as ordinary paragraphs',page.locator('#editor .cut').count()==4 and page.evaluate("[...document.querySelectorAll('#editor p:not(.cut)')].every(p=>!/^\\s*#\\s*C\\s*\\d/.test(p.textContent))"))
   check('generated IDs are unique and unrelated to labels',len({x['id'] for x in c['cuts']})==4 and all(len(x['id'])==36 for x in c['cuts']))
-  page.locator('#editor').press('Control+z');check('file import is one exact Undo',data(page)==before)
-  page.locator('#editor').press('Control+Shift+z');check('file import Redo retains exact imported IDs and body',data(page)==imported)
+  page.locator('#editor').press('Control+z');check('file opening starts an independent work history',data(page)==imported)
+  check('previous work is archived with exact original IDs',page.evaluate('old=>archivedDocuments().some(x=>x.raw===JSON.stringify(old))',before))
   page.reload();check('saved TXT survives reload exactly',data(page)==imported)
   # Exercise correction on legacy blank padding after the import has normalized separators.
   page.evaluate(r"()=>{const c=chapter(),ls=c.text.split('\n');ls.splice(2,0,'','','');for(const cut of c.cuts)if(cut.line>=2)cut.line+=3;c.text=ls.join('\n');if(c.formats)c.formats.splice(2,0,null,null,null);if(c.formatOrigins)c.formatOrigins.splice(2,0,null,null,null);recordHistory();save();render()}")
@@ -74,10 +77,10 @@ try:
    page.evaluate('save()');page.reload();check('paste reload IDs stable '+mode,data(page)==pasted)
   page=new_page();page.evaluate("()=>{state=validate({...initial,title:'既存作品',chapters:[{id:'old',title:'保持する章',text:'本文\\n#C5\\n'}]});active='old';render();resetHistory();save()}");old=data(page)
   import_file(page);after=data(page)
-  check('existing project chapter/body/cut IDs untouched',len(after['chapters'])==2 and after['chapters'][0]==old['chapters'][0])
-  check('import into existing project preserves global consecutive numbering',page.evaluate("state.chapters.flatMap(c=>c.cuts.map(x=>c.text.split('\\n')[x.line])).join(',')==='#C1,#C2,#C3,#C4,#C5'"))
-  page.locator('#editor').press('Control+z');check('existing project import Undo exact',data(page)==old)
-  page.locator('#editor').press('Control+Shift+z');check('existing project import Redo exact',data(page)==after)
+  check('existing project chapter/body/cut IDs archived untouched',page.evaluate('old=>archivedDocuments().some(x=>x.raw===JSON.stringify(old))',old))
+  check('opened TXT is a separate project starting at cut one',len(after['chapters'])==1 and page.evaluate("state.chapters.flatMap(c=>c.cuts.map(x=>c.text.split('\\n')[x.line])).join(',')==='#C1,#C2,#C3,#C4'"))
+  page.locator('#editor').press('Control+z');check('new work Undo cannot replace it with the previous project',data(page)==after)
+  page.locator('#editor').press('Control+Shift+z');check('new work Redo leaves imported IDs intact',data(page)==after)
   for source in ['\ufeff\r\n# C1\r\n一\r\n#C1A\r\n二','\n#C9\n一\n#C4\n二','#プリプロ名人 台詞一覧（このまま書き換えて、コピーしてからプリプロ名人に戻ると反映できます）\n\n# C1\n一\n# C2\n二']:
    page=new_page();import_file(page,source);c=data(page)['chapters'][0]
    check('legacy header BOM/padding variation gives two real cuts',len(c['cuts'])==2 and c['text']=='#C1\n一\n#C2\n二')

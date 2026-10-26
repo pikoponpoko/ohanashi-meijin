@@ -103,3 +103,14 @@ body.focus{background:var(--paper)}body.focus main,body.focus #writing,body.focu
 @media(forced-colors:active){:is(body,body.dark) #editor.scroll-dragging,:is(body,body.dark) #editor.scroll-active{scrollbar-color:auto}}
 
 .printbody .music,.printbody .se{color:inherit}
+
+/* Fainter scrollbar: short-lived and lighter while scrolling; the previous color only on hover.
+   Chromium ignores ::-webkit-scrollbar when scrollbar-color is set, so let it use the pseudo-elements. */
+:is(#editor,#chapterPanel).scroll-active,:is(#editor,#chapterPanel).scroll-dragging,:is(body,body.dark) #editor.scroll-active,:is(body,body.dark) #editor.scroll-dragging{scrollbar-color:color-mix(in srgb,var(--muted) 8%,transparent) transparent}
+@supports selector(::-webkit-scrollbar){
+:is(body,body.dark) :is(#editor,#chapterPanel),:is(body,body.dark) :is(#editor,#chapterPanel):is(.scroll-active,.scroll-dragging){scrollbar-color:auto;scrollbar-width:auto}
+:is(#editor,#chapterPanel)::-webkit-scrollbar-thumb{background-color:transparent}
+:is(#editor,#chapterPanel):is(.scroll-active,.scroll-dragging)::-webkit-scrollbar-thumb{background-color:color-mix(in srgb,var(--muted) 8%,transparent)}
+:is(#editor,#chapterPanel)::-webkit-scrollbar-thumb:hover,:is(#editor,#chapterPanel)::-webkit-scrollbar-thumb:active{background-color:color-mix(in srgb,var(--muted) 18%,transparent)}
+}
+@media(forced-colors:active){:is(body,body.dark) :is(#editor,#chapterPanel){scrollbar-color:auto}:is(#editor,#chapterPanel)::-webkit-scrollbar-thumb{background-color:CanvasText}}

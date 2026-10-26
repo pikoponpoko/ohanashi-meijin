@@ -1,0 +1,60 @@
+PASS scene button inserts one symbol and stores manual provenance
+PASS scene button is idempotent
+PASS scene button Undo restores source exactly
+PASS scene Redo restores symbol and style
+PASS existing speech and speaker are not double wrapped
+PASS unquoted body wrapped without inventing speaker
+PASS speech Undo exact
+PASS manual styles and text survive reload
+PASS empty editing slot becomes editable quote pair
+PASS typing into quote pair keeps closing delimiter
+PASS batch scene labels each selected paragraph once
+PASS batch scene is one Undo
+PASS batch speech includes a selected whitespace-only paragraph
+PASS batch empty paragraph speech Undo exact
+PASS one Enter remains same cut
+PASS Enter boundary Undo restores first Enter
+PASS Enter boundary Redo preserves ID
+PASS two Enters produce two real cuts
+PASS typed split retains exact IDs on reload
+PASS pasted blank separators coalesce '本文A\n\n本文B'
+PASS pasted split Undo exact '本文A\n\n本文B'
+PASS pasted split Redo exact '本文A\n\n本文B'
+PASS pasted blank separators coalesce '本文A\r\n\r\n本文B'
+PASS pasted split Undo exact '本文A\r\n\r\n本文B'
+PASS pasted split Redo exact '本文A\r\n\r\n本文B'
+PASS pasted blank separators coalesce '本文A\n\n\n\n#C9\n本文B'
+PASS pasted split Undo exact '本文A\n\n\n\n#C9\n本文B'
+PASS pasted split Redo exact '本文A\n\n\n\n#C9\n本文B'
+PASS IME confirmation does not split cut
+PASS repeated Enters never multiply empty cuts
+PASS unmodified file opens with no download or restore dialog
+PASS autosaved edits still count as unsaved file changes
+PASS opening modified file presents three choices
+PASS Open cancellation keeps current project
+PASS Open without saving never forces download
+PASS save picker cancellation cannot discard current project
+PASS file write failure keeps current project
+PASS download save cannot open B before confirmation
+PASS download confirmation cancellation keeps A
+PASS confirmed file write saves A then opens B
+PASS invalid JSON retains current project
+PASS normal file controls consistently say Save/Open
+PASS download Save retains pending file changes until confirmation
+PASS cancelled Save confirmation keeps changes pending
+PASS confirmed download Save marks current file unchanged
+PASS failure of both stores cannot replace current project
+PASS header app name removed but project name retained
+PASS light background matches provisional offwhite
+PASS focus right is previous and left is next
+PASS focus chrome has no opaque background
+PASS keyboard chapter semantics retain correct endpoints
+PASS previous shortcut still means previous chapter
+PASS chapter reorder preserves body and IDs while renumbering globally
+PASS chapter reorder Undo exact
+PASS chapter reorder Redo exact
+PASS keyboard viewport keeps editor and file controls available
+PASS keyboard resize preserves caret identity
+PASS closing keyboard restores writing area
+PASS no application runtime errors
+59 feedback browser checks passed

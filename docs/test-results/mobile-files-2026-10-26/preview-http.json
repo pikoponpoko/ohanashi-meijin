@@ -1,0 +1,56 @@
+[
+  {
+    "path": "index.html",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache"
+  },
+  {
+    "path": "app.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache"
+  },
+  {
+    "path": "files.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache"
+  },
+  {
+    "path": "projects.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache"
+  },
+  {
+    "path": "persistence.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache, no-store"
+  },
+  {
+    "path": "recovery.html",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache, no-store"
+  },
+  {
+    "path": "recovery.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache, no-store"
+  },
+  {
+    "path": "sw.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache, no-store"
+  },
+  {
+    "path": "pwa.js",
+    "status": 200,
+    "source_matches": true,
+    "cache_control": "no-cache"
+  }
+]

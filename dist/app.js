@@ -16,16 +16,42 @@ try{
       localStorage.setItem(KEY,JSON.stringify(state));
     }
   }
-}catch(e){loadBlocked=true;setTimeout(()=>toast('保存データを保護中です。「開く」からJSONを選択してください。自動保存は停止しています。'),500)}
+}catch(e){loadBlocked=true;setTimeout(()=>{if(loadBlocked)toast('保存データを保護中です。「開く」からJSONを選択してください。自動保存は停止しています。')},500)}
 
 active=state.chapters[0].id;
 function validate(v){return ScriptModel.validate(v,initial)}
 const chapter=()=>state.chapters.find(c=>c.id===active);
-function save(){clearTimeout(timer);if(loadBlocked){$('#saved').textContent='開き直しが必要';return}try{validate(state);localStorage.setItem(KEY,JSON.stringify(state));dirty=false;$('#saved').textContent='ブラウザに保存済み';window.FileControls?.sync();}catch(e){dirty=true;$('#saved').textContent='保存失敗';toast('自動保存できません。「保存」でファイルを残してください。')}}
+// Keep input disabled until an overflow document, if any, has been restored.
+const bootState=state,bootSignature=JSON.stringify(state),appRoot=document.querySelector('main');appRoot.inert=true;
+window.manuscriptReady=Promise.all([window.ManuscriptStorage.ready,new Promise(resolve=>{
+  if(document.readyState!=='loading')resolve();else document.addEventListener('DOMContentLoaded',resolve,{once:true});
+})]).then(()=>{
+  try{
+    const raw=window.ManuscriptStorage.activeRaw;
+    if(raw!==null&&state===bootState&&JSON.stringify(state)===bootSignature){
+      state=validate(JSON.parse(raw));active=state.chapters[0].id;loadBlocked=false;dirty=false;
+      resetHistory();render();window.FileControls?.documentOpened();
+    }
+    window.syncArchives?.();
+  }catch(_){loadBlocked=true;toast('保存データを保護中です。「保存」で原稿をファイルに残してください。')}
+  finally{appRoot.inert=false}
+});
+function save(){
+  clearTimeout(timer);if(appRoot.inert)return false;if(loadBlocked){$('#saved').textContent='開き直しが必要';return false}
+  const current=state;
+  const failed=()=>{if(state!==current)return;dirty=true;$('#saved').textContent='保存失敗';toast('自動保存できません。「保存」でファイルを残してください。');return false};
+  let raw;try{validate(state);raw=JSON.stringify(state)}catch(_){return failed()}
+  const saved=()=>{if(state!==current||JSON.stringify(state)!==raw)return false;dirty=false;$('#saved').textContent='ブラウザに保存済み';window.FileControls?.sync();return true};
+  if(!window.ManuscriptStorage.usingDatabase){
+    try{localStorage.setItem(KEY,raw);return saved()}catch(error){if(error.name!=='QuotaExceededError')return failed()}
+  }
+  dirty=true;$('#saved').textContent='ブラウザに保存中';
+  return window.ManuscriptStorage.commit(raw).then(saved,failed);
+}
 function changed(){recordHistory();dirty=true;$('#saved').textContent='ブラウザに保存中';window.FileControls?.sync();clearTimeout(timer);timer=setTimeout(save,350)}
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function type(s){return ScriptFormatting.inferred(s)}
-function markup(s){return s.split(/([A-Za-z0-9]+|[０-９！？]+|[…⋯]+)/).map(m=>/^[A-Za-z0-9]{1,2}$/.test(m)?'<span class="tcy">'+esc(m)+'</span>':/^[０-９！？]+$/.test(m)?'<span class="verticalGlyph">'+esc(m)+'</span>':/^[…⋯]+$/.test(m)?'<span class="verticalEllipsis">'+esc(m)+'</span>':esc(m)).join('')}
+function markup(s){return s.split(/([A-Za-z0-9]+|-+|[０-９！？]+|[…⋯]+)/).map(m=>/^(?:[A-Za-z0-9]{1,2}|-{1,2})$/.test(m)?'<span class="tcy">'+esc(m)+'</span>':/^[０-９！？]+$/.test(m)?'<span class="verticalGlyph">'+esc(m)+'</span>':/^[…⋯]+$/.test(m)?'<span class="verticalEllipsis">'+esc(m)+'</span>':esc(m)).join('')}
 function paragraph(line,forced,origin){const kind=forced||type(line);const p=document.createElement('p');p.dataset.kind=kind;p.dataset.leading=(line.match(/^[ \u3000]*/)||[''])[0];p.dataset.formatOrigin=origin||(forced?'legacy':'auto');if(!forced||origin==='auto')p.dataset.auto='true';p.className=kind;p.innerHTML=line?markup(kind==='action'&&line.trim()?line.replace(/^[ \u3000]+/,''):line):'<br>';return p}
 // Serialize logical DOM blocks, never layout-dependent innerText.
 function domLines(root){
@@ -58,7 +84,10 @@ function readText(){return domLines($('#editor')).map(x=>x.text).join('\n')}
 function capture(){if(composing)return;let quoteDepth=0;for(const p of $('#editor').children){if(p.dataset.cutId){quoteDepth=0;continue}p.toggleAttribute('data-literal-marker',quoteDepth>0);if(quoteDepth||!ScriptModel.soundKind(p.textContent))quoteDepth=Math.max(0,quoteDepth+[...p.textContent].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0));if(ScriptModel.externalMarker.test((p.dataset.leading||'')+p.textContent)&&!p.closest('[data-literal-marker]')){p.dataset.cutId=uid();p.contentEditable='false';p.className='cut'}else{const sound=ScriptModel.soundKind(p.textContent);if(sound)p.dataset.kind=p.hasAttribute('data-literal-marker')?'dialogue':sound;else if(['music','se'].includes(p.dataset.kind))p.dataset.kind='action';if(!sound&&p.dataset.auto&&p.dataset.kind!==type(p.textContent))p.dataset.kind=type(p.textContent);if(p.className!==p.dataset.kind)p.className=p.dataset.kind}}if(!$('#editor').firstElementChild?.dataset.cutId){const p=paragraph('#C1');p.className='cut';p.dataset.cutId=uid();p.contentEditable='false';$('#editor').prepend(p)}assignLines(chapter(),domLines($('#editor')));if(chapter().pendingCutId&&ScriptModel.realCuts(chapter()).some(q=>q.id===chapter().pendingCutId))delete chapter().pendingCutId;if(chapter().text.split('\n').length>chapter().cuts.at(-1).line+1)delete chapter().placeholderFormat;ScriptModel.renumber(state);syncCutLabels();syncEmpty();recordHistory();changed();stats()}
 function syncCutLabels(){const cuts=chapter().cuts;let i=0;$('#editor').querySelectorAll('[data-cut-id]').forEach(p=>{const cut=cuts[i++];if(cut){if(p.dataset.cutId!==cut.id)p.dataset.cutId=cut.id;const label=chapter().text.split('\n')[cut.line];if(p.textContent!==label)p.innerHTML=markup(label);const hidden=cut.id!==chapter().pendingCutId&&!ScriptModel.realCuts(chapter()).some(c=>c.id===cut.id);if(p.hidden!==hidden)p.hidden=hidden}})}
 function apply(){document.documentElement.style.setProperty('--ellipsis-offset',state.font==='Zen Old Mincho'?'.3em':'0px');document.body.classList.toggle('dark',state.dark);document.documentElement.style.setProperty('--font',`'${state.font}'`);document.documentElement.style.setProperty('--size',state.size+'px');$('#editor').classList.toggle('horizontal',state.direction==='horizontal');$('#direction').textContent=state.direction==='vertical'?'縦書き':'横書き'}
-function render(){apply();$('#projectTitle').textContent=state.title||'無題';$('#breadcrumb').textContent=state.title+' / '+chapter().title;$('#chapterTitle').value=chapter().title;$('#chapterNumber').textContent='CHAPTER '+String(state.chapters.indexOf(chapter())+1).padStart(2,'0');$('#status').value=chapter().status;renderNav();renderText();stats()}
+function render(){apply();$('#projectTitle').textContent=state.title||'無題';$('#breadcrumb').textContent=state.title+' / '+chapter().title;$('#chapterTitle').value=chapter().title;$('#chapterNumber').textContent='CHAPTER '+String(state.chapters.indexOf(chapter())+1).padStart(2,'0');$('#status').value=chapter().status;renderNav();renderText();stats();startChapterAtBeginning()}
+// A newly shown chapter starts at its first line: the right edge when vertical, the top when horizontal.
+let shownChapter=null;
+function startChapterAtBeginning(){if(shownChapter===active)return;shownChapter=active;const ed=$('#editor'),reset=()=>{if(shownChapter!==active)return;if(state.direction==='vertical')ed.scrollLeft=ed.scrollWidth;else ed.scrollTop=0};reset();requestAnimationFrame(reset)}
 function renderNav(){const nav=$('#chapters');nav.replaceChildren();state.chapters.forEach((c,i)=>{const b=document.createElement('button');b.className=c.id===active?'active':'';b.innerHTML=`<span class="num">${String(i+1).padStart(2,'0')}</span><span class="name">${esc(c.title)}</span><span class="dot">${c.status==='完了'?'●':c.status==='見直し'?'◐':'○'}</span>`;b.onclick=()=>{if(composing||loadBlocked)return;if(dirty){save();if(dirty)return}active=c.id;render();document.body.classList.remove('mobilemenu');window.LayoutControls?.closeChapters()};const row=document.createElement('div');row.className='chapterRow';row.dataset.chapterId=c.id;const handle=document.createElement('button');handle.className='chapterHandle';handle.textContent='⠿';handle.setAttribute('aria-label',c.title+'を並び替え');handle.title='ドラッグ、またはSpaceと上下キーで並び替え';handle.setAttribute('aria-pressed','false');b.classList.add('chapterSelect');row.append(handle,b);nav.append(row)});const selected=chapter();$('#currentChapterName').textContent=selected.title;$('#currentChapterMark').textContent=selected.status==='完了'?'●':selected.status==='見直し'?'◐':'○';const n=state.chapters.length,a=state.chapters.filter(c=>c.status==='完了').length,b=state.chapters.filter(c=>c.status==='見直し').length;$('#chart').style.background=`conic-gradient(#555 0 ${a/n*100}%,#aaa ${a/n*100}% ${(a+b)/n*100}%,#ddd ${(a+b)/n*100}% 100%)`;$('#percent').textContent=Math.round(a/n*100)+'%';$('#progressText').textContent=a+' / '+n+' 章';$('#legend').innerHTML=[['完了',a,'#555'],['見直し',b,'#aaa'],['未着手',n-a-b,'#ddd']].map(([t,n,c])=>`<div><i style="background:${c}"></i>${t}　${n}</div>`).join('');window.LayoutControls?.syncChapterOrder()}
 function estimate(text){text=text.split('\n').filter(l=>!ScriptModel.marker.test(l)).join('\n');let speech=0,actions=0;for(const l of text.split('\n')){if(type(l)==='dialogue')speech+=Array.from(l.slice(l.indexOf('「')+1).replace(/[」\s]/g,'')).length;else if(l.trim()&&type(l)==='action')actions++}return speech/state.rate*60+actions*state.actionSeconds}
 function stats(){const count=c=>Array.from(c.text.split('\n').filter((_,i)=>!c.cuts.some(x=>x.line===i)).join('').replace(/\s/g,'')).length, n=count(chapter()), total=state.chapters.reduce((n,c)=>n+count(c),0), timing=window.ScriptTiming?.analyze(state),sec=timing?.seconds??state.chapters.reduce((n,c)=>n+estimate(c.text),0);$('#count').textContent=n.toLocaleString()+' 字 / 全体 '+total.toLocaleString()+' 字';$('#duration').textContent='推定尺 '+Math.floor(Math.round(sec)/60)+'分'+(Math.round(sec)%60)+'秒';$('#duration').title=timing?'台詞 '+timing.spokenCharacters+'字・動作 '+timing.actions+'行。クリックで計算根拠と調整。':'セリフ '+state.rate+'字/分 ＋ ト書き '+state.actionSeconds+'秒/段落。演出により変わる目安です。';const fixes=correctionCount();$('#issueCount').textContent=fixes?'· '+fixes:''}
@@ -96,3 +125,5 @@ $('#editor').addEventListener('wheel',e=>{if(state.direction==='vertical'&&Math.
 $('#deleteChapter').onclick=()=>{const c=chapter();modal('章を削除','<p>'+esc(c.title)+'を削除します。この画面を閉じるとキャンセルします。削除後は「元に戻す」で取り消せます（再読み込みまで）。</p><label><input type="checkbox" id="deleteBackup"> バックアップを保存する</label><button class="primary" id="confirmDelete">削除する</button>');$('#confirmDelete').onclick=()=>{if($('#deleteBackup').checked)download(JSON.stringify(state,null,2),'json','application/json');state.chapters=state.chapters.filter(x=>x.id!==c.id);if(!state.chapters.length)state.chapters.push(ScriptModel.migrateChapter({id:uid(),title:'新しい章',text:'',status:'未着手'}));active=state.chapters[0].id;ScriptModel.renumber(state);recordHistory();save();render();$('#dialog').close()}};
 let selectedRange;document.addEventListener('selectionchange',()=>{const sel=window.getSelection();if(sel.rangeCount&&!sel.isCollapsed&&$('#editor').contains(sel.anchorNode)&&$('#editor').contains(sel.focusNode))selectedRange=sel.getRangeAt(0).cloneRange()});
 $('#splitChapter').onmousedown=e=>e.preventDefault();$('#splitChapter').onclick=()=>{if(!selectedRange||!selectedRange.toString().trim()||!$('#editor').contains(selectedRange.commonAncestorContainer))return toast('本文を選択してください');const range=selectedRange.cloneRange(),source=chapter();modal('選択範囲から章を作成','<label>章のタイトル</label><input id="splitTitle" value="新しい章"><button id="confirmSplit" class="primary">選択範囲を移動</button>');$('#confirmSplit').onclick=()=>{if(source!==chapter())return;const records=rangeRecords(range,true);assignLines(source,domLines($('#editor')));const c={id:uid(),title:$('#splitTitle').value||'新しい章',text:'',status:'未着手'};assignLines(c,records);state.chapters.splice(state.chapters.indexOf(source)+1,0,c);active=c.id;selectedRange=null;ScriptModel.renumber(state);recordHistory();save();render();$('#dialog').close()}};
+
+window.addEventListener('manuscriptstoragechange',()=>toast('別の画面で原稿が更新されました。同時編集を避け、JSONを保存してください。'));

@@ -49,7 +49,7 @@ try:
    page.locator('#nextChapter').click();check(tag+' focus chapter moves safely',page.evaluate("active==='two'") and page.locator('#nextChapter').is_disabled());page.keyboard.press('Alt+PageUp');check(tag+' focus shortcut and metadata preserve original',page.evaluate("active==='one'") and data()==before)
    page.screenshot(path=str(OUT/(tag+'-focus.png')));page.locator('#exitFocus').click();page.wait_for_function('!document.fullscreenElement');check(tag+' cross exits fullscreen and focus',not page.evaluate("document.body.classList.contains('focus')"))
    page.evaluate("()=>{document.documentElement.requestFullscreen=async()=>{throw new DOMException('denied','NotAllowedError')}}");page.locator('#focus').click();check(tag+' denied fullscreen falls back to focus',page.evaluate("document.body.classList.contains('focus')&&!document.fullscreenElement"));page.locator('#exitFocus').click()
-   page.evaluate("()=>{$('#editor').classList.add('scroll-active');window.barColor=getComputedStyle($('#editor')).scrollbarColor}");check(tag+' scrollbar reduced alpha while active',page.evaluate("barColor.includes('0.18')"))
+   page.evaluate("()=>{$('#editor').classList.add('scroll-active');window.barColor=getComputedStyle($('#editor')).scrollbarColor}");check(tag+' scrollbar reduced alpha while active',page.evaluate("[...document.styleSheets].flatMap(s=>{try{return [...s.cssRules]}catch(_){return []}}).flatMap(r=>r.cssRules?[...r.cssRules]:[r]).some(r=>r.selectorText?.includes('.scroll-active')&&r.selectorText.includes('::-webkit-scrollbar-thumb')&&r.style.backgroundColor.includes('8%'))"))
    check(tag+' no script exceptions',not errors);ctx.close()
   b.close()
 finally:s.shutdown();s.server_close()

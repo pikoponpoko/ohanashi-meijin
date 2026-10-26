@@ -1,0 +1,11 @@
+{
+  "source_commit": "0d676d5296a6dc7c468a560afb11fd7d733b1c0d",
+  "cloudflare_preview_version": "727677f4-a9ff-4e3e-9c1e-6891bacb2773",
+  "preview_url": "https://connection-review-ohanashi-meijin.pikoponpoko.workers.dev/",
+  "local_mobile_checks": 29,
+  "preview_mobile_checks": 29,
+  "preview_browser_checks": 54,
+  "production_deployed": false,
+  "production_blocker": "Automatic approval review requires explicit authorization for this production rollout, including the new overflow storage and rollback compatibility constraint.",
+  "device_file_picker_ui_verified": false
+}
