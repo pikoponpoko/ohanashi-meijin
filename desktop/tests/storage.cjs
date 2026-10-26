@@ -25,3 +25,17 @@ test('invalid snapshots cannot overwrite existing bytes; unreadable backups bloc
   assert.equal(fs.readFileSync(path.join(directory,'storage.json'),'utf8'),'broken');
   fs.rmSync(directory,{recursive:true});
 });
+test('IndexedDB rows: active keeps a fallback, archives are written once, invalid rows are refused',()=>{
+  const {createRecordStorage}=require('../storage.cjs');
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'ohanashi-records-'));
+  const key='archive:0d671351-fc7f-4e50-8d6b-944eb0ebada7';
+  const storage=createRecordStorage(directory);assert.equal(storage.read(),null);
+  storage.write([{key:'active',raw:'v1'},{key,raw:'old',title:'退避'}]);
+  storage.write([{key:'active',raw:'v2'},{key,raw:'changed'}]);
+  assert.deepEqual(createRecordStorage(directory).read(),[{key:'active',raw:'v2'},{key,raw:'old',title:'退避'}]);
+  fs.writeFileSync(path.join(directory,'active/storage.json'),'{broken');
+  assert.deepEqual(createRecordStorage(directory).read()[0],{key:'active',raw:'v1'});
+  assert.throws(()=>storage.write([{key:'../escape',raw:'x'}]));assert.throws(()=>storage.write([{key:'active',raw:42}]));
+  assert.equal(fs.existsSync(path.join(directory,'escape')),false);
+  fs.rmSync(directory,{recursive:true});
+});

@@ -25,6 +25,33 @@
       for(const [key,value] of Object.entries(result.value))set.call(localStorage,key,value);
     }
   }catch(e){failure='保存データの予備コピーを読めませんでした。既存データは保持しています。'}
+  try{
+    const result=bridge.readDatabaseBackup();
+    if(!result.ok)throw Error(result.error);
+    // Opened before persistence.js, so its open waits for this upgrade.
+    // Only a missing database is filled; existing rows always win.
+    if(result.value){
+      const request=indexedDB.open('ohanashi-manuscripts-v1',1);
+      request.onupgradeneeded=event=>{
+        const store=request.result.createObjectStore('records',{keyPath:'key'});
+        if(event.oldVersion===0)for(const row of result.value)store.put(row);
+      };
+      request.onsuccess=()=>request.result.close();
+    }
+  }catch(e){failure='保存データの予備コピーを読めませんでした。既存データは保持しています。'}
+  const sent=new Set();
+  async function persistDatabase(storage){
+    const rows=[{key:'active',raw:storage.activeRaw},...storage.archives.filter(row=>!sent.has(row.key))];
+    await bridge.persistDatabase(rows);
+    for(const row of rows)if(row.key!=='active')sent.add(row.key);
+  }
+  let manuscriptStorage;
+  Object.defineProperty(window,'ManuscriptStorage',{configurable:true,get:()=>manuscriptStorage,set(storage){
+    const commit=storage.commit;
+    storage.commit=async(...args)=>{await commit(...args);await persistDatabase(storage)};
+    storage.ready.then(()=>{if(typeof storage.activeRaw==='string')return persistDatabase(storage)}).catch(()=>toast('保存データの予備コピーを書けませんでした。'));
+    manuscriptStorage=storage;
+  }});
   Storage.prototype.setItem=function(key,value){
     set.call(this,key,value);
     if(this===localStorage){

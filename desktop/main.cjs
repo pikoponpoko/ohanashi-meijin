@@ -3,7 +3,7 @@ const path=require('node:path');
 const fs=require('node:fs');
 const {randomUUID}=require('node:crypto');
 const {pathToFileURL}=require('node:url');
-const {createStorage}=require('./storage.cjs');
+const {createStorage,createRecordStorage}=require('./storage.cjs');
 const ORIGIN='ohanashi://app';
 const RELEASES='https://github.com/pikoponpoko/ohanashi-meijin/releases';
 protocol.registerSchemesAsPrivileged([{scheme:'ohanashi',privileges:{standard:true,secure:true,supportFetchAPI:true,corsEnabled:true}}]);
@@ -15,6 +15,7 @@ if(!app.requestSingleInstanceLock()){app.quit()}else{
   app.whenReady().then(()=>{
     const web=path.join(__dirname,'web');
     const storage=createStorage(path.join(app.getPath('userData'),'manuscript-backups'));
+    const records=createRecordStorage(path.join(app.getPath('userData'),'manuscript-backups','indexeddb'));
     protocol.handle('ohanashi',request=>{
       const url=new URL(request.url);
       if(url.host!=='app')return new Response('Not found',{status:404});
@@ -57,6 +58,13 @@ if(!app.requestSingleInstanceLock()){app.quit()}else{
     });
     ipcMain.on('storage-write',(event,value)=>{
       try{if(!trusted(event))throw Error('Unauthorized frame');storage.write(value);event.returnValue={ok:true}}catch{event.returnValue={ok:false,error:'Backup write failed'}}
+    });
+    ipcMain.on('database-read',event=>{
+      try{if(!trusted(event))throw Error('Unauthorized frame');event.returnValue={ok:true,value:records.read()}}catch{event.returnValue={ok:false,error:'Backup read failed'}}
+    });
+    ipcMain.handle('database-write',(event,rows)=>{
+      if(!trusted(event))throw Error('Unauthorized frame');
+      try{records.write(rows)}catch{throw Error('Backup write failed')}
     });
     ipcMain.handle('check-updates',event=>{if(!trusted(event))throw Error('Unauthorized frame');return shell.openExternal(RELEASES)});
     function open(){

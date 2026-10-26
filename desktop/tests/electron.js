@@ -84,6 +84,26 @@ async function launch(userData=profile){
  }
  const restored=path.join(directory,'restored');fs.mkdirSync(path.join(restored,'manuscript-backups'),{recursive:true});fs.copyFileSync(backupPath,path.join(restored,'manuscript-backups/storage.json'));
  ({app,page}=await launch(restored));assert.deepEqual(await page.evaluate(()=>({...localStorage})),saved);check('empty Chromium profile restores all raw values from disk');await app.close();
+ const overflow=path.join(directory,'overflow');
+ ({app,page}=await launch(overflow));
+ const large=await page.evaluate(async()=>{
+  await window.manuscriptReady;
+  state=validate({version:1,title:'容量超過原稿',chapters:[{id:'large',title:'第一章',text:'大きな原稿'}]});active=state.chapters[0].id;resetHistory();render();
+  await window.ManuscriptStorage.commit(JSON.stringify(state),{raw:JSON.stringify({version:1,title:'退避した原稿',chapters:[{id:'old',title:'第一章',text:'退避本文'}]}),at:Date.now()});
+  return {active:window.ManuscriptStorage.activeRaw,archives:window.ManuscriptStorage.archives};
+ });
+ check('IndexedDB manuscript is copied to disk',JSON.stringify(require('../storage.cjs').createRecordStorage(path.join(overflow,'manuscript-backups/indexeddb')).read())===JSON.stringify([{key:'active',raw:large.active},...large.archives]));
+ await app.close();
+ const overflowRestored=path.join(directory,'overflow-restored');fs.cpSync(path.join(overflow,'manuscript-backups'),path.join(overflowRestored,'manuscript-backups'),{recursive:true});
+ ({app,page}=await launch(overflowRestored));
+ check('empty profile restores IndexedDB manuscript and archive',await page.evaluate(async expected=>{await window.manuscriptReady;return state.title==='容量超過原稿'&&window.ManuscriptStorage.archives.some(x=>x.raw===expected)},large.archives[0].raw));
+ await app.close();
+ ({app,page}=await launch(overflow));
+ await page.evaluate(async()=>{await window.manuscriptReady;state.title='既存を優先';render();await window.ManuscriptStorage.commit(JSON.stringify(state))});await app.close();
+ fs.rmSync(path.join(overflow,'manuscript-backups'),{recursive:true});fs.cpSync(path.join(overflowRestored,'manuscript-backups'),path.join(overflow,'manuscript-backups'),{recursive:true});
+ ({app,page}=await launch(overflow));
+ check('existing IndexedDB is not replaced by an older disk copy',await page.evaluate(async()=>{await window.manuscriptReady;return state.title==='既存を優先'}));
+ await app.close();
  check('no application exceptions',errors.length===0);
  fs.writeFileSync(path.join(directory,'results.json'),JSON.stringify({checks,errors},null,2));console.log('Evidence:',directory);console.log(checks.length+' Electron checks passed');
 })().catch(async error=>{console.error(error);try{await currentApp?.close()}catch{}process.exit(1)});

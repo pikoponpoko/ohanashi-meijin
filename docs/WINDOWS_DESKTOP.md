@@ -29,6 +29,10 @@ ChromiumのlocalStorageを維持し、各setItem後の全キー・値の文字�
 直前の正常なスナップショットは `storage.previous.json` に保持する。
 localStorageが完全に空の場合だけディスク上の予備コピーから復元する。
 既存・破損localStorageを自動的に置き換えない。破損したディスクコピーも上書きしない。
+原稿がlocalStorageの容量を超えてIndexedDB（`ohanashi-manuscripts-v1`）に保存される場合は、
+保存のたびに現在の原稿を `manuscript-backups/indexeddb/active/` に同じ方式で、退避した原稿を
+`manuscript-backups/indexeddb/archives/` に1件1ファイルで一度だけ書く。
+IndexedDBが存在しない場合だけディスク上の予備コピーから復元し、既存のIndexedDBは置き換えない。
 ディスク保存失敗はアプリに返して保存失敗と表示し、未保存状態での通常終了を止める。
 終了直前の入力はbeforeunloadで保存する。強制終了・OS障害時には最後の保存以降の入力が残らない可能性がある。
 
