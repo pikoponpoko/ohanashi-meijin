@@ -15,6 +15,7 @@
         // Old saved projects can contain indented display labels as ordinary text.
         // Exclude their reading time without changing text or inventing cut IDs.
         if(/^[ \t\u3000]*#[ \t\u3000]*C[ \t]*\d+(?:[A-Za-z]+|[-.]\d+)?[ \t\u3000]*$/i.test(raw)){embeddedLabels++;return}
+        if(!depth&&root.ScriptModel?.memoLine(raw))return;
         const delta=Array.from(raw).reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
         if(depth>0){cut.speechCharacters+=count(raw);depth=Math.max(0,depth+delta);return}
         const sound=root.ScriptModel?.paragraphKind(chapter,line)||root.ScriptModel?.soundKind(raw);

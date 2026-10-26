@@ -41,7 +41,7 @@ function formatParagraphs(kind){
   for(const p of targets){const i=blocks.indexOf(p);if(p.dataset.placeholder){c.placeholderFormat=['music','se'].includes(kind)?'action':kind;if(['music','se'].includes(kind)){lines.push(ScriptModel.soundText('',kind));formats.push('action');origins.push('manual');delete c.placeholderFormat}if(kind==='dialogue'){lines.push('「」');formats.push('dialogue');origins.push('manual');delete c.placeholderFormat}}else if(i<formats.length){
     let raw=lines[i];const oldKind=ScriptModel.paragraphKind(c,i)||p.dataset.kind||ScriptFormatting.inferred(raw);const originalRaw=raw;const converted=ScriptFormatting.markerConversion(raw,oldKind,kind,speech[i]||[]);raw=converted.text;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset-=converted.removals.filter(at=>at<pos.offset).length;if(['music','se'].includes(kind))raw=ScriptModel.soundText(/^(?:音楽|BGM|SE|ＳＥ|効果音)「/.test(originalRaw.trim())?originalRaw:raw,kind);else if(['music','se'].includes(oldKind)){const stripped=ScriptModel.stripSound(raw),shift=raw.length-stripped.length;raw=stripped;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(0,pos.offset-shift)}lines[i]=raw;const trimmed=raw.trimStart();
     if(kind==='scene'&&!/^[○◯〇]/.test(trimmed)){lines[i]='◯'+trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(1,pos.offset-(raw.length-trimmed.length)+1)}
-    if(kind==='dialogue'&&!/「/.test(trimmed)){lines[i]='「'+raw+'」';for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset++}
+    if(kind==='dialogue'){const quoted=!/「/.test(trimmed),shift=raw.length-trimmed.length;lines[i]=quoted?'「'+trimmed+'」':trimmed;for(const pos of [saved.start,saved.end])if(pos.block===i)pos.offset=Math.max(quoted?1:0,pos.offset-shift+(quoted?1:0))}
     formats[i]=['music','se'].includes(kind)?'action':kind;origins[i]='manual';
   }}
   c.text=lines.join('\n');c.formatOrigins=origins;
@@ -80,8 +80,6 @@ $('#autoFormat').onclick=()=>{
   $('#dialogBody').append(apply,cancel);
 };
 
-$('#cueType').addEventListener('pointerdown',()=>{const r=editorRange();if(r)selectedRange=r.cloneRange()});
-$('#cueType').onchange=e=>{const kind=e.target.value;if(kind)formatParagraphs(kind);e.target.value=''};
 
 $('#speaker').onmousedown=e=>e.preventDefault();
 $('#speaker').onclick=()=>{
