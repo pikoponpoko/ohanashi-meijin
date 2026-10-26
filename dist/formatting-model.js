@@ -35,6 +35,7 @@
       let kind=current,certainty='uncertain',reason='文脈の確認が必要です',unit='unresolved',group=null;
       if(depth>0){kind='dialogue';certainty='certain';reason='開いたカギ括弧内の折り返し';unit='speech';group=speechStart;depth=Math.max(0,depth+quoteDelta(raw))}
       else if(!raw.trim()){certainty='unchanged';reason='空行を保持';unit='blank'}
+      else if(root.ScriptModel?.memoLine(raw)){certainty='unchanged';reason='メモ';unit='memo'}
       else if(root.ScriptModel?.soundKind(raw)){kind=root.ScriptModel.soundKind(raw);certainty='certain';reason='明示的な音響指示';unit='sound'}
       else if(scene(raw)){kind='scene';certainty='certain';reason='明示的な柱';unit='scene'}
       else if(/^[^「\n]+「/.test(raw.trimStart())){kind='dialogue';certainty='certain';reason='話者とカギ括弧のある発話';unit='speech';group=line;speechStart=line;depth=Math.max(0,quoteDelta(raw))}

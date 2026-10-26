@@ -35,3 +35,12 @@ if(process.env.LEGACY_MODEL_PATH){
   assert.equal(r.count,1);assert.equal(r.chapter.text.split('\n')[4],'音楽：曲');assert.equal(r.chapter.soundCues.entries[0].kind,'music');
   console.log('PASS load-time sound detection: legacy notations to prefixes, speech and quoted lines untouched');
 }
+{
+  const M=globalThis.ScriptModel,T=globalThis.ScriptTiming;
+  assert.equal(M.detectSoundLine('メモ：SE「あとで差し替え」'),null);
+  const base={rate:300,actionSeconds:5,chapters:[M.migrateChapter({id:'m',title:'',text:'　　　歩く。'})]};
+  const memo={...base,chapters:[M.migrateChapter({id:'m',title:'',text:'　　　歩く。\nメモ：ここは尺を伸ばす\n　メモ:要確認'})]};
+  assert.equal(T.analyze(memo).seconds,T.analyze(base).seconds);
+  const plan=globalThis.ScriptFormatting.analyze(memo.chapters[0]);assert.equal(plan[2].certainty,'unchanged');
+  console.log('PASS memo lines: ignored by sound detection, timing and format proposals');
+}
