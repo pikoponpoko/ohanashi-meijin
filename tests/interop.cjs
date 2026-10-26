@@ -13,14 +13,16 @@ globalThis.crypto=require('node:crypto').webcrypto;require('../dist/model.js');r
  fs.writeFileSync('docs/interop/samples/native-v2.json',JSON.stringify(v,null,2)+'\n');
  const audio=M.validate(JSON.parse(fs.readFileSync('docs/interop/samples/sound-v2.json')),{}),audioText=JSON.stringify(audio),got=readScript(audioText,'sound.json');
  const plain=JSON.parse(audioText);plain.chapters.forEach(c=>delete c.soundCues);
- assert.deepEqual(got,readScript(JSON.stringify(plain),'sound.json'));
+ // The receiver keeps the original soundCues as a witness; parsed cuts must not depend on it.
+ assert.deepEqual({...got,chapters:got.chapters.map(({soundCues,...c})=>c)},readScript(JSON.stringify(plain),'sound.json'));
+ assert.deepEqual(got.chapters.map(c=>c.soundCues),audio.chapters.map(c=>c.soundCues));
  assert.deepEqual(got.cuts[0].lines.filter(l=>['music','se'].includes(l.kind)).map(l=>[l.kind,l.speaker,l.text]),[['music',null,'静かな曲'],['se',null,'足音']]);
  assert.equal(got.cuts[0].lines.find(l=>l.kind==='normal').text,'音楽も\nSE：これは発話の続き');
  assert.equal(JSON.stringify(audio),audioText);
  console.log('PASS receiver current main: new soundCues and legacy-prefix-only JSON yield identical music/SE, null speakers, preserved wrapped speech and stable cut IDs');
  const pending={version:2,chapters:[{id:'pending-chapter',title:'入力待ち',text:'#C1\n本文\n#C2',cuts:[{id:'existing-cut',line:0},{id:'reserved-cut',line:2}],formats:[null,'action',null],pendingCutId:'reserved-cut'}]};
- const pendingRead=readScript(JSON.stringify(pending),'pending.json');assert.deepEqual(pendingRead.cuts.map(q=>q.id),['existing-cut','reserved-cut']);assert.equal(pendingRead.cuts[1].lines.length,0);
- console.log('PASS receiver accepts explicit pending cut metadata and preserves reserved ID without body text');
+ const pendingRead=readScript(JSON.stringify(pending),'pending.json');assert.deepEqual(pendingRead.cuts.map(q=>q.id),['existing-cut']);
+ console.log('PASS receiver accepts explicit pending cut metadata and does not create a blank cut for the reserved ID');
  const proposal=JSON.parse(fs.readFileSync('docs/interop/samples/baseline.json'));assert.throws(()=>readScript(JSON.stringify(proposal),'draft.json'));assert.ok(readScript(JSON.stringify(proposal),'draft.json',{allowDraft:true}).cuts.length);
  console.log('PASS receiver main: unchanged v2 IDs and chapter order, repaired structural headings, music/SE prefixes, wrapped dialogue, action lines; source immutable');console.log('PASS existing draft.1: normal import rejects unapproved draft; explicit trial accepts unchanged sample');
  process.exit(0);
