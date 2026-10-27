@@ -1,7 +1,7 @@
 // Snapshots are kept separately; the existing active-document key and v2 schema stay compatible.
 const ARCHIVE_PREFIX=KEY+'-document-';
 function projectPreferences(){
-  return Object.fromEntries(['font','size','printSize','direction','dark','rate','actionSeconds','speechPause','cutPause','timingMode','cover'].filter(key=>state[key]!==undefined).map(key=>[key,state[key]]));
+  return Object.fromEntries(['font','size','printSize','direction','dark','rate','actionSeconds','speechPause','cutPause','timingMode','cover','printColumns'].filter(key=>state[key]!==undefined).map(key=>[key,state[key]]));
 }
 function archivedDocuments(){
   const docs=window.ManuscriptStorage.archives;

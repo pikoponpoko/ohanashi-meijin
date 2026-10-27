@@ -5,7 +5,7 @@ Webの `dist/` は変更せず、Electron専用の `desktop/web/` に生成す�
 
 ## 利用とデータ移行
 
-Windows x64用インストーラーは `OhanashiMeijin-0.1.4-x64-Setup.exe`。
+Windows x64用インストーラーは `OhanashiMeijin-0.1.5-x64-Setup.exe`。
 生成と旧版置換試験が成功した[Actions成果物（EXE・SHA256のZIP）](https://github.com/pikoponpoko/ohanashi-meijin/actions/runs/40241978557/artifacts/12617138361)を使用する。
 未署名のためWindowsのSmartScreen警告が出る場合がある。署名・一般公開は未実施。
 

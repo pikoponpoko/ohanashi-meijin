@@ -53,5 +53,6 @@
   "draft": 1,
   "direction": "vertical",
   "dark": false,
-  "cover": true
+  "cover": true,
+  "printColumns": 1
 }
