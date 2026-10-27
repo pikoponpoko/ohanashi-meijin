@@ -75,7 +75,7 @@ body.focus #focusGesture{background:transparent;opacity:.4}body.focus #focusGest
 @media(forced-colors:active){:is(body,body.dark) #editor.scroll-dragging{scrollbar-color:auto}}
 body.focus #focusControls button{background:transparent}
 /* Printed cut labels align with the top of the writing column, as in the editor. */
-.printbody .cut{padding:0;text-indent:0;color:#999}
+.printbody .cut{padding:0;text-indent:0;color:#bbb}
 
 /* Usage feedback: keep body metrics; space only structural cut columns. */
 #editor:not(.horizontal) .verticalEllipsis,.printbody .verticalEllipsis{font-feature-settings:'vert' 0,'vrt2' 0,'palt' 0;text-orientation:sideways;letter-spacing:0}
@@ -140,3 +140,15 @@ body.focus #findBox{top:16px}
 main:has(#editor:not(.horizontal))~#findBox{right:auto;left:16px}
 @media print{#findBox{display:none}}
 @media(max-width:600px){#findBox{top:48px;right:8px;left:8px;width:auto;max-height:42dvh}}
+
+/* Print preview and two-tier layout. */
+.printtiers{height:170mm;width:257mm;display:flex;flex-direction:column;justify-content:space-between}.printbody.tier{height:81mm}
+#previewBar{display:none}
+body.printpreview #previewBar{display:flex;position:fixed;top:0;left:0;right:0;z-index:21;min-height:48px;align-items:center;gap:8px;padding:6px 18px;flex-wrap:wrap;background:var(--paper);border-bottom:1px solid var(--line);font-size:12px}
+#previewBar input{accent-color:var(--ink)}#previewBar label{display:flex;align-items:center;gap:5px;margin:0;font-size:12px;color:var(--ink)}#previewBar .primary{margin:0;padding:8px 18px}#previewBar .previewSpacer{flex:1}
+#previewCount{min-width:5em;font-variant-numeric:tabular-nums}.previewColumns{display:flex;border:1px solid var(--line);border-radius:4px}.previewColumns button{border-radius:0;padding:5px 12px;color:var(--muted)}.previewColumns button[aria-pressed=true]{background:var(--line);color:var(--ink)}
+#previewBar.busy #previewPrint,#previewBar.busy #previewPdf{opacity:.4;pointer-events:none}
+body.printpreview #printRoot:not(.pdf-render){display:flex;flex-direction:column;align-items:center;gap:16px;position:fixed;top:48px;left:0;right:0;bottom:0;z-index:20;overflow:auto;padding:24px 16px;background:var(--bg)}
+body.printpreview #printRoot:not(.pdf-render) .printpage{zoom:var(--previewzoom,1);outline:1px solid var(--line)}
+@media(max-width:680px){body.printpreview #printRoot:not(.pdf-render){top:88px}}
+@media print{#previewBar{display:none!important}body.printpreview #printRoot{position:static!important;display:block!important;padding:0!important;overflow:visible!important;background:white!important}body.printpreview #printRoot .printpage{zoom:1!important;outline:0!important}}

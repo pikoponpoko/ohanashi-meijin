@@ -130,7 +130,7 @@ with sync_playwright() as p:
         with page.expect_download(timeout=60000) as info:page.locator('#outPdf').click()
         info.value.save_as(OUT/('cover.pdf' if cover else 'body.pdf'))
         check('direct PDF cover='+str(cover),page.evaluate('window.printCalls')==0 and (OUT/('cover.pdf' if cover else 'body.pdf')).read_bytes().startswith(b'%PDF'))
-    page.locator('#export').click();page.locator('#outPrint').click();page.wait_for_function('window.printCalls===1');check('Print uses browser print dialog')
+    page.locator('#export').click();page.locator('#outPrint').click();page.wait_for_function("/^A4 \\d+枚$/.test($('#previewCount').textContent)");check('Print opens preview first',page.evaluate('window.printCalls')==0);page.locator('#previewPrint').click();page.wait_for_function('window.printCalls===1');check('Print uses browser print dialog');page.locator('#previewClose').click()
     body_pages=len(fitz.open(OUT/'body.pdf'))
     for name,expected in [('body',body_pages),('cover',body_pages+1)]:
         pdf=fitz.open(OUT/(name+'.pdf'))

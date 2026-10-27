@@ -84,7 +84,7 @@
     result.workId=typeof v.workId==='string'&&v.workId.trim()&&v.workId.length<=200?v.workId:'work-'+chapters[0].id;
     result.font=['Noto Serif JP','Noto Sans JP','Zen Old Mincho'].includes(v.font)?v.font:defaults.font;
     for(const [k,min,max,fallback] of [['size',14,32,14],['printSize',9,18,12],['rate',60,1000,300],['actionSeconds',1,120,5],['draft',1,9999,1]])result[k]=Math.min(max,Math.max(min,Number(v[k])||fallback));
-    result.direction=v.direction==='horizontal'?'horizontal':'vertical';result.dark=!!v.dark;result.cover=v.cover!==false;
+    result.direction=v.direction==='horizontal'?'horizontal':'vertical';result.dark=!!v.dark;result.cover=v.cover!==false;result.printColumns=v.printColumns===2?2:1;
     return renumber(result);
   }
   function repair(c){const lines=c.text.split('\n'),out=[],cuts=[],formats=[],origins=[];let blank=false;const byLine=new Map(c.cuts.map(x=>[x.line,x]));for(let i=0;i<lines.length;i++){if(byLine.has(i)){cuts.push({...byLine.get(i),line:out.length});out.push(lines[i]);formats.push(c.formats?.[i]||null);origins.push(c.formatOrigins?.[i]||null);blank=false}else if(!lines[i].trim()){if(!blank){out.push('');formats.push(c.formats?.[i]||null);origins.push(c.formatOrigins?.[i]||null);}blank=true}else{out.push(lines[i]);formats.push(c.formats?.[i]||null);origins.push(c.formatOrigins?.[i]||null);blank=false}}return syncSoundCues({...c,text:out.join('\n'),cuts,formats,...(c.formatOrigins?{formatOrigins:origins}:{})})}
