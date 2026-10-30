@@ -191,3 +191,9 @@ body.focus #writing{margin:8px 0 48px}
 body.focus #editor{padding-top:24px;padding-bottom:24px}
 .actions button{display:inline-flex;align-items:center;justify-content:center;height:32px;min-width:32px;line-height:1}
 #rules{font-size:15px}
+.themeList{gap:3px;max-height:248px}
+.themeChoice{padding:4px 6px;gap:6px;font-size:11px;min-height:28px}
+.themeSwatch{width:48px}
+.themeSwatch i{flex:1;width:auto;height:14px}
+.themeRemove{width:28px}
+.themeList{grid-template-columns:repeat(2,minmax(0,1fr))}
