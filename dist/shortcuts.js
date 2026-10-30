@@ -27,9 +27,11 @@
       kbd.textContent=/^Alt\+[^+]+$/.test(keys[id])?keys[id].slice(4):keys[id];
     }
   }
+  // F1 is taken before any other handler so the browser's help page never opens.
+  addEventListener('keydown',e=>{if(e.key!=='F1')return;e.preventDefault();e.stopPropagation();if(!capture&&!composing&&!$('#dialog').open)$('#settings').click()},true);
+  addEventListener('help',e=>e.preventDefault());
   document.addEventListener('keydown',e=>{
     if(capture||composing||e.isComposing||e.keyCode===229)return;
-    if(e.key==='F1'){e.preventDefault();if(!$('#dialog').open)$('#settings').click();return}
     if($('#dialog').open)return;
     const c=combo(e),id=c&&Object.keys(keys).find(k=>keys[k]===c);
     if(!id||!($('#editor').contains(e.target)||e.target===document.body))return;
