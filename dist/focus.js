@@ -1,4 +1,4 @@
-// Focus mode fills the window without browser fullscreen.
+// Enter browser fullscreen directly from the user gesture; fall back to app focus.
 (()=>{
   const controls=$('#focusControls'),exit=$('#exitFocus'),previous=$('#previousChapter'),next=$('#nextChapter');
   const preferenceKey=KEY+'-view-options-v1';
@@ -15,8 +15,7 @@
     $('#focusChapter').textContent=chapter().title;
   }
   function setFocus(on){document.body.classList.toggle('focus',on);document.body.classList.remove('mobilemenu');sync();if(on)$('#editor').focus({preventScroll:true})}
-  // Focus stays inside the window: browser fullscreen shows its own exit banner.
-  function enter(){setFocus(true)}
+  async function enter(){setFocus(true);if(!document.fullscreenElement&&document.documentElement.requestFullscreen)try{await document.documentElement.requestFullscreen()}catch(_){toast('このブラウザでは画面内の集中モードで表示します。')}if(!document.body.classList.contains('focus')&&document.fullscreenElement)try{await document.exitFullscreen()}catch(_){}sync()}
   function toggle(){if(!composing&&!$('#dialog').open){if(document.body.classList.contains('focus'))leave();else enter()}}
   async function leave(){
     setFocus(false);
