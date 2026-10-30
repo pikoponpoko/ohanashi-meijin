@@ -122,13 +122,14 @@
   function html(){
     const id=current()?.id||'default',item=t=>`<div class="themeItem"><button type="button" class="themeChoice${t.id===id?' on':''}" data-theme="${esc(t.id)}" aria-pressed="${t.id===id}"><span class="themeSwatch">${swatches(t.swatch)}</span><span>${esc(t.name)}</span></button>${t.file?`<button type="button" class="themeRemove" data-remove="${esc(t.id)}" aria-label="${esc(t.name)}を削除" title="削除">×</button>`:''}</div>`;
     const c=current()?.id==='custom'?customTheme()[tone()]:null,low=c&&contrast(c.ink,c.paper)<4.5;
-    return `<label>テーマ</label><div class="themeList">${[{id:'default',name:'デフォルト',swatch:[DEFAULT.light.paper,DEFAULT.light.bg,DEFAULT.light.line,DEFAULT.light.muted,DEFAULT.light.ink]},...all(),customTheme()].map(item).join('')}</div>
+    return `<label>テーマ</label><div class="toneSwitch" role="group" aria-label="ライト・ダーク">${[['light','ライト'],['dark','ダーク']].map(([t,l])=>`<button type="button" data-tone="${t}" aria-pressed="${tone()===t}"${tone()===t?' class="on"':''}>${l}</button>`).join('')}</div><div class="themeList">${[{id:'default',name:'デフォルト',swatch:[DEFAULT.light.paper,DEFAULT.light.bg,DEFAULT.light.line,DEFAULT.light.muted,DEFAULT.light.ink]},...all(),customTheme()].map(item).join('')}</div>
 ${c?`<div class="customTheme" aria-label="カスタムテーマ（${tone()==='dark'?'暗':'明'}）">${KEYS.map(k=>`<label>${LABELS[k]}<span><input type="color" data-color="${k}" value="${c[k].toLowerCase()}"><input data-hex="${k}" value="${c[k]}" maxlength="7" spellcheck="false" aria-label="${LABELS[k]}のカラーコード"></span></label>`).join('')}${low?'<p class="customWarning" role="status">文字と本文欄のコントラストが低く、読みにくい配色です。</p>':''}<button type="button" id="customReset">初期の色に戻す</button></div>`:''}
 <button type="button" id="themeImport">テーマファイルを読み込む</button><input id="themeFile" type="file" accept=".json,application/json" hidden>
 <label>背景画像</label><div class="bgActions"><button type="button" id="bgPick">画像を選ぶ</button><button type="button" id="bgNone"${image?'':' hidden'}>なし</button></div><input id="bgFile" type="file" accept="image/*" hidden>
 <div class="bgControls"${image?'':' hidden'}><label>濃さ<input id="bgA" type="range" min="0" max="100" value="${Math.round(settings.bgA*100)}"></label><label>横の位置<input id="bgX" type="range" min="0" max="100" value="${settings.bgX}"></label><label>縦の位置<input id="bgY" type="range" min="0" max="100" value="${settings.bgY}"></label><label>拡大<input id="bgZ" type="range" min="100" max="300" value="${settings.bgZ}"></label><button type="button" id="bgReset">位置をもどす</button></div>`;
   }
   function bind(root,refresh){
+    root.querySelectorAll('[data-tone]').forEach(b=>b.onclick=()=>{if(tone()!==b.dataset.tone)$('#theme').click();refresh()});
     root.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{selectTheme(b.dataset.theme);refresh()});
     root.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{removeTheme(b.dataset.remove);refresh()});
     root.querySelectorAll('[data-color]').forEach(el=>el.oninput=()=>{setCustom(el.dataset.color,el.value);const h=root.querySelector(`[data-hex="${el.dataset.color}"]`);if(h)h.value=el.value.toUpperCase()});
