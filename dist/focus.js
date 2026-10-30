@@ -51,7 +51,7 @@
     input.type='checkbox';input.id='pinchFocusToggle';input.checked=pinchEnabled;
     label.append(input,document.createTextNode(' 専用領域のピンチで集中モードを切り替える'));
     const note=document.createElement('p');note.textContent='「集中モード操作」の領域だけが対象です。本文では通常のピンチズームを使えます。';
-    $('#dialogBody').append(label,note);
+    ($('#dialogBody [data-pane="keys"]')||$('#dialogBody')).append(label,note);
     input.onchange=()=>{
       const enabled=input.checked;
       try{localStorage.setItem(preferenceKey,JSON.stringify({pinchFocus:enabled}));pinchEnabled=enabled;sync()}
