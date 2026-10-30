@@ -189,3 +189,5 @@ body.focus.hasBackground #focusFooter,body.focus.hasBackground #focusFooter butt
 body.focus .toolbar{padding-right:72px}
 body.focus #writing{margin:8px 0 48px}
 body.focus #editor{padding-top:24px;padding-bottom:24px}
+.actions button{display:inline-flex;align-items:center;justify-content:center;height:32px;min-width:32px;line-height:1}
+#rules{font-size:15px}
