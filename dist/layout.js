@@ -47,22 +47,58 @@
     if(dirty){save();if(dirty)return false}
     const [c]=state.chapters.splice(i,1);state.chapters.splice(j,0,c);ScriptModel.renumber(state);recordHistory();save();renderNav();syncCutLabels();stats();window.FocusNavigation?.sync();return true;
   }
-  let drag=null,keyboardId=null;
+  // Reorder by the handle, by holding a chapter (touch and pen), or by pressing and moving it (mouse).
+  // While dragging, the wheel scrolls the list and the drop target follows.
+  let drag=null,hold=null,keyboardId=null,suppressClick=false;
   const nav=$('#chapters');
-  function clearDrag(){nav.querySelectorAll('.dragTarget').forEach(e=>e.classList.remove('dragTarget'));nav.querySelectorAll('.chapterHandle').forEach(e=>e.setAttribute('aria-pressed','false'));drag=null}
+  function rowOf(id){return [...nav.querySelectorAll('.chapterRow')].find(r=>r.dataset.chapterId===id)}
+  function clearDrag(){nav.querySelectorAll('.dragTarget,.dragging').forEach(e=>e.classList.remove('dragTarget','dragging'));nav.querySelectorAll('.chapterHandle').forEach(e=>e.setAttribute('aria-pressed','false'));panel.classList.remove('chapterDragging');drag=null}
+  function cancelHold(){if(hold){clearTimeout(hold.timer);hold=null}}
+  function startDrag(id,e,element){
+    cancelHold();keyboardId=null;
+    drag={id,target:null,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,baseline:JSON.stringify(state),pointer:e.pointerId,moved:false};
+    try{element.setPointerCapture(e.pointerId)}catch(_){}
+    rowOf(id)?.classList.add('dragging');panel.classList.add('chapterDragging');
+  }
+  function track(x,y){
+    if(!drag)return;drag.lastX=x;drag.lastY=y;
+    const row=document.elementFromPoint(x,y)?.closest('.chapterRow');
+    if(row&&nav.contains(row)){drag.target=row.dataset.chapterId;nav.querySelectorAll('.dragTarget').forEach(el=>el.classList.remove('dragTarget'));if(row.dataset.chapterId!==drag.id)row.classList.add('dragTarget')}
+  }
   nav.addEventListener('pointerdown',e=>{
-    const handle=e.target.closest('.chapterHandle');if(!handle||composing||loadBlocked)return;
-    e.preventDefault();handle.focus();keyboardId=null;drag={id:handle.parentElement.dataset.chapterId,target:null,x:e.clientX,y:e.clientY,baseline:JSON.stringify(state),pointer:e.pointerId};handle.setPointerCapture(e.pointerId);
+    if(composing||loadBlocked||drag||e.button>0)return;
+    const handle=e.target.closest('.chapterHandle');
+    if(handle){e.preventDefault();handle.focus();startDrag(handle.parentElement.dataset.chapterId,e,handle);return}
+    const select=e.target.closest('.chapterSelect');if(!select)return;
+    const id=select.parentElement.dataset.chapterId;
+    hold={id,x:e.clientX,y:e.clientY,pointer:e.pointerId,type:e.pointerType,element:select,
+      timer:setTimeout(()=>{if(hold&&hold.pointer===e.pointerId){const h=hold;startDrag(h.id,{clientX:h.x,clientY:h.y,pointerId:h.pointer},h.element);suppressClick=true;navigator.vibrate?.(15)}},450)};
   });
   nav.addEventListener('pointermove',e=>{
+    if(hold&&hold.pointer===e.pointerId&&!drag){
+      if(Math.hypot(e.clientX-hold.x,e.clientY-hold.y)<6)return;
+      if(hold.type==='mouse'){const h=hold;startDrag(h.id,e,h.element);suppressClick=true}else{cancelHold();return}
+    }
     if(!drag||drag.pointer!==e.pointerId)return;
-    if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;
-    const row=document.elementFromPoint(e.clientX,e.clientY)?.closest('.chapterRow');
-    if(row&&nav.contains(row)){drag.target=row.dataset.chapterId;nav.querySelectorAll('.dragTarget').forEach(el=>el.classList.remove('dragTarget'));row.classList.add('dragTarget')}
+    if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;drag.moved=true;
+    track(e.clientX,e.clientY);
     const box=panel.getBoundingClientRect();if(e.clientY>box.bottom-35)panel.scrollBy(0,18);if(e.clientY<box.top+35)panel.scrollBy(0,-18);
   });
-  nav.addEventListener('pointerup',e=>{if(!drag||drag.pointer!==e.pointerId)return;const d=drag;clearDrag();if(d.target&&d.baseline===JSON.stringify(state))reorderChapter(d.id,d.target)});
-  nav.addEventListener('pointercancel',clearDrag);nav.addEventListener('lostpointercapture',clearDrag);
+  // Keep the page from scrolling under a held chapter on touch screens.
+  nav.addEventListener('touchmove',e=>{if(drag)e.preventDefault()},{passive:false});
+  nav.addEventListener('contextmenu',e=>{if(hold||drag)e.preventDefault()});
+  addEventListener('wheel',e=>{if(!drag)return;e.preventDefault();panel.scrollBy(0,e.deltaMode===1?e.deltaY*24:e.deltaY);requestAnimationFrame(()=>track(drag?.lastX,drag?.lastY))},{passive:false});
+  panel.addEventListener('scroll',()=>{if(drag?.moved)track(drag.lastX,drag.lastY)});
+  function finish(e){
+    if(hold&&hold.pointer===e.pointerId)cancelHold();
+    if(!drag||drag.pointer!==e.pointerId)return;const d=drag;clearDrag();
+    if(d.target&&d.target!==d.id&&d.baseline===JSON.stringify(state))reorderChapter(d.id,d.target);
+    setTimeout(()=>{suppressClick=false},0);
+  }
+  nav.addEventListener('pointerup',finish);
+  nav.addEventListener('pointercancel',e=>{cancelHold();if(drag&&drag.pointer===e.pointerId){clearDrag();setTimeout(()=>{suppressClick=false},0)}});
+  nav.addEventListener('lostpointercapture',e=>{if(drag&&drag.pointer===e.pointerId)finish(e)});
+  nav.addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation();suppressClick=false}},true);
   nav.addEventListener('click',e=>{if(e.target.closest('.chapterHandle')){e.preventDefault();e.stopPropagation()}});
   nav.addEventListener('keydown',e=>{
     const handle=e.target.closest('.chapterHandle');if(!handle||composing||e.isComposing)return;
