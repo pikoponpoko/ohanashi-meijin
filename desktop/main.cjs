@@ -78,13 +78,13 @@ if(!app.requestSingleInstanceLock()){app.quit()}else{
     });
     ipcMain.handle('check-updates',event=>{if(!trusted(event))throw Error('Unauthorized frame');return shell.openExternal(RELEASES)});
     function open(){
-      win=new BrowserWindow({width:1360,height:920,minWidth:740,minHeight:560,title:'おはなし名人',icon:path.join(web,'icons/official-192.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true}});
+      win=new BrowserWindow({width:1360,height:920,minWidth:740,minHeight:560,title:'Togaki',icon:path.join(web,'icons/official-192.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true}});
       win.setMenuBarVisibility(false);
       win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
       win.webContents.on('will-navigate',(event,url)=>{const target=new URL(url);if(target.protocol!=='ohanashi:'||target.host!=='app')event.preventDefault()});
       win.loadURL(ORIGIN+'/');
     }
     open();app.on('activate',()=>{if(BrowserWindow.getAllWindows().length===0)open()});
-  }).catch(()=>{dialog.showErrorBox('おはなし名人','起動できませんでした。保存データは削除していません。');app.quit()});
+  }).catch(()=>{dialog.showErrorBox('Togaki','起動できませんでした。保存データは削除していません。');app.quit()});
   app.on('window-all-closed',()=>{if(process.platform!=='darwin')app.quit()});
 }

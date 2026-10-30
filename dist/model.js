@@ -8,8 +8,13 @@
   const externalMarker={test:s=>/^#(?:\s*C\s*)?\d+(?:[A-Za-z]+|[-.]\d+)?$/i.test(s.replace(/[！-～]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0)).trim())};
   const preproHeader=/^#プリプロ名人 (?:脚本管理|台詞一覧)(?:（このまま書き換えて(?:保存すると、プリプロ名人に反映できます|、コピーしてからプリプロ名人に戻ると反映できます)）)?$/;
   const quoteDelta=s=>[...s].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
-  const soundKind=s=>{const m=s.trimStart().match(/^(音楽|BGM|SE|ＳＥ|効果音)[：:]/);return m?(['音楽','BGM'].includes(m[1])?'music':'se'):null};
-  const stripSound=s=>s.replace(/^[ \t\u3000]*(?:音楽|BGM|SE|ＳＥ|効果音)[：:]\s*/, '');
+  // Japanese Google Fonts offered in settings. The first three are bundled in the desktop app.
+  const fonts=['Noto Serif JP','Noto Sans JP','Zen Old Mincho','Shippori Mincho','BIZ UDPMincho','Sawarabi Mincho','Hina Mincho','Kaisei Opti','Yuji Syuku','BIZ UDPGothic','Zen Kaku Gothic New','IBM Plex Sans JP','M PLUS 1p','Murecho','Zen Maru Gothic','M PLUS Rounded 1c','Kosugi Maru','Kiwi Maru','Klee One','Zen Kurenaido'];
+  // Sound prefixes exactly as プリプロ名人 reads them (linestext.js TAG_IN): full/half-width colon and
+  // a space before it are accepted. The text itself is kept as written.
+  const soundPrefix=/^[ \t\u3000]*(音楽|BGM|ＢＧＭ|SE|ＳＥ|効果音)[ \t\u3000]*[：:]/;
+  const soundKind=s=>{const m=s.match(soundPrefix);return m?(/^(?:音楽|BGM|ＢＧＭ)$/.test(m[1])?'music':'se'):null};
+  const stripSound=s=>s.replace(new RegExp(soundPrefix.source+'\\s*'),'');
   const soundText=(s,kind)=>{if(soundKind(s)===kind)return s;const legacy=s.trim().match(/^(?:音楽|BGM|SE|ＳＥ|効果音)「([\s\S]*)」$/);return (kind==='music'?'音楽：':'SE：')+(legacy?legacy[1]:stripSound(s).trimStart())};
   function syncSoundCues(c){
     const lines=c.text.split('\n'),cuts=new Set(c.cuts.map(x=>x.line)),entries=[];let depth=0;
@@ -82,7 +87,7 @@
     // Stable work identity for Prepro updates. A missing ID is derived from the
     // first chapter ID so reopening the same unsaved legacy file yields the same value.
     result.workId=typeof v.workId==='string'&&v.workId.trim()&&v.workId.length<=200?v.workId:'work-'+chapters[0].id;
-    result.font=['Noto Serif JP','Noto Sans JP','Zen Old Mincho'].includes(v.font)?v.font:defaults.font;
+    result.font=fonts.includes(v.font)?v.font:defaults.font;
     for(const [k,min,max,fallback] of [['size',14,32,14],['printSize',9,18,12],['rate',60,1000,300],['actionSeconds',1,120,5],['draft',1,9999,1]])result[k]=Math.min(max,Math.max(min,Number(v[k])||fallback));
     result.direction=v.direction==='horizontal'?'horizontal':'vertical';result.dark=!!v.dark;result.cover=v.cover!==false;result.printColumns=v.printColumns===2?2:1;
     return renumber(result);
@@ -136,5 +141,5 @@
     if(!count)return {chapter:c,count};
     return {chapter:syncSoundCues({...c,text:lines.join('\n'),formats,...(origins?{formatOrigins:origins}:{})}),count};
   }
-  root.ScriptModel={memoLine,detectSound,detectSoundLine,soundKind,stripSound,soundText,syncSoundCues,paragraphKind,marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,tidyBlankLines,blankLine,checkCuts};
+  root.ScriptModel={fonts,memoLine,detectSound,detectSoundLine,soundKind,stripSound,soundText,syncSoundCues,paragraphKind,marker,newline,migrateChapter,importText,importChapter,normalizeChapter,realCuts,externalMarker,renumber,validate,repair,removeBlankLines,tidyBlankLines,blankLine,checkCuts};
 })(typeof window==='undefined'?globalThis:window);

@@ -10,7 +10,7 @@
   }catch(_){status.textContent='原稿の読み取りが許可されていません。ブラウザの保存設定を確認してください。';return}
   save.onclick=()=>{
     try{
-      const a=document.createElement('a'),url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));a.href=url;a.download='おはなし名人_接続修復前の原稿.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
+      const a=document.createElement('a'),url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));a.href=url;a.download='Togaki_接続修復前の原稿.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
       repair.disabled=false;status.textContent='ファイルの保存完了を確認してから、接続を修復してください。';
     }catch(_){status.textContent='ファイルへ保存できませんでした。原稿は変更していません。'}
   };

@@ -25,6 +25,6 @@ jobs:
           exe="out/OhanashiMeijin-$version-x64-Setup.exe"
           test -f "$exe"
           gh release create "v$version" "$exe" out/SHA256.txt \
-            --title "おはなし名人 $version" \
+            --title "Togaki $version" \
             --notes "Windows x64 インストーラー。旧版は上書きインストールで置き換わります。" \
             --target "$GITHUB_SHA"

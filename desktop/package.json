@@ -1,8 +1,8 @@
 {
   "name": "ohanashi-meijin-desktop",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
-  "description": "おはなし名人 デスクトップ版",
+  "description": "Togaki デスクトップ版",
   "author": "pikoponpoko",
   "main": "main.cjs",
   "scripts": {
@@ -49,7 +49,7 @@
       "perMachine": false,
       "deleteAppDataOnUninstall": false,
       "createDesktopShortcut": true,
-      "shortcutName": "おはなし名人"
+      "shortcutName": "Togaki"
     },
     "mac": {
       "category": "public.app-category.productivity",

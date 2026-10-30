@@ -1,11 +1,15 @@
 {
   "id": "/",
-  "name": "おはなし名人",
-  "short_name": "おはなし名人",
+  "name": "Togaki",
+  "short_name": "Togaki",
   "lang": "ja",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
   "background_color": "#f6f6f4",
   "theme_color": "#eeefec",
   "icons": [
@@ -21,5 +25,6 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
