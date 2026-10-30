@@ -173,3 +173,13 @@ body.printpreview #printRoot:not(.pdf-render) .printpage{zoom:var(--previewzoom,
 @media(max-width:680px){#rulesBox{top:48px;right:8px;left:8px;width:auto;max-height:70dvh}}
 @media print{#rulesBox{display:none!important}}
 dialog input[type=range],dialog input[type=checkbox]{accent-color:var(--ink)}
+.themeList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:320px;overflow:auto}.themeChoice{padding:7px 8px;gap:8px;font-size:12px;min-width:0}.themeChoice span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.customTheme{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin:6px 0 10px;padding:10px;border:1px solid var(--line);border-radius:4px}
+.customTheme label{display:flex;flex-direction:column;gap:4px;margin:0;font-size:11px;color:var(--muted)}.customTheme label span{display:flex;gap:6px;align-items:center}
+dialog .customTheme input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);border-radius:4px;background:none;flex-shrink:0}
+dialog .customTheme input[data-hex]{padding:6px 8px;font-family:monospace;font-size:12px}
+.customWarning{grid-column:1/-1;margin:0}#customReset{grid-column:1/-1;border:1px solid var(--line);border-radius:4px;padding:8px 12px;color:var(--ink)}
+@media(max-width:480px){.themeList,.customTheme{grid-template-columns:1fr}}
+/* Installed desktop app with the title bar hidden (window-controls-overlay): the header takes its place. */
+@media(display-mode:window-controls-overlay){header{padding-left:max(18px,env(titlebar-area-x,0px));padding-right:calc(100vw - env(titlebar-area-x,0px) - env(titlebar-area-width,100vw) + 12px);app-region:drag;-webkit-app-region:drag}header button,header input,header select,header a{app-region:no-drag;-webkit-app-region:no-drag}}
+.themeItem{min-width:0}.customTheme label span{min-width:0}
