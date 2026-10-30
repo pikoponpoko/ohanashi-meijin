@@ -184,3 +184,5 @@ dialog .customTheme input[data-hex]{padding:6px 8px;font-family:monospace;font-s
 @media(display-mode:window-controls-overlay){header{padding-left:max(18px,env(titlebar-area-x,0px));padding-right:calc(100vw - env(titlebar-area-x,0px) - env(titlebar-area-width,100vw) + 12px);app-region:drag;-webkit-app-region:drag}header button,header input,header select,header a{app-region:no-drag;-webkit-app-region:no-drag}}
 .themeItem{min-width:0}.customTheme label span{min-width:0}
 .toneSwitch{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:8px}.toneSwitch button{padding:6px 16px;border-radius:0;color:var(--muted)}.toneSwitch button.on{background:var(--ink);color:var(--paper)}
+body.focus #backgroundImage{position:fixed}
+body.focus.hasBackground #focusFooter,body.focus.hasBackground #focusFooter button{background:transparent}

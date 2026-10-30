@@ -77,8 +77,10 @@
   function db(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
   async function idb(mode,fn){const d=await db();try{return await new Promise((resolve,reject)=>{const t=d.transaction(STORE,mode),q=fn(t.objectStore(STORE));t.oncomplete=()=>resolve(q?.result);t.onerror=t.onabort=()=>reject(t.error)})}finally{d.close()}}
   function layout(){
+    document.body.classList.toggle('hasBackground',!!image&&settings.bgA>0);
     if(!image||settings.bgA<=0){layer.hidden=true;return}
-    const w=writing.clientWidth,h=writing.clientHeight;if(!w||!h)return;
+    // Focus mode shows the paper over the whole screen, so the image covers the whole screen too.
+    const focus=document.body.classList.contains('focus'),w=focus?innerWidth:writing.clientWidth,h=focus?innerHeight:writing.clientHeight;if(!w||!h)return;
     const sc=Math.max(w/image.naturalWidth,h/image.naturalHeight)*settings.bgZ/100;
     layer.hidden=false;layer.style.backgroundImage=`url("${imageURL}")`;layer.style.opacity=settings.bgA;
     layer.style.backgroundSize=`${image.naturalWidth*sc}px ${image.naturalHeight*sc}px`;layer.style.backgroundPosition=`${settings.bgX}% ${settings.bgY}%`;
@@ -104,7 +106,8 @@
     settings.bgX=50;settings.bgY=50;settings.bgZ=100;saveSettings();await show(blob);
   }
   async function clearBackground(){try{await idb('readwrite',s=>s.delete(BG_KEY))}catch(_){}await show(null)}
-  new ResizeObserver(layout).observe(writing);
+  new ResizeObserver(layout).observe(writing);addEventListener('resize',layout);
+  new MutationObserver(layout).observe(document.body,{attributes:true,attributeFilter:['class']});
 
   // ---- web fonts ----
   const fonts=()=>desktop?bundled:ScriptModel.fonts;
