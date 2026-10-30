@@ -27,7 +27,8 @@
       textHeight=Math.max(textHeight,parseFloat(style.fontSize));
       const baseline=parseFloat(getComputedStyle(writing).marginTop);
       const maximum=Math.max(baseline,height-64-padding-parseFloat(style.fontSize)*3);
-      const top=Math.min(maximum,Math.max(baseline,(height-textHeight)/2-parseFloat(style.paddingTop)));
+      // A short top margin, not centred: centring a short chapter left most of the screen empty above it.
+      const top=Math.min(maximum,Math.max(baseline,Math.min(height*.08,(height-textHeight)/2-parseFloat(style.paddingTop))));
       writing.style.setProperty('--focus-top',top+'px');
     });
   }
