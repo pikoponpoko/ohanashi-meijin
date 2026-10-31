@@ -1,5 +1,5 @@
 // Appearance kept in this browser, never in the manuscript: colour theme, background image, web fonts.
-// Themes are プリプロ名人's theme files (PreproMeijin_theme_*.json, format "vconte-theme").
+// Themes are Soku Conte's theme files (PreproMeijin_theme_*.json, format "vconte-theme").
 (()=>{
   const SETTINGS='ohanashi.appearance',THEMES='ohanashi.themes',DB='ohanashi-appearance-v1',STORE='files',BG_KEY='background';
   const desktop=!!window.ohanashiDesktop,bundled=['Noto Serif JP','Noto Sans JP','Zen Old Mincho'];
@@ -11,7 +11,7 @@
   let settings=loadSettings();
   const saveSettings=()=>write(SETTINGS,settings);
 
-  // ---- colour themes: プリプロ名人's themes (themes.js), a custom theme, theme files ----
+  // ---- colour themes: Soku Conte's themes (themes.js), a custom theme, theme files ----
   const KEYS=['bg','paper','ink','muted','line'],CUSTOM='ohanashi.customTheme';
   const DEFAULT={light:{bg:'#eeece6',paper:'#f5f3ed',ink:'#30302f',muted:'#898987',line:'#e2e2df'},dark:{bg:'#262626',paper:'#2c2c2c',ink:'#dededb',muted:'#999995',line:'#404040'}};
   // themes.js order: bg, panel, line, text, muted
@@ -51,7 +51,7 @@
   }
   async function importTheme(file){
     let pack;try{pack=JSON.parse(await file.text())}catch(_){throw Error('テーマファイルを読み込めません。')}
-    if(!validPack(pack))throw Error('プリプロ名人のテーマファイル（.json）を選んでください。');
+    if(!validPack(pack))throw Error('Soku Conteのテーマファイル（.json）を選んでください。');
     pack=packFrom(pack);
     const next=[...files.filter(t=>t.id!==pack.id),pack];
     if(!write(THEMES,next))throw Error('テーマを保存できません。');

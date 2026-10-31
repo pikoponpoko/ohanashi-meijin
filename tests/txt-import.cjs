@@ -15,6 +15,7 @@ assert.equal(M.importText('序文\n# C1\n本文'),'序文\n#C1\n本文');
 assert.equal(M.importChapter({text:'# C1\n# C2\n本文'}).cuts.length,1);
 console.log('PASS TXT: conservative whole-line headings, unknown preface preserved and explicit empty cuts coalesced');
 for(const mark of ['脚本管理','台詞一覧'])for(const suffix of ['', '（このまま書き換えて保存すると、プリプロ名人に反映できます）','（このまま書き換えて、コピーしてからプリプロ名人に戻ると反映できます）'])assert.equal(M.importText('#プリプロ名人 '+mark+suffix+'\n\n# C8\n本文'),'#C1\n本文');
+for(const mark of ['脚本管理','台詞一覧'])for(const suffix of ['', '（このまま書き換えて保存すると、Soku Conteに反映できます）','（このまま書き換えて、コピーしてからSoku Conteに戻ると反映できます）'])assert.equal(M.importText('#Soku Conte '+mark+suffix+'\n\n# C8\n本文'),'#C1\n本文');
 assert.equal(M.importText('#プリプロ名人 脚本管理は作品中の文章\n# C1\n本文'),'#プリプロ名人 脚本管理は作品中の文章\n#C1\n本文');
 assert.equal(M.importText(M.importText(raw)),M.importText(raw));
 console.log('PASS TXT: known legacy export/copy headers only, normalization idempotent');

@@ -1,9 +1,9 @@
-/* Cloud script sync with プリプロ名人 (the same account, the same cloud copy of each work).
+/* Cloud script sync with Soku Conte (the same account, the same cloud copy of each work).
    Signing in is needed for the cloud only; local work never depends on it. A work goes up only when the user
    registers it and keeps a fixed link ID (state.cloudLinkId). Whether THIS device syncs is kept on the device.
    Changes from the cloud apply on their own only when nothing here could be lost; otherwise they wait for the user. */
 (()=>{
-  // the cloud lives with プリプロ名人 (one database for both apps)
+  // the cloud lives with Soku Conte (one database for both apps)
   const API=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem('togaki.cloud.api')||'https://prepro-meijin.pikoponpoko.workers.dev';
   const SESSION='togaki.cloud.session',LINKS='togaki.cloud.links';
   const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(_){return d}};
@@ -96,7 +96,7 @@
           if(e.code==='deleted')setLink(id,{on:false,deleted:e.extra.deleted||new Date().toISOString(),review:null});
           if(e.code==='not-found')setLink(id,{on:false,review:null});throw e});
         if(linkId()!==id)return {skipped:true};
-        // the .vconte プリプロ名人 last synced from (shown to tell which version the cloud holds)
+        // the .vconte Soku Conte last synced from (shown to tell which version the cloud holds)
         if('file' in cloud)setLink(id,{file:cloud.file});
         const C=readCloud(cloud.body),known=linkState(id)?.rev??null,B=known===cloud.revision?C:await loadBase(id,known);
         // a manuscript opened from a file or the saved list may be older: it goes up only when the user syncs
@@ -237,7 +237,7 @@
     show('クラウドの履歴','');
     for(const v of revisions){
       const r=document.createElement('div');r.className='archiveRow';
-      const label=document.createElement('span');label.className='archiveOpen';label.textContent='r'+v.revision+'　'+when(v.updated)+'　'+(v.app==='ohanashi'?'Togaki':v.app==='prepro'?'プリプロ名人':'');
+      const label=document.createElement('span');label.className='archiveOpen';label.textContent='r'+v.revision+'　'+when(v.updated)+'　'+(v.app==='ohanashi'?'Togaki':v.app==='prepro'?'Soku Conte':'');
       const save=document.createElement('button');save.textContent='JSON';save.setAttribute('aria-label','r'+v.revision+'のJSONを保存');
       save.onclick=async()=>{try{const x=await api('/works/'+encodeURIComponent(id)+'/revisions/'+v.revision);download(JSON.stringify(x.body,null,2),'json','application/json')}catch(e){toast(message(e))}};
       r.append(label,save);$('#dialogBody').append(r);
@@ -246,7 +246,7 @@
     return 'page';
   }
   async function removeCloud(id){
-    show('クラウドから削除','<p>クラウド上のこの作品の脚本を削除し、すべての端末で同期を止めます。この端末と他の端末の原稿・プリプロ名人の作品ファイルはそのまま残ります。</p><button id="cloudConfirmDelete" class="primary">削除</button>');
+    show('クラウドから削除','<p>クラウド上のこの作品の脚本を削除し、すべての端末で同期を止めます。この端末と他の端末の原稿・Soku Conteの作品ファイルはそのまま残ります。</p><button id="cloudConfirmDelete" class="primary">削除</button>');
     $('#dialogBody').append(back());
     $('#cloudConfirmDelete').onclick=async()=>{try{const r=await api('/works/'+encodeURIComponent(id),{method:'DELETE'});setLink(id,{on:false,deleted:r.deleted,review:null});renderDialog()}catch(e){toast(message(e))}};
     return 'page';
@@ -278,7 +278,7 @@
   }
   setInterval(()=>tick(),20_000);
   window.addEventListener('online',()=>tick(true));window.addEventListener('focus',()=>tick(true));
-  // another manuscript opened (a file, a saved one, a return from プリプロ名人): checked before anything goes up
+  // another manuscript opened (a file, a saved one, a return from Soku Conte): checked before anything goes up
   window.CloudSync={documentOpened(){if(!applying){fresh=true;lastKey=null}refreshButton()},syncNow,merge:CloudModel.merge};
   window.manuscriptReady?.then(()=>{refreshButton();setTimeout(()=>tick(true),1500)});
 })();
