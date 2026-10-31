@@ -98,5 +98,5 @@
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&!composing&&!e.isComposing){e.preventDefault();saveCommand(e.shiftKey)}});
   // A change applied to the same work (cloud sync): the connected file stays connected and unsaved.
   async function keepConnection(open){const keepHandle=handle,keepBaseline=baseline;if(!await open())return false;handle=keepHandle;baseline=keepBaseline;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync();return true}
-  window.FileControls={saveFile:saveCommand,fileChanged,markSaved,requestOpen,documentOpened,sync,keepConnection};sync();
+  window.FileControls={saveFile:saveCommand,fileChanged,markSaved,requestOpen,documentOpened,sync,keepConnection,fileName:()=>handle?.name||null};sync();
 })();

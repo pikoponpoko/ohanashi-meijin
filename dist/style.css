@@ -224,7 +224,10 @@ body.focus #editor{padding-top:24px;padding-bottom:24px}
 #shortcutReset{margin-top:2px}
 .shortcutKey{min-width:116px}
 /* cloud sync */
+#cloud{display:inline-flex;align-items:center;gap:4px}
+#cloud svg{display:block;flex-shrink:0}
 #cloud.on{color:var(--ink)}
+#dialogBody .cloudName{color:var(--ink);margin:6px 0 0;overflow-wrap:anywhere}
 .cloudRow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:10px -10px 0}
 .cloudAccount{display:flex;align-items:center;gap:8px}
 .cloudUser{flex:1;min-width:0;font-size:12px;overflow-wrap:anywhere}
@@ -235,3 +238,4 @@ body.focus #editor{padding-top:24px;padding-bottom:24px}
 .cloudVersions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:12px}
 .cloudVersions b{display:block;font-weight:500;margin-bottom:2px}
 .cloudVersions span{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);max-height:8em;overflow:auto}
+@media(max-width:680px){#cloud svg{width:15px;height:15px}}

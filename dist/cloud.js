@@ -184,13 +184,15 @@
     }
     const account=row(Object.assign(document.createElement('span'),{className:'cloudUser',textContent:s.user?.email||s.user?.name||''}),button('ログアウト',async()=>{try{await api('/logout',{method:'POST'})}catch(_){}write(SESSION,null)}));account.className='cloudAccount';
     const out=[account];
+    // which manuscript this is: its file when one is connected, else its title
+    out.push(text(window.FileControls.fileName?.()||state.title||'無題','cloudName'));
     const id=linkId(),st=linkState(id)||{};
     if(!id){
       out.push(button('この作品をクラウドに登録',()=>register(),'primary'),row(button('クラウドの作品を開く…',pickWork),button('連携コードで開く…',enterCode)));
     }else if(st.deleted){
       out.push(text('クラウドから削除済み（'+when(st.deleted)+'）'),button('クラウドに再登録',()=>register(true),'primary'));
     }else if(st.on){
-      out.push(text(st.review==='opened'?'開いた原稿がクラウドと違います':st.review?'クラウドの変更が確認待ちです':st.synced?'同期 '+when(st.synced):'未同期'),
+      out.push(text(st.review==='opened'?'開いた原稿がクラウドと違います':st.review?'クラウドの変更が確認待ちです':st.synced?'同期 '+when(st.synced)+(st.rev?'・r'+st.rev:''):'未同期'),
         button('今すぐ同期',async()=>{const r=await syncNow();if(r?.revision)toast('同期しました')},'primary'),
         row(button('連携コードを発行',()=>showCode(id)),button('履歴…',()=>showHistory(id))),
         row(button('この端末で同期を停止',async()=>setLink(id,{on:false,review:null})),button('クラウドから削除…',()=>removeCloud(id))));
@@ -253,8 +255,8 @@
     const b=$('#cloud');if(!b)return;
     const id=linkId(),st=linkState(id),on=!!st?.on&&!!session();
     b.classList.toggle('on',on);
-    b.textContent=on&&st.review?'クラウド（確認待ち）':'クラウド';
-    b.title=!id?'クラウド同期':st?.deleted?'クラウドから削除済み':!on?'この端末では同期していません':syncing?'同期中':st.synced?'同期 '+when(st.synced):'クラウド同期';
+    $('#cloudState').textContent=on&&st.review?'確認待ち':'';
+    b.title=!id?'クラウド同期':st?.deleted?'クラウドから削除済み':!on?'この端末では同期していません':syncing?'同期中':st.review?'クラウドの変更が確認待ちです':st.synced?'同期 '+when(st.synced):'クラウド同期';b.setAttribute('aria-label',b.title);
   }
   $('#cloud').onclick=()=>renderDialog();
   $('#dialog').addEventListener('close',()=>{delete $('#dialog').dataset.cloud});
