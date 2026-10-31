@@ -96,6 +96,8 @@
           if(e.code==='deleted')setLink(id,{on:false,deleted:e.extra.deleted||new Date().toISOString(),review:null});
           if(e.code==='not-found')setLink(id,{on:false,review:null});throw e});
         if(linkId()!==id)return {skipped:true};
+        // the .vconte プリプロ名人 last synced from (shown to tell which version the cloud holds)
+        if('file' in cloud)setLink(id,{file:cloud.file});
         const C=readCloud(cloud.body),known=linkState(id)?.rev??null,B=known===cloud.revision?C:await loadBase(id,known);
         // a manuscript opened from a file or the saved list may be older: it goes up only when the user syncs
         if(auto&&fresh&&B&&CloudModel.scriptKey(state)!==CloudModel.scriptKey(B)){setLink(id,{review:'opened'});return {review:true}}
@@ -144,7 +146,7 @@
     const w=await api('/works/'+encodeURIComponent(id)),C=readCloud(w.body);
     const next=validate({...C,...projectPreferences(),cloudLinkId:id});
     applying=true;try{if(!await openDocument(next))return}finally{applying=false}
-    await saveBase(id,w.revision,C);setLink(id,{on:true,rev:w.revision,synced:new Date().toISOString(),deleted:null,review:null});fresh=false;lastKey=CloudModel.scriptKey(state);
+    await saveBase(id,w.revision,C);setLink(id,{on:true,rev:w.revision,file:w.file??null,synced:new Date().toISOString(),deleted:null,review:null});fresh=false;lastKey=CloudModel.scriptKey(state);
     toast('クラウドの作品を開きました');
   }
 
@@ -192,7 +194,7 @@
     }else if(st.deleted){
       out.push(text('クラウドから削除済み（'+when(st.deleted)+'）'),button('クラウドに再登録',()=>register(true),'primary'));
     }else if(st.on){
-      out.push(text(st.review==='opened'?'開いた原稿がクラウドと違います':st.review?'クラウドの変更が確認待ちです':st.synced?'同期 '+when(st.synced)+(st.rev?'・r'+st.rev:''):'未同期'),
+      out.push(text(st.review==='opened'?'開いた原稿がクラウドと違います':st.review?'クラウドの変更が確認待ちです':st.synced?'同期 '+when(st.synced)+(st.rev?'・r'+st.rev:'')+(st.file?'・'+st.file:''):'未同期'),
         button('今すぐ同期',async()=>{const r=await syncNow();if(r?.revision)toast('同期しました')},'primary'),
         row(button('連携コードを発行',()=>showCode(id)),button('履歴…',()=>showHistory(id))),
         row(button('この端末で同期を停止',async()=>setLink(id,{on:false,review:null})),button('クラウドから削除…',()=>removeCloud(id))));
