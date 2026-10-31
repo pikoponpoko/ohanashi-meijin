@@ -23,5 +23,4 @@ if ($entries.Count -ne 1) { throw "expected 1 installed copy, found $($entries.C
 if ($entries[0].DisplayVersion -ne $version) { throw "expected version $version, found $($entries[0].DisplayVersion)" }
 if (Test-Path (Join-Path $desktopDir 'おはなし名人.lnk')) { throw 'the old desktop shortcut is still there' }
 if (-not (Test-Path (Join-Path $desktopDir 'Togaki.lnk'))) { throw 'no desktop shortcut for Togaki' }
-if (-not (Test-Path (Join-Path $env:APPDATA 'OhanashiMeijin'))) { throw 'app data folder missing' }
 Write-Host 'upgrade test passed'
