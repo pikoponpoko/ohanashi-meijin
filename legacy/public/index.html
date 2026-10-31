@@ -15,8 +15,10 @@
     window.TARGET = to && TO.test(to) && to !== location.origin ? to : NEW;
     var keep = new URLSearchParams(location.search); keep.delete('to'); keep.delete('migrate');
     window.FORWARD = window.TARGET + location.pathname + (String(keep) ? '?' + keep : '') + location.hash;
+    // opened as the app installed from this old URL: going to the new URL from here would show it with the browser bar
+    window.IN_APP = ['standalone', 'window-controls-overlay', 'fullscreen', 'minimal-ui'].some(function (m) { return matchMedia('(display-mode: ' + m + ')').matches; });
     var done = null; try { done = localStorage.getItem('migration.done'); } catch (e) {}
-    if (done && !q.has('migrate')) location.replace(window.FORWARD);
+    if (done && !q.has('migrate') && !window.IN_APP) location.replace(window.FORWARD);
   })();
 </script>
 <style>
@@ -31,7 +33,7 @@
   progress { width: 100%; height: 6px; accent-color: var(--text); }
   .row { display: flex; gap: 8px; margin-top: 16px; }
   button, a.btn { font: inherit; color: var(--text); background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 6px 16px; cursor: pointer; text-decoration: none; }
-  .primary { background: var(--text); border-color: var(--text); color: var(--paper); }
+  .primary, a.btn.primary { background: var(--text); border-color: var(--text); color: var(--paper); }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -43,14 +45,20 @@
   <progress id="bar" max="1" value="0" hidden></progress>
   <div class="row"><button id="go" class="primary">この端末のデータを移して開く</button><a id="skip" class="btn">移さずに開く</a></div>
 </main>
+<main id="app" hidden>
+  <h1>URLが変わりました</h1>
+  <p>このアプリは古いURLで入っています。新しいURLをブラウザで開き、アプリを入れ直してください。</p>
+  <div class="row"><a id="appOpen" class="btn primary" target="_blank" rel="noopener">新しいURLを開く</a><a id="appStay" class="btn">このまま開く</a></div>
+</main>
 <script src="/migrate-core.js"></script>
 <script>
   (async () => {
     const $ = (id) => document.getElementById(id);
     const KNOWN = ['ohanashi-manuscripts-v1', 'ohanashi-appearance-v1', 'togaki-cloud-v1'];
     const forced = new URLSearchParams(location.search).has('migrate');
-    if (localStorage.getItem(Migration.DONE_KEY) && !forced) return;
-    if (!forced && !(await Migration.hasData(KNOWN))) { location.replace(FORWARD); return; }
+    const showApp = () => { $('appOpen').href = TARGET + location.pathname; $('appStay').href = FORWARD; $('app').hidden = false; };
+    if (localStorage.getItem(Migration.DONE_KEY) && !forced) { if (IN_APP) showApp(); return; }
+    if (!forced && !(await Migration.hasData(KNOWN))) { if (IN_APP) showApp(); else location.replace(FORWARD); return; }
     $('newUrl').href = $('skip').href = FORWARD; $('newUrl').textContent = TARGET.replace(/^https?:\/\//, '');
     $('page').hidden = false;
     $('go').onclick = async () => {
@@ -61,6 +69,7 @@
         const r = await Migration.send({ win, origin: TARGET, known: KNOWN, onProgress: (a, b) => { $('bar').max = b || 1; $('bar').value = a; $('msg').textContent = `移行中 ${a} / ${b}`; } });
         $('msg').textContent = `移行しました（${r.count}件）。次からはこのURLを開くと新しいURLへ移ります。`;
         $('go').hidden = true; $('skip').textContent = '新しいURLで開く'; $('skip').classList.add('primary');
+        if (IN_APP) { $('page').hidden = true; showApp(); }
       } catch (e) {
         $('go').disabled = false; $('bar').hidden = true;
         $('msg').textContent = e.cancelled ? '移行をやめました。' : '移行できませんでした: ' + e.message + '（このURLのデータは残っています）';
