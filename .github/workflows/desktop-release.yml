@@ -16,15 +16,15 @@ jobs:
       - name: Download tested installer
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh run download "${{ inputs.run_id }}" --name OhanashiMeijin-Windows-x64 --dir out
+        run: gh run download "${{ inputs.run_id }}" --name Togaki-Windows-x64 --dir out
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           version=$(jq -r .version desktop/package.json)
-          exe="out/OhanashiMeijin-$version-x64-Setup.exe"
+          exe="out/Togaki-$version-x64-Setup.exe"
           test -f "$exe"
           gh release create "v$version" "$exe" out/SHA256.txt \
             --title "Togaki $version" \
-            --notes "Windows x64 インストーラー。旧版は上書きインストールで置き換わります。" \
+            --notes "Windows x64 インストーラー。旧版（おはなし名人を含む）は自動で置き換わります。原稿と設定は残ります。" \
             --target "$GITHUB_SHA"

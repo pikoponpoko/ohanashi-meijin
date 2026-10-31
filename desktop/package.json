@@ -23,8 +23,8 @@
   },
   "build": {
     "appId": "jp.pikoponpoko.ohanashimeijin",
-    "productName": "OhanashiMeijin",
-    "artifactName": "OhanashiMeijin-${version}-${arch}-Setup.${ext}",
+    "productName": "Togaki",
+    "artifactName": "Togaki-${version}-${arch}-Setup.${ext}",
     "directories": {
       "output": "../desktop-release"
     },
