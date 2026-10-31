@@ -77,6 +77,10 @@ async function launch(userData=profile){
  if(process.env.OHANASHI_TEST_INSTALLER){
   const result=require('node:child_process').spawnSync(process.env.OHANASHI_TEST_INSTALLER,['/S','/D='+process.env.OHANASHI_TEST_INSTALL_DIR],{timeout:120000,windowsHide:true,encoding:'utf8'});
   assert.equal(result.status,0,result.stderr||String(result.error||'Installer failed'));check('new installer replaces previous version');
+  // the old name's exe (OhanashiMeijin.exe) is gone and the renamed one (Togaki.exe) is installed in its place
+  const renamed=path.join(process.env.OHANASHI_TEST_INSTALL_DIR,'Togaki.exe');
+  check('renamed executable installed, old executable removed',fs.existsSync(renamed)&&!fs.existsSync(path.join(process.env.OHANASHI_TEST_INSTALL_DIR,'OhanashiMeijin.exe')));
+  process.env.OHANASHI_TEST_EXECUTABLE=renamed;
  }
  for(let i=0;i<3;i++){
   ({app,page}=await launch());
