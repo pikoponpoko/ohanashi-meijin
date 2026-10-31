@@ -198,6 +198,8 @@
       out.push(text('この端末では同期していません'),button('この端末で同期を開始',async()=>{setLink(id,{on:true});await syncNow()},'primary'),
         row(button('クラウドから削除…',()=>removeCloud(id))));
     }
+    // another work can be opened from any state (the manuscript open now goes to 保存した原稿)
+    if(id)out.push(row(button('クラウドの作品を開く…',pickWork),button('連携コードで開く…',enterCode)));
     body.replaceChildren(...out);refreshButton();
   }
   // sub-pages of the dialog come back to it

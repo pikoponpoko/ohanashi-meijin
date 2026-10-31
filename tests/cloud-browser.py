@@ -184,6 +184,9 @@ try:
     works = pcall(a, 'return (await C.api("/works")).works.map(w => w.id);')
     ok(bool(nid) and nid in works, 'a work registered in Togaki is listed for プリプロ名人')
     w = pcall(a, 'return await C.api("/works/" + arg);', nid)
+    click(t, 'クラウドの作品を開く'); t.wait_for_timeout(500)
+    ok(t.locator('#dialogBody .archiveOpen').count() == 2, 'with a work linked here, the other cloud works can still be opened')
+    t.evaluate('document.querySelector("#dialog").close()')
     ok(w['body'].get('cloudLinkId') == nid and 'ねこ「はじめまして」' in w['body']['chapters'][0]['text'], 'its script is a v2 JSON carrying the link ID')
     browser.close()
 finally:
