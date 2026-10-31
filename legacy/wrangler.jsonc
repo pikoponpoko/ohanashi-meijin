@@ -1,0 +1,3 @@
+// 旧URL（ohanashi-meijin.pikoponpoko.workers.dev）用。Cloudflare の Worker「ohanashi-meijin」は Build の Root directory を legacy にする。
+// ページはすべて移行ページ（public/index.html）。新URL（togaki）へ端末のデータを移し、移した後は自動で転送する。
+{"name":"ohanashi-meijin","compatibility_date":"2026-10-23","assets":{"directory":"./public","not_found_handling":"single-page-application"}}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Togaki</title>
+<link rel="icon" type="image/png" href="/icons/official-32.png">
+<script>
+  // after this browser's data was moved, the old URL just forwards (?migrate shows this page again)
+  (function () {
+    var NEW = 'https://togaki.pikoponpoko.workers.dev';
+    var TO = /^https:\/\/([a-z0-9-]+-)?togaki\.pikoponpoko\.workers\.dev$|^https:\/\/[a-z0-9-]+-ohanashi-meijin\.pikoponpoko\.workers\.dev$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+    var q = new URLSearchParams(location.search), to = q.get('to');
+    window.TARGET = to && TO.test(to) && to !== location.origin ? to : NEW;
+    var keep = new URLSearchParams(location.search); keep.delete('to'); keep.delete('migrate');
+    window.FORWARD = window.TARGET + location.pathname + (String(keep) ? '?' + keep : '') + location.hash;
+    var done = null; try { done = localStorage.getItem('migration.done'); } catch (e) {}
+    if (done && !q.has('migrate')) location.replace(window.FORWARD);
+  })();
+</script>
+<style>
+  :root { --bg: #f6f6f4; --paper: #fcfcfa; --line: #e2e2df; --text: #30302f; --muted: #898987; --font: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic UI', system-ui, sans-serif; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 14px/1.7 var(--font); }
+  main { max-width: 420px; margin: 18vh auto 0; padding: 0 16px; }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 16px; }
+  p { margin: 0 0 12px; }
+  a { color: var(--text); word-break: break-all; }
+  .muted { color: var(--muted); }
+  .error { color: var(--text); font-weight: 600; }
+  progress { width: 100%; height: 6px; accent-color: var(--text); }
+  .row { display: flex; gap: 8px; margin-top: 16px; }
+  button, a.btn { font: inherit; color: var(--text); background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 6px 16px; cursor: pointer; text-decoration: none; }
+  .primary { background: var(--text); border-color: var(--text); color: var(--paper); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main id="page" hidden>
+  <h1>URLが変わりました</h1>
+  <p><a id="newUrl"></a></p>
+  <p id="msg"></p>
+  <progress id="bar" max="1" value="0" hidden></progress>
+  <div class="row"><button id="go" class="primary">この端末のデータを移して開く</button><a id="skip" class="btn">移さずに開く</a></div>
+</main>
+<script src="/migrate-core.js"></script>
+<script>
+  (async () => {
+    const $ = (id) => document.getElementById(id);
+    const KNOWN = ['ohanashi-manuscripts-v1', 'ohanashi-appearance-v1', 'togaki-cloud-v1'];
+    const forced = new URLSearchParams(location.search).has('migrate');
+    if (localStorage.getItem(Migration.DONE_KEY) && !forced) return;
+    if (!forced && !(await Migration.hasData(KNOWN))) { location.replace(FORWARD); return; }
+    $('newUrl').href = $('skip').href = FORWARD; $('newUrl').textContent = TARGET.replace(/^https?:\/\//, '');
+    $('page').hidden = false;
+    $('go').onclick = async () => {
+      const win = window.open(TARGET + '/migrate.html', 'migrate');
+      if (!win) { $('msg').textContent = 'ポップアップがブロックされました。許可してから、もう一度押してください。'; $('msg').className = 'error'; return; }
+      $('go').disabled = true; $('msg').className = ''; $('msg').textContent = '移行中…'; $('bar').hidden = false;
+      try {
+        const r = await Migration.send({ win, origin: TARGET, known: KNOWN, onProgress: (a, b) => { $('bar').max = b || 1; $('bar').value = a; $('msg').textContent = `移行中 ${a} / ${b}`; } });
+        $('msg').textContent = `移行しました（${r.count}件）。次からはこのURLを開くと新しいURLへ移ります。`;
+        $('go').hidden = true; $('skip').textContent = '新しいURLで開く'; $('skip').classList.add('primary');
+      } catch (e) {
+        $('go').disabled = false; $('bar').hidden = true;
+        $('msg').textContent = e.cancelled ? '移行をやめました。' : '移行できませんでした: ' + e.message + '（このURLのデータは残っています）';
+        $('msg').className = e.cancelled ? '' : 'error';
+      }
+    };
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Togaki</title>
+<link rel="icon" type="image/png" href="icons/official-32.png">
+<style>
+  :root { --bg: #f6f6f4; --paper: #fcfcfa; --line: #e2e2df; --text: #30302f; --muted: #898987; --font: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic UI', system-ui, sans-serif; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 14px/1.7 var(--font); }
+  main { max-width: 420px; margin: 18vh auto 0; padding: 0 16px; }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 16px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .error { color: var(--text); font-weight: 600; }
+  progress { width: 100%; height: 6px; accent-color: var(--text); }
+  .row { display: flex; gap: 8px; margin-top: 16px; }
+  button, a.btn { font: inherit; color: var(--text); background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 6px 16px; cursor: pointer; text-decoration: none; }
+  .primary { background: var(--text); border-color: var(--text); color: var(--paper); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>データの移行</h1>
+  <p id="msg"></p>
+  <progress id="bar" max="1" value="0" hidden></progress>
+  <div class="row" id="ask" hidden><button id="yes" class="primary">上書きして移行</button><button id="no">やめる</button></div>
+  <div class="row" id="open" hidden><a class="btn primary" href="./">開く</a></div>
+</main>
+<script src="migrate-core.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  Migration.receive({
+    fromRe: /^https:\/\/([a-z0-9-]+-)?ohanashi-meijin\.pikoponpoko\.workers\.dev$/,
+    ui: {
+      state(s, a, b, c) {
+        $('msg').className = '';
+        if (s === 'noopener') { $('msg').textContent = '旧URL（ohanashi-meijin）の移行ボタンから開いてください。'; $('open').hidden = false; }
+        if (s === 'waiting') $('msg').textContent = '受け取り待ち…';
+        if (s === 'progress') { $('msg').textContent = `受け取り中 ${a} / ${b}`; $('bar').hidden = false; $('bar').max = b || 1; $('bar').value = a; }
+        if (s === 'cancelled') { $('msg').textContent = '移行をやめました。'; $('bar').hidden = true; $('open').hidden = false; }
+        if (s === 'done') { $('msg').textContent = `移行しました（${a}件）`; $('bar').value = $('bar').max; $('open').hidden = false; }
+        if (s === 'error') { $('msg').textContent = '移行できませんでした: ' + a; $('msg').className = 'error'; }
+      },
+      confirmOverwrite() {
+        $('msg').textContent = 'このURLにもデータがあります。同じ項目は旧URLの内容で上書きします。';
+        $('ask').hidden = false;
+        return new Promise((res) => { $('yes').onclick = () => { $('ask').hidden = true; res(true); }; $('no').onclick = () => { $('ask').hidden = true; res(false); }; });
+      },
+    },
+  });
+</script>
+</body>
+</html>

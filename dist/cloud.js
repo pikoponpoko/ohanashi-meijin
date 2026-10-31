@@ -3,8 +3,8 @@
    registers it and keeps a fixed link ID (state.cloudLinkId). Whether THIS device syncs is kept on the device.
    Changes from the cloud apply on their own only when nothing here could be lost; otherwise they wait for the user. */
 (()=>{
-  // the cloud lives with Soku Conte (one database for both apps)
-  const API=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem('togaki.cloud.api')||'https://prepro-meijin.pikoponpoko.workers.dev';
+  // the cloud lives with Soku Conte (one database for both apps). Previews still built on the old Worker use the old URL, which keeps serving /api.
+  const API=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&localStorage.getItem('togaki.cloud.api')||(/(^|-)ohanashi-meijin\.pikoponpoko\.workers\.dev$/.test(location.hostname)?'https://prepro-meijin.pikoponpoko.workers.dev':'https://soku-conte.pikoponpoko.workers.dev');
   const SESSION='togaki.cloud.session',LINKS='togaki.cloud.links';
   const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(_){return d}};
   const write=(k,v)=>{try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
