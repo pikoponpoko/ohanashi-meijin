@@ -15,7 +15,7 @@ JSON/TXT/MDを開く処理、Undo/Redo、章操作、PDFはWeb版と同じ資産
 日本語3書体・PDFライブラリを内蔵し、CloudflareやGoogle Fontsへの接続を必要としない。
 
 「アップデートを確認」はデスクトップ版だけに表示され、既定ブラウザで
-https://github.com/pikoponpoko/ohanashi-meijin/releases を開く。
+https://github.com/pikoponpoko/togaki/releases を開く。
 新しいインストーラーで同じアプリを置き換える。自動ダウンロード・自動更新は行わない。
 
 ## 保存先と保護
