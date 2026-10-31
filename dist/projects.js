@@ -47,7 +47,7 @@ async function openDocument(next){
   }catch(_){syncArchives();toast('原稿を安全に保存できないため、切り替えを中止しました。「保存」でJSONを残してください。');return false}
   finally{switchingDocument=false;appRoot.inert=false}
   clearTimeout(timer);state=next;active=state.chapters[0].id;loadBlocked=false;dirty=false;
-  window.FileControls?.documentOpened();resetHistory();render();syncArchives();$('#saved').textContent='ブラウザに保存済み';$('#dialog').close();document.body.classList.remove('mobilemenu');return true;
+  window.FileControls?.documentOpened();window.CloudSync?.documentOpened();resetHistory();render();syncArchives();$('#saved').textContent='ブラウザに保存済み';$('#dialog').close();document.body.classList.remove('mobilemenu');return true;
 }
 $('#newDocument').onclick=()=>{
   modal('新しい作品','<p>現在の原稿はこのブラウザに残します。</p><button id="confirmNewDocument" class="primary">空白から始める</button>');

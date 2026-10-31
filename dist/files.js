@@ -96,5 +96,7 @@
   addEventListener('drop',e=>{if(!fileDrag(e))return;e.preventDefault();e.stopPropagation();const f=e.dataTransfer.files[0];if(f&&!composing&&!busy)readFile(f)},true);
   $('#file').onchange=async e=>{const f=e.target.files[0];if(f)await readFile(f);e.target.value=''};
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&!composing&&!e.isComposing){e.preventDefault();saveCommand(e.shiftKey)}});
-  window.FileControls={saveFile:saveCommand,fileChanged,markSaved,requestOpen,documentOpened,sync};sync();
+  // A change applied to the same work (cloud sync): the connected file stays connected and unsaved.
+  async function keepConnection(open){const keepHandle=handle,keepBaseline=baseline;if(!await open())return false;handle=keepHandle;baseline=keepBaseline;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync();return true}
+  window.FileControls={saveFile:saveCommand,fileChanged,markSaved,requestOpen,documentOpened,sync,keepConnection,fileName:()=>handle?.name||null};sync();
 })();
