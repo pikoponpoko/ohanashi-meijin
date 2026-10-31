@@ -1,6 +1,6 @@
-/* Changes sent back from プリプロ名人. The manuscript stays authoritative:
-   a cut is replaced only while it still equals the text プリプロ名人 imported (base),
-   a cut is removed only while it still equals the text プリプロ名人 deleted,
+/* Changes sent back from Soku Conte. The manuscript stays authoritative:
+   a cut is replaced only while it still equals the text Soku Conte imported (base),
+   a cut is removed only while it still equals the text Soku Conte deleted,
    and everything else edited here is kept as a conflict. Nothing is reordered. */
 (function(root){
   const blank=s=>/^[\s​⁠]*$/u.test(s);
@@ -40,7 +40,7 @@
           if(removed.has(x.cut.id))counts.conflicts.push(label(x));
           return [x];
         }
-        // unchanged in プリプロ名人 (still its base): whatever was written here stays, silently
+        // unchanged in Soku Conte (still its base): whatever was written here stays, silently
         if(i.key===x.key||(typeof base[x.cut.id]==='string'&&base[x.cut.id]===i.key))return [x];
         if(typeof base[x.cut.id]==='string'&&base[x.cut.id]===x.key){counts.changed++;return [{...x,rows:[...i.body.map(r=>({...r,origin:null})),...x.tail]}]}
         counts.conflicts.push(label(x));return [x];
@@ -50,7 +50,7 @@
     const known=new Set(current.chapters.flatMap(c=>c.cuts.map(x=>x.id)));
     inc.forEach((x,i)=>{
       if(known.has(x.cut.id))return;
-      // deleted here after プリプロ名人 imported it: the deletion stands
+      // deleted here after Soku Conte imported it: the deletion stands
       if(typeof base[x.cut.id]==='string'){counts.conflicts.push(label(x)+'（削除済み）');return}
       const ids=present();let at=null;
       for(let k=i-1;k>=0&&!at;k--)if(ids.has(inc[k].cut.id))for(const ch of result){const j=ch.list.findIndex(y=>y.cut.id===inc[k].cut.id);if(j>=0){at={ch,j:j+1};break}}

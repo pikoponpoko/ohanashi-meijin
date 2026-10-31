@@ -40,7 +40,7 @@
       $('#cancelOpen').onclick=()=>$('#dialog').close();$('#confirmSavedOpen').onclick=()=>{if(snapshot()!==expected)return requestOpen(incoming,nextHandle);commitOpen(incoming,nextHandle)};
     };
   }
-  // A JSON sent from プリプロ名人: merged into the same work (by workId) after confirmation.
+  // A JSON sent from Soku Conte: merged into the same work (by workId) after confirmation.
   // The manuscript before merging is archived by openDocument; the connected file stays connected and unsaved.
   async function receivePrepro(value){
     if(composing)return;
@@ -49,15 +49,15 @@
     if(loadBlocked||next.workId!==state.workId)return requestOpen(next);
     const expected=snapshot(),{next:merged,counts:n}=window.PreproReturn.merge(state,next,info),result=validate(merged);
     const conflicts=n.conflicts.length?'<p>競合（原稿を残します）：'+esc(n.conflicts.join('・'))+'</p>':'';
-    if(!n.changed&&!n.added&&!n.removed)return modal('プリプロ名人の変更を反映','<p>反映する変更はありません</p>'+conflicts);
-    modal('プリプロ名人の変更を反映','<p>変更 '+n.changed+' ／ 追加 '+n.added+' ／ 削除 '+n.removed+(n.conflicts.length?' ／ 競合 '+n.conflicts.length:'')+'</p>'+conflicts+'<p>反映前の原稿は「保存した原稿」に残します。</p><button id="applyPrepro" class="primary">反映</button><button id="cancelPrepro">キャンセル</button>');
+    if(!n.changed&&!n.added&&!n.removed)return modal('Soku Conteの変更を反映','<p>反映する変更はありません</p>'+conflicts);
+    modal('Soku Conteの変更を反映','<p>変更 '+n.changed+' ／ 追加 '+n.added+' ／ 削除 '+n.removed+(n.conflicts.length?' ／ 競合 '+n.conflicts.length:'')+'</p>'+conflicts+'<p>反映前の原稿は「保存した原稿」に残します。</p><button id="applyPrepro" class="primary">反映</button><button id="cancelPrepro">キャンセル</button>');
     $('#cancelPrepro').onclick=()=>$('#dialog').close();
     $('#applyPrepro').onclick=async()=>{
       if(snapshot()!==expected){$('#dialog').close();return toast('原稿が変更されたため中止しました。もう一度開いてください。')}
       const keepHandle=handle,keepBaseline=baseline;
       if(!await openDocument(result))return;
       handle=keepHandle;baseline=keepBaseline;try{if(!window.ManuscriptStorage.usingDatabase)localStorage.setItem(baselineKey,baseline)}catch(_){}sync();
-      toast('プリプロ名人の変更を反映しました');
+      toast('Soku Conteの変更を反映しました');
     };
   }
   async function saveCommand(asNew=false){

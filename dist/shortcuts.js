@@ -1,6 +1,6 @@
 /* Paragraph-kind shortcuts the user can rebind, F1 for settings, and the settings dialog tabs. */
 (function(){
-  const VERSION='0.1.8';
+  const VERSION='0.1.9';
   const STORE='ohanashi.shortcuts',TAB='ohanashi.settingsTab';
   const ACTIONS=[['scene','柱','Alt+1'],['action','ト書き','Alt+2'],['dialogue','セリフ','Alt+3'],['music','音楽','Alt+4'],['se','SE','Alt+5'],['speaker','話者','']];
   // Keys already used elsewhere in the app or by the editor.

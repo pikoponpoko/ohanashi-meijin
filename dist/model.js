@@ -6,11 +6,11 @@
   // External TXT syntax is broader than the canonical saved v2 boundary syntax.
   // Never reinterpret already-saved JSON or ordinary prose as external metadata.
   const externalMarker={test:s=>/^#(?:\s*C\s*)?\d+(?:[A-Za-z]+|[-.]\d+)?$/i.test(s.replace(/[！-～]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0)).trim())};
-  const preproHeader=/^#プリプロ名人 (?:脚本管理|台詞一覧)(?:（このまま書き換えて(?:保存すると、プリプロ名人に反映できます|、コピーしてからプリプロ名人に戻ると反映できます)）)?$/;
+  const preproHeader=/^#(?:プリプロ名人|Soku Conte) (?:脚本管理|台詞一覧)(?:（このまま書き換えて(?:保存すると、(?:プリプロ名人|Soku Conte)に反映できます|、コピーしてから(?:プリプロ名人|Soku Conte)に戻ると反映できます)）)?$/;
   const quoteDelta=s=>[...s].reduce((n,c)=>n+(c==='「'?1:c==='」'?-1:0),0);
   // Japanese Google Fonts offered in settings. The first three are bundled in the desktop app.
   const fonts=['Noto Serif JP','Noto Sans JP','Zen Old Mincho','Shippori Mincho','BIZ UDPMincho','Sawarabi Mincho','Hina Mincho','Kaisei Opti','Yuji Syuku','BIZ UDPGothic','Zen Kaku Gothic New','IBM Plex Sans JP','M PLUS 1p','Murecho','Zen Maru Gothic','M PLUS Rounded 1c','Kosugi Maru','Kiwi Maru','Klee One','Zen Kurenaido'];
-  // Sound prefixes exactly as プリプロ名人 reads them (linestext.js TAG_IN): full/half-width colon and
+  // Sound prefixes exactly as Soku Conte reads them (linestext.js TAG_IN): full/half-width colon and
   // a space before it are accepted. The text itself is kept as written.
   const soundPrefix=/^[ \t\u3000]*(音楽|BGM|ＢＧＭ|SE|ＳＥ|効果音)[ \t\u3000]*[：:]/;
   const soundKind=s=>{const m=s.match(soundPrefix);return m?(/^(?:音楽|BGM|ＢＧＭ)$/.test(m[1])?'music':'se'):null};

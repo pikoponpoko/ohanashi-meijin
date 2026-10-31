@@ -153,7 +153,7 @@ body.printpreview #printRoot:not(.pdf-render) .printpage{zoom:var(--previewzoom,
 @media(max-width:680px){body.printpreview #printRoot:not(.pdf-render){top:88px}}
 @media print{#previewBar{display:none!important}body.printpreview #printRoot{position:static!important;display:block!important;padding:0!important;overflow:visible!important;background:white!important}body.printpreview #printRoot .printpage{zoom:1!important;outline:0!important}}
 
-/* 2026-10-30: themes from プリプロ名人, background image, chapter drag by holding. */
+/* 2026-10-30: themes from Soku Conte, background image, chapter drag by holding. */
 :root{--done:#555;--review:#aaa;--todo:#ddd}
 #backgroundImage{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;z-index:0}#backgroundImage[hidden]{display:none}
 #writing>#editor{position:relative;z-index:1}#writing>#emptyHint{z-index:2}
