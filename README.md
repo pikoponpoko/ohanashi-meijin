@@ -3,8 +3,9 @@
 日本語脚本を縦書き・横書きで編集する、ビルド不要のブラウザアプリです。
 
 - 正規のソース管理先: https://github.com/pikoponpoko/togaki （main）
-- 正式な公開先: 既存の Cloudflare Worker `ohanashi-meijin`（Workers Builds の接続先はリポジトリ `pikoponpoko/togaki`。2026-10-31 に ohanashi-meijin から改名）
-- アプリ名: おはなし名人
+- 正式な公開先: Cloudflare Worker `togaki`（https://togaki.pikoponpoko.workers.dev 、main を Workers Builds で公開）
+- 旧URL: Worker `ohanashi-meijin`（https://ohanashi-meijin.pikoponpoko.workers.dev ）。Build の Root directory を `legacy` にして、移行ページ（端末のデータを新URLへ写す・移行後は自動転送）だけを出す
+- アプリ名: Togaki
 
 開発・公開はGitHubとCloudflareに統一します。ChatGPT Sitesへの新規公開・更新は行いません。通常の動作確認にもCloudflareの正式公開URLを使います。
 
