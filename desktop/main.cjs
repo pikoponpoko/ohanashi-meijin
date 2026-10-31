@@ -5,7 +5,7 @@ const {randomUUID}=require('node:crypto');
 const {pathToFileURL}=require('node:url');
 const {createStorage,createRecordStorage}=require('./storage.cjs');
 const ORIGIN='ohanashi://app';
-const RELEASES='https://github.com/pikoponpoko/ohanashi-meijin/releases';
+const RELEASES='https://github.com/pikoponpoko/togaki/releases';
 protocol.registerSchemesAsPrivileged([{scheme:'ohanashi',privileges:{standard:true,secure:true,supportFetchAPI:true,corsEnabled:true}}]);
 // Stable across versions, installer replacement and future macOS builds.
 app.setPath('userData',process.env.OHANASHI_TEST_USER_DATA||path.join(app.getPath('appData'),'OhanashiMeijin'));

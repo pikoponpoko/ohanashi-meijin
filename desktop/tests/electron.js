@@ -23,7 +23,7 @@ async function launch(userData=profile){
  check('desktop update button exists',await page.locator('#desktopUpdates').count()===1);
  await app.evaluate(({shell})=>{globalThis.testUpdateURL=null;shell.openExternal=async url=>{globalThis.testUpdateURL=url}});
  await page.locator('#desktopUpdates').click();
- check('update command opens only the repository releases page',await app.evaluate(()=>globalThis.testUpdateURL)==='https://github.com/pikoponpoko/ohanashi-meijin/releases');
+ check('update command opens only the repository releases page',await app.evaluate(()=>globalThis.testUpdateURL)==='https://github.com/pikoponpoko/togaki/releases');
  check('privileged IPC rejects other origins',await app.evaluate(async({BrowserWindow},preload)=>{
   const other=new BrowserWindow({show:false,webPreferences:{preload,contextIsolation:true,sandbox:true,nodeIntegration:false}});
   await other.loadURL('about:blank');const result=await other.webContents.executeJavaScript('window.ohanashiDesktop.readBackup()');other.destroy();return result.ok===false;

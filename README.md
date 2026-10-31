@@ -2,7 +2,7 @@
 
 日本語脚本を縦書き・横書きで編集する、ビルド不要のブラウザアプリです。
 
-- 正規のソース管理先: https://github.com/pikoponpoko/ohanashi-meijin （main）
+- 正規のソース管理先: https://github.com/pikoponpoko/togaki （main）
 - 正式な公開先: 既存の Cloudflare Worker `ohanashi-meijin`
 - アプリ名: おはなし名人
 
