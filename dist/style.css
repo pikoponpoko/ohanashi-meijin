@@ -223,3 +223,15 @@ body.focus #editor{padding-top:24px;padding-bottom:24px}
 .shortcutRow.fixed .shortcutKey{display:inline-flex;align-items:center;justify-content:center;border-color:transparent;color:var(--muted)}
 #shortcutReset{margin-top:2px}
 .shortcutKey{min-width:116px}
+/* cloud sync */
+#cloud.on{color:var(--ink)}
+.cloudRow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:10px -10px 0}
+.cloudAccount{display:flex;align-items:center;gap:8px}
+.cloudUser{flex:1;min-width:0;font-size:12px;overflow-wrap:anywhere}
+#dialogBody .cloudCode{font:500 26px monospace;color:var(--ink);letter-spacing:.08em;margin:0}
+#cloudConflicts{max-height:45dvh;overflow:auto}
+.cloudConflict{border-bottom:1px solid var(--line);padding:10px 0}
+.cloudConflictHead{font-size:12px;margin-bottom:6px}
+.cloudVersions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:12px}
+.cloudVersions b{display:block;font-weight:500;margin-bottom:2px}
+.cloudVersions span{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);max-height:8em;overflow:auto}
